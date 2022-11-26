@@ -16,6 +16,8 @@ namespace my_clinic_api.Models
         public string Description { get; set; }
 
         //public IList<Doctor> doctors { get; set; }
+
+        public ICollection<Specialist> specialists { get; set; }
     }
 }
 

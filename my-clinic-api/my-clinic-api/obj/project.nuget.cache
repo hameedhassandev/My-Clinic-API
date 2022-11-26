@@ -1,15 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "oWDpypLeBLBrC04VUsthi09rn5PRHsS1x2eOoQgx/xc6KS5ZBSwcaIY+u2RDyXtjzWHVAJE+2Wts0XxZla+aSw==",
+  "dgSpecHash": "gG2DJIYzVKHpKBYcpIMXzgYcypkMQaMgedT1CnJ0p2/9sQlTL3dWPxXZEZP0WuPMP3t+JDafHI84VNvPgFUeAg==",
   "success": true,
-  "projectFilePath": "D:\\clinicAPI\\my-clinic-api\\my-clinic-api\\my-clinic-api.csproj",
+  "projectFilePath": "E:\\Studying\\DotNet\\MyClinic\\my-clinic-api\\my-clinic-api\\my-clinic-api.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Hameed\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
-    "C:\\Users\\Hameed\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
-    "C:\\Users\\Hameed\\.nuget\\packages\\swashbuckle.aspnetcore\\6.2.3\\swashbuckle.aspnetcore.6.2.3.nupkg.sha512",
-    "C:\\Users\\Hameed\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.2.3\\swashbuckle.aspnetcore.swagger.6.2.3.nupkg.sha512",
-    "C:\\Users\\Hameed\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.2.3\\swashbuckle.aspnetcore.swaggergen.6.2.3.nupkg.sha512",
-    "C:\\Users\\Hameed\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.2.3\\swashbuckle.aspnetcore.swaggerui.6.2.3.nupkg.sha512"
+    "C:\\Users\\amr1e\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "C:\\Users\\amr1e\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\amr1e\\.nuget\\packages\\swashbuckle.aspnetcore\\6.2.3\\swashbuckle.aspnetcore.6.2.3.nupkg.sha512",
+    "C:\\Users\\amr1e\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.2.3\\swashbuckle.aspnetcore.swagger.6.2.3.nupkg.sha512",
+    "C:\\Users\\amr1e\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.2.3\\swashbuckle.aspnetcore.swaggergen.6.2.3.nupkg.sha512",
+    "C:\\Users\\amr1e\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.2.3\\swashbuckle.aspnetcore.swaggerui.6.2.3.nupkg.sha512"
   ],
   "logs": []
 }

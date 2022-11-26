@@ -10,7 +10,8 @@ namespace my_clinic_api.Models
         [Required]
         public int DepartmentId { get; set; }
 
-        [Required , MaxLength(120)]
+        [Required]
+        [ MaxLength(120)]
         public string SpecialistName { get; set; }
 
         public Department department { get; set; }

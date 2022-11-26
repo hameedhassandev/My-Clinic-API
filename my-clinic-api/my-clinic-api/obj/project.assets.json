@@ -224,19 +224,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\amr1e\\.nuget\\packages\\": {}
+    "C:\\Users\\Hameed\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Studying\\DotNet\\MyClinic\\my-clinic-api\\my-clinic-api\\my-clinic-api.csproj",
+      "projectUniqueName": "D:\\apiProject\\my-clinic-api\\my-clinic-api\\my-clinic-api.csproj",
       "projectName": "my-clinic-api",
-      "projectPath": "E:\\Studying\\DotNet\\MyClinic\\my-clinic-api\\my-clinic-api\\my-clinic-api.csproj",
-      "packagesPath": "C:\\Users\\amr1e\\.nuget\\packages\\",
-      "outputPath": "E:\\Studying\\DotNet\\MyClinic\\my-clinic-api\\my-clinic-api\\obj\\",
+      "projectPath": "D:\\apiProject\\my-clinic-api\\my-clinic-api\\my-clinic-api.csproj",
+      "packagesPath": "C:\\Users\\Hameed\\.nuget\\packages\\",
+      "outputPath": "D:\\apiProject\\my-clinic-api\\my-clinic-api\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\amr1e\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Hameed\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -286,7 +286,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.402\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.400-preview.22330.6\\RuntimeIdentifierGraph.json"
       }
     }
   }

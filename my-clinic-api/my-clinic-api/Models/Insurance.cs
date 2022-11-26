@@ -12,5 +12,7 @@ namespace my_clinic_api.Models
         public string CompanyName { get; set; }
 
         public int Discount { get; set; }
+        [MaxLength(200)]
+        public string Address { get; set; }
     }
 }

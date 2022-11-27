@@ -8,7 +8,7 @@ namespace my_clinic_api.Models
         public int Id { get; set; }
 
         [Required]
-        public Cities cities { get; set; }
+        public Cities City { get; set; }
 
         [Required]
         [MaxLength(100)]

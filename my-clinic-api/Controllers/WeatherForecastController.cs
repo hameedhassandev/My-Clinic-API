@@ -8,7 +8,7 @@ namespace my_clinic_api.Controllers
     {
         private static readonly string[] Summaries = new[]
         {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Amr"
+        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Amr","Hameed"
     };
 
         private readonly ILogger<WeatherForecastController> _logger;
@@ -16,6 +16,12 @@ namespace my_clinic_api.Controllers
         public WeatherForecastController(ILogger<WeatherForecastController> logger)
         {
             _logger = logger;
+        }
+
+
+        public void printany()
+        {
+            return;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]

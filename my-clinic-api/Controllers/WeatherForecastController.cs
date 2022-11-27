@@ -21,6 +21,7 @@ namespace my_clinic_api.Controllers
 
         public void printany()
         {
+            var amr = "Elmasry";
             return;
         }
 

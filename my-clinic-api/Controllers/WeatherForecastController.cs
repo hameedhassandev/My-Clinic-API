@@ -19,6 +19,11 @@ namespace my_clinic_api.Controllers
         }
 
 
+        public void testHameed()
+        {
+            return;
+        }
+
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {

@@ -18,6 +18,12 @@ namespace my_clinic_api.Controllers
             _logger = logger;
         }
 
+
+        public void printany()
+        {
+            return;
+        }
+
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {

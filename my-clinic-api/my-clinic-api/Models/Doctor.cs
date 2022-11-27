@@ -1,0 +1,40 @@
+﻿using Microsoft.VisualBasic;
+using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
+
+namespace my_clinic_api.Models
+{
+    public class Doctor : ApplicationUser
+    {
+
+        [Required]
+        [MaxLength(120)]
+        [Display(Name = "Doctor Title")]
+        public string? DoctorTitle { get; set; }
+
+        [Display(Name = "Average Rate")]
+        public float AvgRate { get; set; }
+
+
+        [MaxLength(250)]
+        public string Bio { get; set; } = string.Empty;
+
+        public int NumberOfViews { get; set; }
+
+
+        [Required]
+        [Display(Name = "Wating Time in min.")]
+        public int WaitingTime { get; set; }
+
+
+
+        public Department? Department { get; set; }
+
+        public ICollection<Specialist>? Specialists { get; set; }
+        public ICollection<TimesOfWork>? TimesOfWorks { get; set; }
+        public ICollection<Insurance>? Insurances { get; set; }
+        public ICollection<Hospital>? Hospitals { get; set; }
+        public ICollection<RateAndReview>? RatesAndReviews { get; set; }
+
+    }
+}

@@ -9,7 +9,7 @@ namespace my_clinic_api.Models
 
         [Required]
         [MaxLength(100)]
-        public string CompanyName { get; set; }
+        public string ?CompanyName { get; set; }
 
         public int Discount { get; set; }
        

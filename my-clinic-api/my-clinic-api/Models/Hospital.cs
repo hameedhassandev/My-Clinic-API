@@ -9,13 +9,13 @@ namespace my_clinic_api.Models
 
         [Required]
         [MaxLength(200)]
-        public string Name { get; set; }
+        public string ?Name { get; set; }
 
         [Required]
         [MaxLength(255)]
-        public string Address { get; set; }
+        public string ?Address { get; set; }
 
-        // public IList<Doctor> doctors { get; set; }
+        public ICollection<Doctor>? doctors { get; set; }
 
 
     }

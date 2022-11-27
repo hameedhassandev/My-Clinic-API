@@ -9,6 +9,18 @@ namespace my_clinic_api.Models
         {
 
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Doctor>(m =>
+            {
+
+                m.ToTable("Doctor");
+            });
+        }
+
+        public DbSet<Doctor> doctors { get; set; }
         public DbSet<Area> Areas { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Specialist> Specialists { get; set; }

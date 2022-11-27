@@ -13,7 +13,8 @@ namespace my_clinic_api.Models
         [Required]
         [MaxLength(100)]
         [Display(Name ="Area Name")]
-        public string AreaName { get; set; }
+        public string ?AreaName { get; set; }
+
 
 
     }

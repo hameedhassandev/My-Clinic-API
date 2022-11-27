@@ -20,9 +20,7 @@ namespace my_clinic_api.Models
         [Required]
         public DateTime EndWork { get; set; }
 
-        [Required]
-        public int DoctorId { get; set; }
 
-        //public Doctor doctor { get; set; }
+        public Doctor? doctor { get; set; }
     }
 }

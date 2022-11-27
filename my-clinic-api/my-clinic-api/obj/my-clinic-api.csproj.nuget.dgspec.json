@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\apiProject\\my-clinic-api\\my-clinic-api\\my-clinic-api.csproj": {}
+    "E:\\Studying\\DotNet\\MyClinic\\my-clinic-api\\my-clinic-api\\my-clinic-api.csproj": {}
   },
   "projects": {
-    "D:\\apiProject\\my-clinic-api\\my-clinic-api\\my-clinic-api.csproj": {
+    "E:\\Studying\\DotNet\\MyClinic\\my-clinic-api\\my-clinic-api\\my-clinic-api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\apiProject\\my-clinic-api\\my-clinic-api\\my-clinic-api.csproj",
+        "projectUniqueName": "E:\\Studying\\DotNet\\MyClinic\\my-clinic-api\\my-clinic-api\\my-clinic-api.csproj",
         "projectName": "my-clinic-api",
-        "projectPath": "D:\\apiProject\\my-clinic-api\\my-clinic-api\\my-clinic-api.csproj",
-        "packagesPath": "C:\\Users\\Hameed\\.nuget\\packages\\",
-        "outputPath": "D:\\apiProject\\my-clinic-api\\my-clinic-api\\obj\\",
+        "projectPath": "E:\\Studying\\DotNet\\MyClinic\\my-clinic-api\\my-clinic-api\\my-clinic-api.csproj",
+        "packagesPath": "C:\\Users\\amr1e\\.nuget\\packages\\",
+        "outputPath": "E:\\Studying\\DotNet\\MyClinic\\my-clinic-api\\my-clinic-api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Hameed\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\amr1e\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -40,6 +40,30 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[6.0.1, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[6.0.1, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.0.1, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[6.0.1, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.0.1, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.2.3, )"
@@ -64,7 +88,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.400-preview.22330.6\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.402\\RuntimeIdentifierGraph.json"
         }
       }
     }

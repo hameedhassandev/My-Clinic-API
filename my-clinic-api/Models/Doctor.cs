@@ -26,7 +26,14 @@ namespace my_clinic_api.Models
         [Display(Name = "Wating Time in min.")]
         public int WaitingTime { get; set; }
 
+        [Required]
+        [Display(Name = "Confirmed from admin")]
+        public bool IsConfirmedFromAdmin { get; set; }
 
+        public DaysOfBlock ?DaysOfBlock { get; set; }
+
+        public DateTime ? StartOfBlock { get; set; }
+        public DateTime ? EndOfBlock { get; set; }
 
         public Department? Department { get; set; }
 

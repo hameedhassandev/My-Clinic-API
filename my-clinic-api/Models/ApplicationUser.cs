@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace my_clinic_api.Models
@@ -24,6 +25,13 @@ namespace my_clinic_api.Models
         public byte[]? Image { get; set; }
 
         public Gender? Gender { get; set; }
+
+        [Required]
+        public DateTime CreatedAt { get; set; }
+
+        [Required]
+        [DefaultValue(true)]
+        public bool IsActive { get; set; }
 
 
     }

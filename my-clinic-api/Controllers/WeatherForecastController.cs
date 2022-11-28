@@ -19,7 +19,6 @@ namespace my_clinic_api.Controllers
         }
 
 
-
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {

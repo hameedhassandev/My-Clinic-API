@@ -44,10 +44,11 @@ namespace my_clinic_api.Controllers
 
         // GET: api/Hospital/GetById/5
         [HttpGet("GetAllPagination")]
-        public async Task<IActionResult> GetAllPagination()
+        public async Task<IActionResult> GetAllPagination([FromQuery] string? searchKey , [FromQuery] int take , [FromQuery] int skip)
         {
-            Expression<Func<Hospital, bool>> predicate = h => h.Id < 5;
-            var result = await _hospitalService.FindAllAsync(predicate,2,2);
+
+            Expression<Func<Hospital, bool>> predicate = h => h.Name.Contains(searchKey) ;
+            var result = await _hospitalService.FindAllAsync(predicate , skip , take);
             if (result == null)
                 return NotFound();
 

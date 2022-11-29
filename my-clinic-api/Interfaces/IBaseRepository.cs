@@ -15,6 +15,7 @@ namespace my_clinic_api.Interfaces
         Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria);
 
         Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria, int skip, int take);
+
         //<Expression<func<Hospital,bool>> predict = p=>p.name == 'amr' && p.size > 33 ;
         //context.findAllAysync(predict,1,10);
     }

@@ -2,6 +2,7 @@
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace my_clinic_api.Services
@@ -23,7 +24,7 @@ namespace my_clinic_api.Services
 
         public T Delete(T entity)
         {
-             _Context.Set<T>().Remove(entity);
+            _Context.Set<T>().Remove(entity);
             return entity;
         }
 
@@ -51,7 +52,7 @@ namespace my_clinic_api.Services
 
         public async Task<IEnumerable<T>> GetAllPaginationAsync(int skip, int take)
         {
-            return await _Context.Set<T>().Skip(skip).Take(take).ToListAsync(); 
+            return await _Context.Set<T>().Skip(skip).Take(take).ToListAsync();
 
         }
 
@@ -64,5 +65,8 @@ namespace my_clinic_api.Services
         {
             return await _Context.Set<T>().AsQueryable().Where(criteria).ToListAsync();
         }
+
+
+
     }
 }

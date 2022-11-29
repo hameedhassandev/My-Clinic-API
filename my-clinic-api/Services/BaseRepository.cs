@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
+using System;
+using System.Linq.Expressions;
 
 namespace my_clinic_api.Services
 {
@@ -45,6 +47,22 @@ namespace my_clinic_api.Services
         public async Task<int> CountAsync()
         {
             return await _Context.Set<T>().CountAsync();
+        }
+
+        public async Task<IEnumerable<T>> GetAllPaginationAsync(int skip, int take)
+        {
+            return await _Context.Set<T>().Skip(skip).Take(take).ToListAsync(); 
+
+        }
+
+        public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria, int skip, int take)
+        {
+            return await _Context.Set<T>().AsQueryable().Where(criteria).Skip(skip).Take(take).ToListAsync();
+        }
+
+        public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria)
+        {
+            return await _Context.Set<T>().AsQueryable().Where(criteria).ToListAsync();
         }
     }
 }

@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
+using my_clinic_api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +21,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
- 
+
+
+
+builder.Services.AddScoped<IHospitalService, HospitalService>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

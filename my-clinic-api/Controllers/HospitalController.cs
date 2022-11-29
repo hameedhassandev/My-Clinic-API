@@ -1,27 +1,34 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using my_clinic_api.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace my_clinic_api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class HospitalController : ControllerBase
     {
-        // GET: api/<HospitalController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IHospitalService _hospitalService;
+        public HospitalController(IHospitalService hospitalService)
         {
-            return new string[] { "value1", "value2" };
+            _hospitalService = hospitalService;
         }
 
-        // GET api/<HospitalController>/5
+        // GET: api/Hospital/GetById/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IActionResult GetById(int id)
         {
-            return "value";
+
+            var result = _hospitalService.GetByIdAsync(id);
+            if(result == null)
+                return NotFound();
+
+            return Ok(result);
         }
 
+
+      
         // POST api/<HospitalController>
         [HttpPost]
         public void Post([FromBody] string value)

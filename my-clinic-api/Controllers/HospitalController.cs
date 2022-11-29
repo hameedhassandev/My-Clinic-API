@@ -5,7 +5,7 @@ using my_clinic_api.Interfaces;
 
 namespace my_clinic_api.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class HospitalController : ControllerBase
     {
@@ -17,10 +17,10 @@ namespace my_clinic_api.Controllers
 
         // GET: api/Hospital/GetById/5
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
-        {
+        public async Task<IActionResult> GetById(int id)
+        { 
 
-            var result = _hospitalService.GetByIdAsync(id);
+            var result = await _hospitalService.GetByIdAsync(id);
             if(result == null)
                 return NotFound();
 

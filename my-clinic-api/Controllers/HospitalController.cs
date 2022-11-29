@@ -16,7 +16,7 @@ namespace my_clinic_api.Controllers
         }
 
         // GET: api/Hospital/GetById/5
-        [HttpGet("{id}")]
+        [HttpGet("GetById/{id}")]
         public async Task<IActionResult> GetById(int id)
         { 
 

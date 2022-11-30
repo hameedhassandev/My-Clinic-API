@@ -4,6 +4,6 @@ namespace my_clinic_api.Interfaces
 {
     public interface IHospitalService : IBaseRepository<Hospital>
     {
-        IEnumerable<Hospital> LargeHospitals();
+        IEnumerable<Hospital> LargeHospitals(); 
     }
 }

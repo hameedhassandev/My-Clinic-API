@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using my_clinic_api.Classes;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using System.Linq.Expressions;
@@ -30,30 +31,36 @@ namespace my_clinic_api.Controllers
         }
 
 
-        // GET: api/Hospital/GetById/5
+        // GET: api/Hospital/GetAll
         [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] Filters? filters)
         {
-            Expression<Func<Hospital, bool>> predicate = h => h.Id < 4;
-            var result = await _hospitalService.FindAllAsync(predicate);
-            if (result == null)
-                return NotFound();
+            if (filters == null)
+                return Ok(await _hospitalService.GetAllAsync());
+            else if (filters.Area!=null)
+            {
+                Expression<Func<Hospital, bool>> predicate = h => h.;
+                var result = await _hospitalService.FindAllAsync(predicate);
+                if (result == null)
+                    return NotFound(); 
 
-            return Ok(result);
+                return Ok(result);
+            }
+            
         }
 
-        // GET: api/Hospital/GetById/5
-        [HttpGet("GetAllPagination")]
-        public async Task<IActionResult> GetAllPagination([FromQuery] string? searchKey , [FromQuery] int take , [FromQuery] int skip)
-        {
+        //// GET: api/Hospital/GetById/5
+        //[HttpGet("GetAllPagination")]
+        //public async Task<IActionResult> GetAllPagination([FromQuery] Filters? filters)
+        //{
 
-            Expression<Func<Hospital, bool>> predicate = h => h.Name.Contains(searchKey) ;
-            var result = await _hospitalService.FindAllAsync(predicate , skip , take);
-            if (result == null)
-                return NotFound();
+        //    Expression<Func<Hospital, bool>> predicate = h => h.Name.Contains(searchKey) ;
+        //    var result = await _hospitalService.FindAllAsync(predicate , skip , take);
+        //    if (result == null)
+        //        return NotFound();
 
-            return Ok(result);
-        }
+        //    return Ok(result);
+        //}
 
 
         // POST api/<HospitalController>

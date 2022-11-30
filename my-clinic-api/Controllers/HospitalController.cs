@@ -34,8 +34,8 @@ namespace my_clinic_api.Controllers
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            Expression<Func<Hospital, bool>> predicate = h => h.Id < 4;
-            var result = await _hospitalService.FindAllAsync(predicate);
+        
+            var result = await _hospitalService.GetAllAsync();
             if (result == null)
                 return NotFound();
 

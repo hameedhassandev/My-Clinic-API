@@ -107,12 +107,8 @@ namespace my_clinic_api.Controllers
             // if model is valid
             //check if name is exist
             Expression<Func<Hospital, bool>> predicate = h => h.Name.Equals(dto.HospitalName);
-
-            var allHospital = await _hospitalService.FindAllAsync(predicate);
-
-            var isExist = await _hospitalService.HospitalIsExist(dto.HospitalName);
-            if (isExist) return BadRequest("Hospital name is exist");
-
+            var isExist = await _hospitalService.HospitalNameIsExist(dto.HospitalName);
+            if (isExist.Any()) return BadRequest("Hospital name is exist");
             var result = await _hospitalService.AddAsync(hospital);
             _hospitalService.CommitChanges();
 
@@ -122,12 +118,33 @@ namespace my_clinic_api.Controllers
         }
 
 
-        /*     //PUT:api/Hospita/UpadteHospital
-             [HttpPut("UpadteHospital")]
-             public async Task<IActionResult> UpadteHospital([FromForm] HospitalDto dto)
-             {
+        //PUT:api/Hospita/UpadteHospital
+        [HttpPut("UpadteHospital")]
+        public async Task<IActionResult> UpadteHospital([FromForm] Hospital model)
+        {
+           
+            if (!ModelState.IsValid) return BadRequest();
 
-             }*/
+            // if model is valid
+            //check if hospital is exist with id
+
+            var hospital = await _hospitalService.GetByIdAsync(model.Id);
+            
+            if (hospital is null) return BadRequest("Hospital is not exist with this id");
+            if (hospital.Name == model.Name && hospital.Address == model.Address)
+                return BadRequest("No changes are found!");
+            var checkName = await _hospitalService.HospitalNameIsExist(model.Name);
+            var checkAddress = await _hospitalService.HospitalAddressIsExist(model.Address);
+            if (checkName.Any(h => h.Id != hospital.Id) && checkName.Any(h => h.Id != hospital.Id))
+                return BadRequest("There is another hospital has this name and address!");
+            if (checkName.Any(h => h.Id != hospital.Id))
+                return BadRequest("There is another hospital has this name!");
+            if (checkName.Any(h => h.Id != hospital.Id))
+                return BadRequest("There is another hospital has this address!");
+            var result = await _hospitalService.Update(model);
+            _hospitalService.CommitChanges();
+            return Ok(result);
+        }
 
     }
 }

@@ -22,13 +22,13 @@ namespace my_clinic_api.Services
             return entity;
         }
 
-        public T Delete(T entity)
+        public async Task<T>  Delete(T entity)
         {
             _Context.Set<T>().Remove(entity);
             return entity;
         }
 
-        public T Update(T entity)
+        public async Task<T> Update(T entity)
         {
             _Context.Set<T>().Update(entity);
             return entity;
@@ -41,7 +41,9 @@ namespace my_clinic_api.Services
 
         public async Task<T> GetByIdAsync(int id)
         {
-            return await _Context.Set<T>().FindAsync(id);
+            var entity =  await _Context.Set<T>().FindAsync(id);
+            _Context.Entry(entity).State = EntityState.Detached;
+            return entity;
         }
 
 
@@ -63,7 +65,7 @@ namespace my_clinic_api.Services
 
         public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria)
         {
-            return await _Context.Set<T>().AsQueryable().Where(criteria).ToListAsync();
+            return await _Context.Set<T>().AsNoTracking().AsQueryable().Where(criteria).ToListAsync();
         }
 
         public void CommitChanges()

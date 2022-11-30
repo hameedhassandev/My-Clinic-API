@@ -6,8 +6,8 @@ namespace my_clinic_api.Interfaces
     {
         Task<T> GetByIdAsync(int id);
         Task<T> AddAsync(T entity);
-        T Update(T entity);
-        T Delete(T entity);
+        Task<T> Update(T entity);
+        Task<T> Delete(T entity);
         Task<IEnumerable<T>> GetAllAsync();
         Task<IEnumerable<T>> GetAllPaginationAsync(int skip, int take);
         Task<int> CountAsync();

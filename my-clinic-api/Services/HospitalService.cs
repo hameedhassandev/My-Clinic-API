@@ -1,5 +1,6 @@
 ﻿using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
+using System.Collections;
 using System.Linq.Expressions;
 
 namespace my_clinic_api.Services
@@ -11,14 +12,20 @@ namespace my_clinic_api.Services
           
         }
 
-        public async Task<bool> HospitalIsExist(string hospitalName)
+        public async Task<IEnumerable<Hospital>> HospitalNameIsExist(string hospitalName)
         {
             Expression<Func<Hospital, bool>> predicate = h => h.Name.Equals(hospitalName);
-
-            var allHospital = await FindAllAsync(predicate);
-
-              if (allHospital.Any()) return true;
-            return false;
+            var hospital = await FindAllAsync(predicate);
+              if (hospital.Any()) return hospital;
+            return Enumerable.Empty<Hospital>();
         }
+        public async Task<IEnumerable<Hospital>> HospitalAddressIsExist(string hospitalAddress)
+        {
+            Expression<Func<Hospital, bool>> predicate = h => h.Address.Equals(hospitalAddress);
+            var hospital = await FindAllAsync(predicate);
+              if (hospital.Any()) return hospital.ToList();
+            return Enumerable.Empty<Hospital>();
+        }
+
     }
 }

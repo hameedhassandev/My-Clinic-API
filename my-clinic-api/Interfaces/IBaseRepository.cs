@@ -14,6 +14,8 @@ namespace my_clinic_api.Interfaces
 
         Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria);
 
-        Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria, int skip, int take);
+        Task<IEnumerable<T>> FindAllPaginationAsync(Expression<Func<T, bool>> criteria, int skip, int take);
+
+         void CommitChanges();
     }
 }

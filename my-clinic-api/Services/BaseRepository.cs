@@ -56,7 +56,7 @@ namespace my_clinic_api.Services
 
         }
 
-        public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria, int skip, int take)
+        public async Task<IEnumerable<T>> FindAllPaginationAsync(Expression<Func<T, bool>> criteria, int skip, int take)
         {
             return await _Context.Set<T>().AsQueryable().Where(criteria).Skip(skip).Take(take).ToListAsync();
         }
@@ -64,6 +64,11 @@ namespace my_clinic_api.Services
         public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria)
         {
             return await _Context.Set<T>().AsQueryable().Where(criteria).ToListAsync();
+        }
+
+        public void CommitChanges()
+        {
+            _Context.SaveChanges();
         }
 
 

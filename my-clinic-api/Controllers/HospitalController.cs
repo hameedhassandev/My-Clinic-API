@@ -45,36 +45,6 @@ namespace my_clinic_api.Controllers
             
         }
 
-        //// GET: api/Hospital/GetById/5
-        //[HttpGet("GetAllPagination")]
-        //public async Task<IActionResult> GetAllPagination([FromQuery] Filters? filters)
-        //{
+      
 
-        //    Expression<Func<Hospital, bool>> predicate = h => h.Name.Contains(searchKey) ;
-        //    var result = await _hospitalService.FindAllAsync(predicate , skip , take);
-        //    if (result == null)
-        //        return NotFound();
-
-        //    return Ok(result);
-        //}
-
-
-        // POST api/<HospitalController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/<HospitalController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<HospitalController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
-    }
 }

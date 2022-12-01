@@ -1,4 +1,5 @@
-﻿using my_clinic_api.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using System.Collections;
 using System.Linq.Expressions;
@@ -26,6 +27,9 @@ namespace my_clinic_api.Services
               if (hospital.Any()) return hospital.ToList();
             return Enumerable.Empty<Hospital>();
         }
+
+
+      
 
     }
 }

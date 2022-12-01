@@ -122,14 +122,14 @@ namespace my_clinic_api.Controllers
         [HttpPut("UpadteHospital")]
         public async Task<IActionResult> UpadteHospital([FromForm] Hospital model)
         {
-           
+
             if (!ModelState.IsValid) return BadRequest();
 
             // if model is valid
             //check if hospital is exist with id
 
             var hospital = await _hospitalService.GetByIdAsync(model.Id);
-            
+
             if (hospital is null) return BadRequest("Hospital is not exist with this id");
             if (hospital.Name == model.Name && hospital.Address == model.Address)
                 return BadRequest("No changes are found!");
@@ -141,7 +141,35 @@ namespace my_clinic_api.Controllers
                 return BadRequest("There is another hospital has this name!");
             if (checkName.Any(h => h.Id != hospital.Id))
                 return BadRequest("There is another hospital has this address!");
-            var result = await _hospitalService.Update(model);
+            var result =  _hospitalService.Update(model);
+            _hospitalService.CommitChanges();
+            return Ok(result);
+        }
+
+        [HttpPut("UpadteHospital2")]
+        public async Task<IActionResult> UpadteHospital2( int id, [FromForm] HospitalDto dto)
+        {
+            var hospital = await _hospitalService.GetByIdAsync(id);
+
+            if (hospital == null)
+                return NotFound($"No hospital was found with ID {id}");
+
+
+            if (hospital.Name == dto.HospitalName && hospital.Address == dto.HospitalAddress)
+                return BadRequest("No changes are found!");
+            var checkName = await _hospitalService.HospitalNameIsExist(dto.HospitalName);
+            var checkAddress = await _hospitalService.HospitalAddressIsExist(dto.HospitalAddress);
+
+            if (checkName.Any(h => h.Id != hospital.Id))
+                return BadRequest("There are the same hospital name!");
+
+            if (checkName.Any(h => h.Id != hospital.Id))
+                return BadRequest("There are the same hospital address!");
+
+            hospital.Name = dto.HospitalName;
+            hospital.Address = dto.HospitalAddress;
+            var result =  _hospitalService.Update(hospital);
+
             _hospitalService.CommitChanges();
             return Ok(result);
         }

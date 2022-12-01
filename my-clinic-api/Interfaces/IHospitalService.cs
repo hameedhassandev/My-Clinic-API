@@ -1,4 +1,5 @@
-﻿using my_clinic_api.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using my_clinic_api.Models;
 
 namespace my_clinic_api.Interfaces
 {
@@ -6,5 +7,6 @@ namespace my_clinic_api.Interfaces
     {
         Task<IEnumerable<Hospital>> HospitalNameIsExist(string hospitalName);
         Task<IEnumerable<Hospital>> HospitalAddressIsExist(string hospitalAddress);
+      
     }
 }

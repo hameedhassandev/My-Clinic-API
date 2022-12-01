@@ -22,15 +22,15 @@ namespace my_clinic_api.Services
             return entity;
         }
 
-        public async Task<T>  Delete(T entity)
+        public T Delete(T entity)
         {
             _Context.Set<T>().Remove(entity);
             return entity;
         }
 
-        public async Task<T> Update(T entity)
+        public T Update(T entity)
         {
-            _Context.Set<T>().Update(entity);
+             _Context.Set<T>().Update(entity);
             return entity;
         }
 
@@ -42,6 +42,8 @@ namespace my_clinic_api.Services
         public async Task<T> GetByIdAsync(int id)
         {
             var entity =  await _Context.Set<T>().FindAsync(id);
+            if(entity == null) return null;
+
             _Context.Entry(entity).State = EntityState.Detached;
             return entity;
         }

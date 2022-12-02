@@ -15,5 +15,8 @@ namespace my_clinic_api.Models
 
 
         public Department? department { get; set; }
+
+        public ICollection<Doctor>? Doctores { get; set; }
+
     }
 }

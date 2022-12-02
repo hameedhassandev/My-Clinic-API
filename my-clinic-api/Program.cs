@@ -30,6 +30,7 @@ builder.Services.AddControllersWithViews()
 
 builder.Services.AddScoped<IHospitalService, HospitalService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+builder.Services.AddScoped<IInsuranceService, InsuranceService>();
 
 
 var app = builder.Build();

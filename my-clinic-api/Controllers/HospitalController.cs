@@ -93,7 +93,6 @@ namespace my_clinic_api.Controllers
 
         //POST:api/Hospita/AddHospital
         [HttpPost("AddHospital")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddHospital([FromForm] HospitalDto dto)
         {
             var hospital = new Hospital
@@ -106,7 +105,6 @@ namespace my_clinic_api.Controllers
 
             // if model is valid
             //check if name is exist
-            Expression<Func<Hospital, bool>> predicate = h => h.Name.Equals(dto.HospitalName);
             var isExist = await _hospitalService.HospitalNameIsExist(dto.HospitalName);
             if (isExist.Any()) return BadRequest("Hospital name is exist");
             var result = await _hospitalService.AddAsync(hospital);

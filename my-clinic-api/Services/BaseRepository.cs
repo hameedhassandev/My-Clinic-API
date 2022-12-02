@@ -49,6 +49,17 @@ namespace my_clinic_api.Services
             _Context.Entry(entity).State = EntityState.Detached;
             return entity;
         }
+        public async Task<T> GetByIdWithIncludeAsync(int id , string Include , string navType)
+        {
+            var entity = await _Context.Set<T>().FindAsync(id);
+            if (entity == null) return null;
+            if (navType == "Collection")
+                _Context.Entry(entity).Collection(Include).Load();
+            else if(navType == "Reference")
+                _Context.Entry(entity).Reference(Include).Load();
+            _Context.Entry(entity).State = EntityState.Detached;
+            return entity;
+        }
 
 
         public async Task<int> CountAsync()
@@ -86,8 +97,6 @@ namespace my_clinic_api.Services
         {
             _Context.SaveChanges();
         }
-
-
 
     }
 }

@@ -13,7 +13,7 @@ namespace my_clinic_api.Models
 
         public double Discount { get; set; }
        
-        public ICollection<Doctor>? Doctores { get; set; }
+        public ICollection<Doctor>? doctors { get; set; }
 
     }
 }

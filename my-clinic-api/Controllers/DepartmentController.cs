@@ -115,9 +115,8 @@ namespace my_clinic_api.Controllers
 
             return Ok(result);
         }
-        // GET: api/Department/AddDepartment
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        // Post: api/Department/AddDepartment
+        [HttpPost("AddDepartment")]
         public async Task<IActionResult> AddDepratment([FromForm] DepartmentDto dto)
         {
             var department = new Department
@@ -130,7 +129,6 @@ namespace my_clinic_api.Controllers
 
             // if model is valid
             //check if name is exist
-            Expression<Func<Department, bool>> predicate = h => h.Name.Equals(dto.Name);
             var isExist = await _departmentService.DepartmentNameIsExist(dto.Name);
             if (isExist.Any()) return BadRequest("Department name is exist");
             var result = await _departmentService.AddAsync(department);

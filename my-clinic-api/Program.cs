@@ -22,9 +22,14 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddControllersWithViews()
+    .AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 
 
 builder.Services.AddScoped<IHospitalService, HospitalService>();
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 
 
 var app = builder.Build();

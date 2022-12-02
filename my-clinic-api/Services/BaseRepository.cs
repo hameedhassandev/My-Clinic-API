@@ -2,6 +2,8 @@
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -30,7 +32,7 @@ namespace my_clinic_api.Services
 
         public T Update(T entity)
         {
-             _Context.Set<T>().Update(entity);
+            _Context.Set<T>().Update(entity);
             return entity;
         }
 
@@ -41,8 +43,8 @@ namespace my_clinic_api.Services
 
         public async Task<T> GetByIdAsync(int id)
         {
-            var entity =  await _Context.Set<T>().FindAsync(id);
-            if(entity == null) return null;
+            var entity = await _Context.Set<T>().FindAsync(id);
+            if (entity == null) return null;
 
             _Context.Entry(entity).State = EntityState.Detached;
             return entity;
@@ -59,6 +61,16 @@ namespace my_clinic_api.Services
             return await _Context.Set<T>().Skip(skip).Take(take).ToListAsync();
 
         }
+        public async Task<IEnumerable<T>> GetAllWithIncludeAsync(List<string> Includes)
+        {
+            var query = _Context.Set<T>().AsQueryable();
+            foreach(var inc in Includes)
+            {
+                query = query.Include(inc);
+            }
+            return await query.ToListAsync();
+        }
+
 
         public async Task<IEnumerable<T>> FindAllPaginationAsync(Expression<Func<T, bool>> criteria, int skip, int take)
         {

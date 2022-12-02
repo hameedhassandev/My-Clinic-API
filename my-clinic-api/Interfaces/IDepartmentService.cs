@@ -5,6 +5,7 @@ namespace my_clinic_api.Interfaces
     public interface IDepartmentService : IBaseRepository<Department>
 
     {
-        Task<IEnumerable<Department>> GetAllWithSpecialistAsync();
+        Task<IEnumerable<Department>> DepartmentNameIsExist(string departmentName);
+
     }
 }

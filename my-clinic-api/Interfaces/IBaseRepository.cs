@@ -10,6 +10,8 @@ namespace my_clinic_api.Interfaces
         T Delete(T entity);
         Task<IEnumerable<T>> GetAllAsync();
         Task<IEnumerable<T>> GetAllPaginationAsync(int skip, int take);
+        Task<IEnumerable<T>> GetAllWithIncludeAsync(List<string> Includes);
+
         Task<int> CountAsync();
 
         Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria);

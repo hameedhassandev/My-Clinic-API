@@ -130,7 +130,7 @@ namespace my_clinic_api.Controllers
 
 
             if (hospital.Name == dto.HospitalName && hospital.Address == dto.HospitalAddress)
-                return BadRequest("No changes are found!");
+                return BadRequest("No changes were found!");
             var checkName = await _hospitalService.HospitalNameIsExist(dto.HospitalName);
             var checkAddress = await _hospitalService.HospitalAddressIsExist(dto.HospitalAddress);
 

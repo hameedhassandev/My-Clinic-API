@@ -14,10 +14,12 @@ namespace my_clinic_api.Services
         }
 
 
-        public async Task<IEnumerable<Department>> GetAllWithSpecialistAsync()
+        public async Task<IEnumerable<Department>> DepartmentNameIsExist(string departmentName)
         {
-            var DepartmentWithSpecialist = await _context.Departments.Include(d => d.specialists).ToListAsync();
-            return DepartmentWithSpecialist;    
+            Expression<Func<Department, bool>> predicate = h => h.Name.Equals(departmentName);
+            var department = await FindAllAsync(predicate);
+            if (department.Any()) return department;
+            return Enumerable.Empty<Department>();
         }
     }
 }

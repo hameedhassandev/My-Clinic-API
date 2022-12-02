@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using my_clinic_api.Models;
 
@@ -11,9 +12,10 @@ using my_clinic_api.Models;
 namespace my_clinic_api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221202085835_editDoctorAndSpicialistTable")]
+    partial class editDoctorAndSpicialistTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,21 +37,6 @@ namespace my_clinic_api.Migrations
                     b.HasIndex("doctorsId");
 
                     b.ToTable("DoctorHospital");
-                });
-
-            modelBuilder.Entity("DoctorInsurance", b =>
-                {
-                    b.Property<string>("DoctoresId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("InsurancesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("DoctoresId", "InsurancesId");
-
-                    b.HasIndex("InsurancesId");
-
-                    b.ToTable("DoctorInsurance");
                 });
 
             modelBuilder.Entity("DoctorSpecialist", b =>
@@ -376,10 +363,15 @@ namespace my_clinic_api.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<double>("Discount")
-                        .HasColumnType("float");
+                    b.Property<int>("Discount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DoctorId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
 
                     b.ToTable("Insurances");
                 });
@@ -517,21 +509,6 @@ namespace my_clinic_api.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DoctorInsurance", b =>
-                {
-                    b.HasOne("my_clinic_api.Models.Doctor", null)
-                        .WithMany()
-                        .HasForeignKey("DoctoresId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("my_clinic_api.Models.Insurance", null)
-                        .WithMany()
-                        .HasForeignKey("InsurancesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("DoctorSpecialist", b =>
                 {
                     b.HasOne("my_clinic_api.Models.Doctor", null)
@@ -609,6 +586,13 @@ namespace my_clinic_api.Migrations
                     b.Navigation("Area");
                 });
 
+            modelBuilder.Entity("my_clinic_api.Models.Insurance", b =>
+                {
+                    b.HasOne("my_clinic_api.Models.Doctor", null)
+                        .WithMany("Insurances")
+                        .HasForeignKey("DoctorId");
+                });
+
             modelBuilder.Entity("my_clinic_api.Models.RateAndReview", b =>
                 {
                     b.HasOne("my_clinic_api.Models.Doctor", "doctor")
@@ -660,6 +644,8 @@ namespace my_clinic_api.Migrations
 
             modelBuilder.Entity("my_clinic_api.Models.Doctor", b =>
                 {
+                    b.Navigation("Insurances");
+
                     b.Navigation("RatesAndReviews");
 
                     b.Navigation("TimesOfWorks");

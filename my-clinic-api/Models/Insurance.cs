@@ -11,8 +11,9 @@ namespace my_clinic_api.Models
         [MaxLength(100)]
         public string ?CompanyName { get; set; }
 
-        public int Discount { get; set; }
+        public double Discount { get; set; }
        
-       
+        public ICollection<Doctor>? Doctores { get; set; }
+
     }
 }

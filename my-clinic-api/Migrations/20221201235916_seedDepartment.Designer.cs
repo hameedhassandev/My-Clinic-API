@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using my_clinic_api.Models;
 
@@ -11,9 +12,10 @@ using my_clinic_api.Models;
 namespace my_clinic_api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221201235916_seedDepartment")]
+    partial class seedDepartment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,36 +37,6 @@ namespace my_clinic_api.Migrations
                     b.HasIndex("doctorsId");
 
                     b.ToTable("DoctorHospital");
-                });
-
-            modelBuilder.Entity("DoctorInsurance", b =>
-                {
-                    b.Property<string>("DoctoresId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("InsurancesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("DoctoresId", "InsurancesId");
-
-                    b.HasIndex("InsurancesId");
-
-                    b.ToTable("DoctorInsurance");
-                });
-
-            modelBuilder.Entity("DoctorSpecialist", b =>
-                {
-                    b.Property<string>("DoctoresId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("SpecialistsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("DoctoresId", "SpecialistsId");
-
-                    b.HasIndex("SpecialistsId");
-
-                    b.ToTable("DoctorSpecialist");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -376,10 +348,15 @@ namespace my_clinic_api.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<double>("Discount")
-                        .HasColumnType("float");
+                    b.Property<int>("Discount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DoctorId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
 
                     b.ToTable("Insurances");
                 });
@@ -417,6 +394,9 @@ namespace my_clinic_api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("DoctorId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("SpecialistName")
                         .IsRequired()
                         .HasMaxLength(120)
@@ -426,6 +406,8 @@ namespace my_clinic_api.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
 
                     b.HasIndex("departmentId");
 
@@ -517,36 +499,6 @@ namespace my_clinic_api.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DoctorInsurance", b =>
-                {
-                    b.HasOne("my_clinic_api.Models.Doctor", null)
-                        .WithMany()
-                        .HasForeignKey("DoctoresId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("my_clinic_api.Models.Insurance", null)
-                        .WithMany()
-                        .HasForeignKey("InsurancesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("DoctorSpecialist", b =>
-                {
-                    b.HasOne("my_clinic_api.Models.Doctor", null)
-                        .WithMany()
-                        .HasForeignKey("DoctoresId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("my_clinic_api.Models.Specialist", null)
-                        .WithMany()
-                        .HasForeignKey("SpecialistsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -609,6 +561,13 @@ namespace my_clinic_api.Migrations
                     b.Navigation("Area");
                 });
 
+            modelBuilder.Entity("my_clinic_api.Models.Insurance", b =>
+                {
+                    b.HasOne("my_clinic_api.Models.Doctor", null)
+                        .WithMany("Insurances")
+                        .HasForeignKey("DoctorId");
+                });
+
             modelBuilder.Entity("my_clinic_api.Models.RateAndReview", b =>
                 {
                     b.HasOne("my_clinic_api.Models.Doctor", "doctor")
@@ -620,6 +579,10 @@ namespace my_clinic_api.Migrations
 
             modelBuilder.Entity("my_clinic_api.Models.Specialist", b =>
                 {
+                    b.HasOne("my_clinic_api.Models.Doctor", null)
+                        .WithMany("Specialists")
+                        .HasForeignKey("DoctorId");
+
                     b.HasOne("my_clinic_api.Models.Department", "department")
                         .WithMany("specialists")
                         .HasForeignKey("departmentId");
@@ -660,7 +623,11 @@ namespace my_clinic_api.Migrations
 
             modelBuilder.Entity("my_clinic_api.Models.Doctor", b =>
                 {
+                    b.Navigation("Insurances");
+
                     b.Navigation("RatesAndReviews");
+
+                    b.Navigation("Specialists");
 
                     b.Navigation("TimesOfWorks");
                 });

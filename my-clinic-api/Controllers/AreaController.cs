@@ -26,14 +26,10 @@ namespace my_clinic_api.Controllers
         {
 
             var result = await _areaService.GetByIdAsync(id);
-            var city = Enum.GetName(typeof(Cities),result.City);
-            var output = new  { Id = result.Id, AreaName = result.AreaName , City = city};
-
-     
-            if (output == null)
+            if (result == null)
                 return NotFound();
 
-            return Ok(output);
+            return Ok(result);
         }
 
         // GET: api/Area/GetAllAreas/
@@ -41,17 +37,10 @@ namespace my_clinic_api.Controllers
         public async Task<IActionResult> GetAllAreas()
         {
             var result = await _areaService.GetAllAsync();
-            var output = new List<object>();
-            foreach(var city in result)
-            {
-                var cityToEnum = Enum.GetName(typeof(Cities),city.City);
-
-                output.Add( new { Id = city.Id, AreaName = city.AreaName, City = cityToEnum });
-            }
-            if (output == null)
+            if (result == null)
                 return NotFound();
 
-            return Ok(output);
+            return Ok(result);
         }
 
 
@@ -110,10 +99,6 @@ namespace my_clinic_api.Controllers
             _areaService.CommitChanges();
             return Ok(result);
         }
-
-
-
-
 
     }
 }

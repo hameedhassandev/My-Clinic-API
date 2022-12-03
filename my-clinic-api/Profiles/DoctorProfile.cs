@@ -11,7 +11,7 @@ namespace my_clinic_api.Profiles
 
             CreateMap<Doctor, Dto.DoctorDto>();
             CreateMap<ApplicationUser, Dto.DoctorDto>()
-                    .ForMember(d => d.UserId, a => a.MapFrom(s => s.Id));
+                    .ForMember(d => d.Id, a => a.MapFrom(s => s.Id));
         }
     }
 

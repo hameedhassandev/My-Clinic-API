@@ -24,16 +24,20 @@ namespace my_clinic_api.Controllers
         {
 
             var result = await _insuranceService.GetByIdAsync(id);
-            if (result == null)
+            var obj = new  { Id = result.Id, CompanyName = result.CompanyName, Discount = result.Discount};
+           
+
+            if (obj == null)
                 return NotFound();
 
-            return Ok(result);
+            return Ok(obj);
         }
         // GET: api/Insurance/GetInsuranceByIdWithDoctors/{id}
         [HttpGet("GetInsuranceWithDoctorsById/{id}")]
         public async Task<IActionResult> GetInsuranceWithDoctorsById(int id )
         {
             var result = await _insuranceService.GetByIdWithIncludeAsync(id ,  "doctors" , "Collection");
+
             if (result == null)
                 return NotFound();
 

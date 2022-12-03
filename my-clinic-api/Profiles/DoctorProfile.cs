@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using my_clinic_api.Models;
+using System.Numerics;
 
 namespace my_clinic_api.Profiles
 {
@@ -6,7 +8,10 @@ namespace my_clinic_api.Profiles
     {
         public DoctorProfile()
         {
-            CreateMap<Models.Doctor, Dto.DoctorDto>();
+
+            CreateMap<Doctor, Dto.DoctorDto>();
+            CreateMap<ApplicationUser, Dto.DoctorDto>()
+                    .ForMember(d => d.UserId, a => a.MapFrom(s => s.Id));
         }
     }
 

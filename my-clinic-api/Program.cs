@@ -37,6 +37,7 @@ builder.Services.AddScoped<IHospitalService, HospitalService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IInsuranceService, InsuranceService>();
 builder.Services.AddScoped<IAreaService, AreaService>();
+builder.Services.AddScoped<IDoctorService, DoctorService>();
 
 
 var app = builder.Build();

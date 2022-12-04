@@ -82,6 +82,10 @@ namespace my_clinic_api.Services
             return await query.ToListAsync();
         }
 
+        public async Task<T> FindAsync(Expression<Func<T, bool>> criteria)
+        {
+            return await _Context.Set<T>().AsQueryable().SingleOrDefaultAsync(criteria);
+        }
 
         public async Task<IEnumerable<T>> FindAllPaginationAsync(Expression<Func<T, bool>> criteria, int skip, int take)
         {

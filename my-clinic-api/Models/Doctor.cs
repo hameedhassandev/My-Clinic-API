@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualBasic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace my_clinic_api.Models
 {
@@ -34,6 +35,10 @@ namespace my_clinic_api.Models
 
         public DateTime ? StartOfBlock { get; set; }
         public DateTime ? EndOfBlock { get; set; }
+
+
+        public int DepartmentId { get; set; }
+
 
         public Department? Department { get; set; }
 

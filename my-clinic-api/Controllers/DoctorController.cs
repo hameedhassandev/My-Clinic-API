@@ -37,8 +37,10 @@ namespace my_clinic_api.Controllers
 
             var doctor = await _doctorService.FindDoctorByIdSync(userId);
 
+            if (doctor == null) return NotFound();
 
-            return Ok(doctor);
+            var result = _mapper.Map<DoctorDto>(doctor);
+            return Ok(result);
         }
 
     }

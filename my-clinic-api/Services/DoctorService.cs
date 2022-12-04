@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using my_clinic_api.Dto;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using System.Linq.Expressions;
@@ -13,9 +14,8 @@ namespace my_clinic_api.Services
 
         public async Task<Doctor> FindDoctorByIdSync(string userId)
         {
-            Expression<Func<Doctor, bool>> criteria = h => h.Id == userId;
-            return await FindAsync(criteria);
-            
+            var doctor = await _context.doctors.FirstOrDefaultAsync(d => d.Id == userId);
+            return doctor;
         }
     }
 }

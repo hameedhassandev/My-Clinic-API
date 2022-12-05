@@ -18,6 +18,7 @@ namespace my_clinic_api.Services
 
         public async Task<Doctor> FindDoctorByIdSync(string userId)
         {
+         
             var doctor = await _context.doctors.Include(d => d.Department)
                 .Include(s => s.Specialists)
                 .Include(i => i.Insurances)

@@ -34,7 +34,7 @@ namespace my_clinic_api.Migrations
 
                     b.HasIndex("doctorsId");
 
-                    b.ToTable("DoctorHospital");
+                    b.ToTable("DoctorHospital", (string)null);
                 });
 
             modelBuilder.Entity("DoctorInsurance", b =>
@@ -49,7 +49,7 @@ namespace my_clinic_api.Migrations
 
                     b.HasIndex("doctorsId");
 
-                    b.ToTable("DoctorInsurance");
+                    b.ToTable("DoctorInsurance", (string)null);
                 });
 
             modelBuilder.Entity("DoctorSpecialist", b =>
@@ -64,7 +64,7 @@ namespace my_clinic_api.Migrations
 
                     b.HasIndex("SpecialistsId");
 
-                    b.ToTable("DoctorSpecialist");
+                    b.ToTable("DoctorSpecialist", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -314,7 +314,7 @@ namespace my_clinic_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Areas");
+                    b.ToTable("Areas", (string)null);
                 });
 
             modelBuilder.Entity("my_clinic_api.Models.Department", b =>
@@ -337,7 +337,7 @@ namespace my_clinic_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", (string)null);
                 });
 
             modelBuilder.Entity("my_clinic_api.Models.Hospital", b =>
@@ -360,7 +360,7 @@ namespace my_clinic_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Hospitals");
+                    b.ToTable("Hospitals", (string)null);
                 });
 
             modelBuilder.Entity("my_clinic_api.Models.Insurance", b =>
@@ -381,7 +381,7 @@ namespace my_clinic_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Insurances");
+                    b.ToTable("Insurances", (string)null);
                 });
 
             modelBuilder.Entity("my_clinic_api.Models.RateAndReview", b =>
@@ -406,7 +406,7 @@ namespace my_clinic_api.Migrations
 
                     b.HasIndex("doctorId");
 
-                    b.ToTable("RatesAndReviews");
+                    b.ToTable("RatesAndReviews", (string)null);
                 });
 
             modelBuilder.Entity("my_clinic_api.Models.Specialist", b =>
@@ -429,7 +429,7 @@ namespace my_clinic_api.Migrations
 
                     b.HasIndex("departmentId");
 
-                    b.ToTable("Specialists");
+                    b.ToTable("Specialists", (string)null);
                 });
 
             modelBuilder.Entity("my_clinic_api.Models.TimesOfWork", b =>
@@ -456,7 +456,7 @@ namespace my_clinic_api.Migrations
 
                     b.HasIndex("doctorId");
 
-                    b.ToTable("TimesOfWork");
+                    b.ToTable("TimesOfWork", (string)null);
                 });
 
             modelBuilder.Entity("my_clinic_api.Models.Doctor", b =>

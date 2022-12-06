@@ -15,7 +15,7 @@ namespace my_clinic_api.Models
         [MaxLength(255)]
         public string ?Address { get; set; }
 
-        public ICollection<Doctor>? doctors { get; set; }
+        public virtual ICollection<Doctor>? doctors { get; set; }
 
 
     }

@@ -1,11 +1,13 @@
-﻿using my_clinic_api.Models;
+﻿using my_clinic_api.Dto.AuthDtos;
+using my_clinic_api.Models;
 
 namespace my_clinic_api.Interfaces
 {
     public interface IAuthService
     {
-        Task<AuthModel> RegisterAsync(RegisterModel model);
-            
+        Task<ApplicationUser> UserRegisterAsync(UserRegisterDto userDto);
+        Task<Doctor> DoctorRegisterAsync(DoctorRegisterDto doctorDto);
+
 
     }
 }

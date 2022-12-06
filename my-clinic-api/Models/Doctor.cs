@@ -31,6 +31,9 @@ namespace my_clinic_api.Models
         [Display(Name = "Confirmed from admin")]
         public bool IsConfirmedFromAdmin { get; set; }
 
+        [Required]
+        public double Cost { get; set; }
+
         public DaysOfBlock ?DaysOfBlock { get; set; }
 
         public DateTime ? StartOfBlock { get; set; }

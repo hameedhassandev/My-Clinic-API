@@ -16,7 +16,7 @@ namespace my_clinic_api.Services
 
         }
 
-        public async Task<Doctor> FindDoctorByIdSync(string userId)
+        public async Task<Doctor> FindDoctorByIdAsync(string userId)
         {
          
             var doctor = await _context.doctors.Include(d => d.Department)

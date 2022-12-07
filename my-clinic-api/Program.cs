@@ -7,6 +7,8 @@ using my_clinic_api.Helpers;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -23,7 +25,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
-
+    
 });
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -58,15 +60,12 @@ builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
 builder.Services.AddAutoMapper(typeof(Program));
 
 
-builder.Services.AddControllersWithViews()
-    .AddJsonOptions(options =>
-    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
-
-builder.Services.AddControllersWithViews()
+builder.Services.AddControllers()
     .AddNewtonsoftJson(options =>
-    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-);
-
+    {
+        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+        options.SerializerSettings.Converters.Add(new StringEnumConverter());
+    });
 
 builder.Services.AddScoped<IHospitalService, HospitalService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();

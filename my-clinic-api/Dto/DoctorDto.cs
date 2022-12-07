@@ -49,12 +49,12 @@ namespace my_clinic_api.Dto
 
 
         public int DepartmentId { get; set; }
-        public Department? Department { get; set; }
 
 
         public ICollection<TimesOfWork>? TimesOfWorks { get; set; }
+        public ICollection<Specialist>? Specialists { get; set; }
         public ICollection<Insurance>? Insurances { get; set; }
-        public ICollection<Hospital>? Hospitals { get; set; }
+        public virtual ICollection<Hospital>? Hospitals { get; set; }
         public ICollection<RateAndReview>? RatesAndReviews { get; set; }
     }
 }

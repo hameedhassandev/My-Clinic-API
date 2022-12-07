@@ -4,6 +4,6 @@ namespace my_clinic_api.Interfaces
 {
     public interface IDoctorService : IBaseRepository<Doctor>
     {
-         Task<Doctor> FindDoctorByIdSync(string userId);
+         Task<Doctor> FindDoctorByIdAsync(string userId);
     }
 }

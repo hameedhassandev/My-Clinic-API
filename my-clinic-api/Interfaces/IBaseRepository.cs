@@ -14,7 +14,8 @@ namespace my_clinic_api.Interfaces
         Task<IEnumerable<T>> GetAllWithIncludeAsync(List<string> Includes);
 
         Task<int> CountAsync();
-
+        Task<T> FindAsync(Expression<Func<T, bool>> criteria);
+        Task<T> FindWithIncludesAsync(Expression<Func<T, bool>> criteria, List<string> Includes);
         Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria);
 
         Task<IEnumerable<T>> FindAllPaginationAsync(Expression<Func<T, bool>> criteria, int skip, int take);

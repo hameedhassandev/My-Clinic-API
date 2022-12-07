@@ -5,7 +5,7 @@ namespace my_clinic_api.Interfaces
 {
     public interface IAuthService
     {
-        Task<ApplicationUser> UserRegisterAsync(UserRegisterDto userDto);
+        Task<AuthModelDto> UserRegisterAsync(UserRegisterDto userDto);
         Task<Doctor> DoctorRegisterAsync(DoctorRegisterDto doctorDto);
 
 

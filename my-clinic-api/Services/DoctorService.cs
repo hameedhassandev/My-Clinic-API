@@ -9,22 +9,25 @@ namespace my_clinic_api.Services
     public class DoctorService : BaseRepository<Doctor>, IDoctorService
     {
         private readonly ApplicationDbContext _context;
+
         public DoctorService(ApplicationDbContext Context) : base(Context)
         {
             _context = Context;
+
         }
 
-        public async Task<Doctor> FindDoctorByIdAsync(string userId)
+        public async Task<Doctor> FindDoctorByIdSync(string userId)
         {
-            Expression<Func<Doctor, bool>> predicate = h => h.Id == userId;
+         
+            var doctor = await _context.doctors.Include(d => d.Department)
+                .Include(s => s.Specialists)
+                .Include(i => i.Insurances)
+                .Include(h => h.Hospitals)
+                .Include(a => a.Area)
+                .Include(r => r.RatesAndReviews)
+                .FirstOrDefaultAsync(d => d.Id == userId);
 
-            var doctor = await FindAsync(predicate);
-            if (doctor == null)
-                return null;
             return doctor;
         }
-
-
-        
     }
 }

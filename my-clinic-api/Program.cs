@@ -7,6 +7,9 @@ using my_clinic_api.Helpers;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);

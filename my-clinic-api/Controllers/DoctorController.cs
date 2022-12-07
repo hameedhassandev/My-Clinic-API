@@ -57,7 +57,7 @@ namespace my_clinic_api.Controllers
         [HttpGet("GetDoctorByIdTestInclude")]
         public async Task<IActionResult> GetDoctorByIdTestInclude(string userId)
         {
-            var doctor = await _doctorService.FindDoctorByIdSync(userId);
+            var doctor = await _doctorService.FindDoctorByIdAsync(userId);
 
             if (doctor == null) return NotFound($"No user was found with ID {userId}");
 

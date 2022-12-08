@@ -10,6 +10,13 @@ namespace my_clinic_api.Services
         {
         }
 
+        public async Task<bool>  AreaIdIsExist(int id)
+        {
+            var isExist = await GetByIdAsync(id);
+            if(isExist == null) return false;
+            return true;
+        }
+
         public async Task<IEnumerable<Area>> AreaNameIsExist(string areaName)
         {
             Expression<Func<Area, bool>> predicate = a => a.AreaName.Equals(areaName);

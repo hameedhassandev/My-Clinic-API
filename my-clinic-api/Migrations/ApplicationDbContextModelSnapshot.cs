@@ -609,7 +609,7 @@ namespace my_clinic_api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsMany("my_clinic_api.Models.RefreshTokens.RefreshToken", "RefreshToken", b1 =>
+                    b.OwnsMany("my_clinic_api.Models.ApplicationUser.RefreshToken#my_clinic_api.Models.RefreshTokens.RefreshToken", "RefreshToken", b1 =>
                         {
                             b1.Property<string>("ApplicationUserId")
                                 .HasColumnType("nvarchar(450)");
@@ -634,7 +634,7 @@ namespace my_clinic_api.Migrations
 
                             b1.HasKey("ApplicationUserId", "Id");
 
-                            b1.ToTable("RefreshToken");
+                            b1.ToTable("RefreshToken", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("ApplicationUserId");

@@ -66,6 +66,7 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
+
         //PUT:api/Area/UpadteArea/id
         [HttpPut("UpadteArea")]
         public async Task<IActionResult> UpadteArea(int id, [FromForm] AreaDto dto)

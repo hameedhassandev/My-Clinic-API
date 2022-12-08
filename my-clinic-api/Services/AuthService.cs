@@ -23,11 +23,13 @@ namespace my_clinic_api.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
         private readonly JWT _jwt;
-        public AuthService(UserManager<ApplicationUser> userManager, IMapper mapper,IOptions<JWT> jwt)
+        private readonly IAreaService _areaService;
+        public AuthService(UserManager<ApplicationUser> userManager, IMapper mapper,IOptions<JWT> jwt, IAreaService areaService)
         {
             _userManager = userManager;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _jwt = jwt.Value;
+            _areaService = areaService; 
         }
         public async Task<Doctor> DoctorRegisterAsync(DoctorRegisterDto doctorDto)
         {
@@ -43,6 +45,13 @@ namespace my_clinic_api.Services
             //check if userName is exist
             if (await _userManager.FindByNameAsync(userDto.UserName) is not null)
                 return new AuthModelDto { Massage = "UserName is alerdy register!" };
+
+            //chech area is exist
+            var isAreaIdExist = await _areaService.AreaIdIsExist(userDto.AreaId);
+            if (!isAreaIdExist)
+                return new AuthModelDto { Massage = "Area name is not right!" };
+
+            var areaObj = new Area { Id = userDto.AreaId};
             //try to make with automapper latter
             var user = new ApplicationUser
             {
@@ -50,10 +59,11 @@ namespace my_clinic_api.Services
                 Email = userDto.Email,
                 FullName = userDto.FullName,
                 Cities = userDto.Cities,
-                Area = userDto.Area,
+                AreaId = userDto.AreaId,
                 Address = userDto.Address,
                 PhoneNo = userDto.PhoneNo,
                 Gender = userDto.Gender,
+                IsActive = true
                 //image
             };
             //test mapper 

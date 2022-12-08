@@ -26,8 +26,11 @@ namespace my_clinic_api.Dto.AuthDtos
         public string FullName { get; set; }
         [Required]
         public Cities Cities { get; set; }
+        /* [Required]
+         public Area Area { get; set; }*/
+
         [Required]
-        public Area Area { get; set; }
+        public int AreaId { get; set; }
         [Required]
         [MaxLength(200)]
         public string  Address { get; set; }
@@ -39,6 +42,8 @@ namespace my_clinic_api.Dto.AuthDtos
         public byte[] ? Image { get; set; }
 
         public Gender  Gender { get; set; }
+
+        
 
       
 

@@ -29,7 +29,7 @@ namespace my_clinic_api.Controllers
 
             //SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
 
-            return Ok(result);
+            return Ok(new { email = result.Email , userName = result.UserName, token = result.Token, expiresOn = result.ExpiresOn});
         }
     }
 }

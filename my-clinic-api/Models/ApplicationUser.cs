@@ -15,6 +15,7 @@ namespace my_clinic_api.Models
         public Cities? Cities { get; set; }
 
         [Required]
+        public int AreaId { get; set; }
         public Area? Area { get; set; }
 
         public string? Address { get; set; }

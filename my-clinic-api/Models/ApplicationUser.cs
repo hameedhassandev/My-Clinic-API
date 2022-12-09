@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using my_clinic_api.Models.RefreshTokens;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -8,18 +9,18 @@ namespace my_clinic_api.Models
     {
         [Required]
         [MaxLength(120)]
-        [Display(Name = "Full Name")]
         public string? FullName { get; set; }
 
         [Required]
         public Cities? Cities { get; set; }
 
         [Required]
+        public int AreaId { get; set; }
         public Area? Area { get; set; }
 
         public string? Address { get; set; }
 
-        [Display(Name ="Phone Number")]
+
         public string? PhoneNo { get; set; }
 
         public byte[]? Image { get; set; }
@@ -33,6 +34,8 @@ namespace my_clinic_api.Models
         [DefaultValue(true)]
         public bool IsActive { get; set; }
 
+        //refresh token NP
+        public List<RefreshToken>? RefreshToken { get; set; }
 
     }
 }

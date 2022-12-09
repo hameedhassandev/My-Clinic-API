@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualBasic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace my_clinic_api.Models
 {
@@ -30,17 +31,24 @@ namespace my_clinic_api.Models
         [Display(Name = "Confirmed from admin")]
         public bool IsConfirmedFromAdmin { get; set; }
 
+        [Required]
+        public double Cost { get; set; }
+
         public DaysOfBlock ?DaysOfBlock { get; set; }
 
         public DateTime ? StartOfBlock { get; set; }
         public DateTime ? EndOfBlock { get; set; }
+
+
+        public int DepartmentId { get; set; }
+
 
         public Department? Department { get; set; }
 
         public ICollection<Specialist>? Specialists { get; set; }
         public ICollection<TimesOfWork>? TimesOfWorks { get; set; }
         public ICollection<Insurance>? Insurances { get; set; }
-        public ICollection<Hospital>? Hospitals { get; set; }
+        public virtual ICollection<Hospital>? Hospitals { get; set; }
         public ICollection<RateAndReview>? RatesAndReviews { get; set; }
 
     }

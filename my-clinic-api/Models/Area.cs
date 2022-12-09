@@ -9,10 +9,8 @@ namespace my_clinic_api.Models
 
         [Required]
         public Cities City { get; set; }
-
         [Required]
         [MaxLength(100)]
-        [Display(Name ="Area Name")]
         public string ?AreaName { get; set; }
 
 

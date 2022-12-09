@@ -7,10 +7,8 @@ namespace my_clinic_api.Services
 {
     public class DepartmentService : BaseRepository<Department>, IDepartmentService
     {
-        private readonly ApplicationDbContext _context;
         public DepartmentService(ApplicationDbContext Context) : base(Context)
         {
-            _context = Context;
         }
 
 

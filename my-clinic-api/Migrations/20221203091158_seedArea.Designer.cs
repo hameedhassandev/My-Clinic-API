@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using my_clinic_api.Models;
 
@@ -11,9 +12,10 @@ using my_clinic_api.Models;
 namespace my_clinic_api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221203091158_seedArea")]
+    partial class seedArea
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +36,7 @@ namespace my_clinic_api.Migrations
 
                     b.HasIndex("doctorsId");
 
-                    b.ToTable("DoctorHospital", (string)null);
+                    b.ToTable("DoctorHospital");
                 });
 
             modelBuilder.Entity("DoctorInsurance", b =>
@@ -49,7 +51,7 @@ namespace my_clinic_api.Migrations
 
                     b.HasIndex("doctorsId");
 
-                    b.ToTable("DoctorInsurance", (string)null);
+                    b.ToTable("DoctorInsurance");
                 });
 
             modelBuilder.Entity("DoctorSpecialist", b =>
@@ -64,7 +66,7 @@ namespace my_clinic_api.Migrations
 
                     b.HasIndex("SpecialistsId");
 
-                    b.ToTable("DoctorSpecialist", (string)null);
+                    b.ToTable("DoctorSpecialist");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -314,7 +316,7 @@ namespace my_clinic_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Areas", (string)null);
+                    b.ToTable("Areas");
                 });
 
             modelBuilder.Entity("my_clinic_api.Models.Department", b =>
@@ -337,7 +339,7 @@ namespace my_clinic_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Departments", (string)null);
+                    b.ToTable("Departments");
                 });
 
             modelBuilder.Entity("my_clinic_api.Models.Hospital", b =>
@@ -360,7 +362,7 @@ namespace my_clinic_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Hospitals", (string)null);
+                    b.ToTable("Hospitals");
                 });
 
             modelBuilder.Entity("my_clinic_api.Models.Insurance", b =>
@@ -381,7 +383,7 @@ namespace my_clinic_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Insurances", (string)null);
+                    b.ToTable("Insurances");
                 });
 
             modelBuilder.Entity("my_clinic_api.Models.RateAndReview", b =>
@@ -406,7 +408,7 @@ namespace my_clinic_api.Migrations
 
                     b.HasIndex("doctorId");
 
-                    b.ToTable("RatesAndReviews", (string)null);
+                    b.ToTable("RatesAndReviews");
                 });
 
             modelBuilder.Entity("my_clinic_api.Models.Specialist", b =>
@@ -429,7 +431,7 @@ namespace my_clinic_api.Migrations
 
                     b.HasIndex("departmentId");
 
-                    b.ToTable("Specialists", (string)null);
+                    b.ToTable("Specialists");
                 });
 
             modelBuilder.Entity("my_clinic_api.Models.TimesOfWork", b =>
@@ -456,7 +458,7 @@ namespace my_clinic_api.Migrations
 
                     b.HasIndex("doctorId");
 
-                    b.ToTable("TimesOfWork", (string)null);
+                    b.ToTable("TimesOfWork");
                 });
 
             modelBuilder.Entity("my_clinic_api.Models.Doctor", b =>
@@ -471,13 +473,10 @@ namespace my_clinic_api.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<double>("Cost")
-                        .HasColumnType("float");
-
                     b.Property<int?>("DaysOfBlock")
                         .HasColumnType("int");
 
-                    b.Property<int>("DepartmentId")
+                    b.Property<int?>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("DoctorTitle")
@@ -609,40 +608,7 @@ namespace my_clinic_api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsMany("my_clinic_api.Models.ApplicationUser.RefreshToken#my_clinic_api.Models.RefreshTokens.RefreshToken", "RefreshToken", b1 =>
-                        {
-                            b1.Property<string>("ApplicationUserId")
-                                .HasColumnType("nvarchar(450)");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"), 1L, 1);
-
-                            b1.Property<DateTime>("CreatedOn")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<DateTime>("ExpiresOn")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<DateTime>("RevokedOn")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<string>("Token")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("ApplicationUserId", "Id");
-
-                            b1.ToTable("RefreshToken", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("ApplicationUserId");
-                        });
-
                     b.Navigation("Area");
-
-                    b.Navigation("RefreshToken");
                 });
 
             modelBuilder.Entity("my_clinic_api.Models.RateAndReview", b =>
@@ -676,9 +642,7 @@ namespace my_clinic_api.Migrations
                 {
                     b.HasOne("my_clinic_api.Models.Department", "Department")
                         .WithMany("doctors")
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DepartmentId");
 
                     b.HasOne("my_clinic_api.Models.ApplicationUser", null)
                         .WithOne()

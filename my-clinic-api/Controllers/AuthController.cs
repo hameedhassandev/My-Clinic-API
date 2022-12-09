@@ -17,7 +17,7 @@ namespace my_clinic_api.Controllers
         }
 
         [HttpPost("RegisterAsUser")]
-        public async Task<IActionResult> RegisterAsUserAsync([FromBody] UserRegisterDto model)
+        public async Task<IActionResult> RegisterAsUser([FromBody] UserRegisterDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -29,7 +29,41 @@ namespace my_clinic_api.Controllers
 
             //SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
 
-            return Ok(new { email = result.Email , userName = result.UserName, token = result.Token, expiresOn = result.ExpiresOn});
+            return Ok(result);
         }
+
+        [HttpPost("RegisterAsDoctor")]
+        public async Task<IActionResult> RegisterAsDoctor([FromBody] DoctorRegisterDto model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _authService.DoctorRegisterAsync(model,false);
+
+            if (!result.IsAuth)
+                return BadRequest(result.Massage);
+
+            //SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
+
+            return Ok(result);
+        }
+
+
+        [HttpPost("AddDoctorByAdmin")]
+        public async Task<IActionResult> AddDoctorByAdmin([FromBody] DoctorRegisterDto model, bool isConfirmed)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _authService.DoctorRegisterAsync(model, isConfirmed);
+
+            if (!result.IsAuth)
+                return BadRequest(result.Massage);
+
+            //SetRefreshTokenInCookie(result.RefreshToken, result.RefreshTokenExpiration);
+
+            return Ok(result);
+        }
+
     }
 }

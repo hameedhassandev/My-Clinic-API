@@ -6,7 +6,7 @@ namespace my_clinic_api.Interfaces
     public interface IAuthService
     {
         Task<AuthModelDto> UserRegisterAsync(UserRegisterDto userDto);
-        Task<Doctor> DoctorRegisterAsync(DoctorRegisterDto doctorDto);
+        Task<AuthModelDto> DoctorRegisterAsync(DoctorRegisterDto doctorDto,bool isConfirmedFromAdmin);
 
 
     }

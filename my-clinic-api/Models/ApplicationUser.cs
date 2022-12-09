@@ -20,6 +20,7 @@ namespace my_clinic_api.Models
 
         public string? Address { get; set; }
 
+
         public string? PhoneNo { get; set; }
 
         public byte[]? Image { get; set; }

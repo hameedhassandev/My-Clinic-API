@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using my_clinic_api.Classes;
@@ -7,6 +9,7 @@ using my_clinic_api.Dto;
 using my_clinic_api.Dto.AuthDtos;
 using my_clinic_api.Helpers;
 using my_clinic_api.Interfaces;
+using my_clinic_api.Migrations;
 using my_clinic_api.Models;
 using my_clinic_api.Models.RefreshTokens;
 using System.ComponentModel;
@@ -24,12 +27,16 @@ namespace my_clinic_api.Services
         private readonly IMapper _mapper;
         private readonly JWT _jwt;
         private readonly IAreaService _areaService;
-        public AuthService(UserManager<ApplicationUser> userManager, IMapper mapper,IOptions<JWT> jwt, IAreaService areaService)
+        private readonly ApplicationDbContext _context;
+        string massage = "";
+        public AuthService(UserManager<ApplicationUser> userManager, IMapper mapper, IOptions<JWT> jwt,
+            IAreaService areaService, ApplicationDbContext context)
         {
             _userManager = userManager;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _jwt = jwt.Value;
-            _areaService = areaService; 
+            _areaService = areaService;
+            _context = context; 
         }
 
         public async Task<AuthModelDto> DoctorRegisterAsync(DoctorRegisterDto doctorDto, bool isConfirmedFromAdmin)
@@ -48,6 +55,9 @@ namespace my_clinic_api.Services
                 return new AuthModelDto { Massage = "Area name is not right!" };
 
             var areaObj = new Area { Id = doctorDto.AreaId };
+            var listOfSpicealisId = doctorDto.SpecialistIds;
+            var listOfHospitalId = doctorDto.HospitalIds;
+            var listOfInsuranceId = doctorDto.InsuranceIds;
             var doctor = new Doctor
             {
                 UserName = doctorDto.UserName,
@@ -71,7 +81,13 @@ namespace my_clinic_api.Services
 
             // now creat user
             var result = await _userManager.CreateAsync(doctor, doctorDto.Password);
-            // in case creation is fail
+
+            //var to get doctorId to add doctor_spcialist
+
+           
+            //AddDoctorSpecialist(doctorId, 1);
+
+            // in case creation is fail 
             if (!result.Succeeded)
             {
                 var errors = string.Empty;
@@ -82,6 +98,8 @@ namespace my_clinic_api.Services
                 return new AuthModelDto { Massage = errors };
 
             }
+
+
             // if creation is success assign role to doctor
             await _userManager.AddToRoleAsync(doctor, RoleNames.DoctorRole);
             //create token
@@ -92,7 +110,27 @@ namespace my_clinic_api.Services
             doctor.RefreshToken?.Add(refreshToken);
             await _userManager.UpdateAsync(doctor);
 
-            string massage = "";
+            //add doctor specialist
+            var doctorId = doctor.Id;
+
+            foreach(var hs in listOfHospitalId)
+            {
+                AddDoctorHospital(doctorId, hs);
+            }
+
+            foreach (var sp in listOfSpicealisId)
+            {
+                AddDoctorSpecialist(doctorId, sp);
+            }
+
+            foreach (var ins in listOfInsuranceId)
+            {
+                AddDoctorInsurance(doctorId, ins);
+            }
+
+
+
+            
             if (isConfirmedFromAdmin)
                 massage = "Doctor Data has confirmed and registered successfully!";
             else
@@ -228,6 +266,43 @@ namespace my_clinic_api.Services
                 ExpiresOn = DateTime.UtcNow.AddDays(10),
                 CreatedOn = DateTime.UtcNow
             };
+        }
+
+        private void AddDoctorSpecialist(string doctorId, int specialistId)
+        {
+            var isExist = _context.Specialists.FirstOrDefault(i => i.Id == specialistId);
+            if (isExist == null)
+                return;
+            var doctorSpObj = new Models.M2M.Doctor_Specialist { DoctorId = doctorId, SpecialistId = specialistId };
+
+            _context.Doctor_Specialist.Add(doctorSpObj);
+
+            _context.SaveChanges();
+        }
+
+        private void AddDoctorHospital(string doctorId, int hospitalId)
+        {
+            var isExist = _context.Hospitals.FirstOrDefault(i => i.Id == hospitalId);
+            if (isExist == null)
+                return;
+            var doctorHsObj = new Models.M2M.Doctor_Hospital { DoctorId = doctorId, HospitalId = hospitalId };
+
+            _context.Doctor_Hospital.Add(doctorHsObj);
+
+            _context.SaveChanges();
+        }
+
+        private void AddDoctorInsurance(string doctorId, int insuranceId)
+        {
+            var isExist = _context.Insurances.FirstOrDefault(i => i.Id == insuranceId);
+            if(isExist == null)
+                return; 
+
+            var doctorInObj = new Models.M2M.Doctor_Insurance { DoctorId = doctorId, InsuranceId = insuranceId };
+
+            _context.Doctor_Insurance.Add(doctorInObj);
+
+            _context.SaveChanges();
         }
     }
 }

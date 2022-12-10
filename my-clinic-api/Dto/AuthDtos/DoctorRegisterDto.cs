@@ -56,8 +56,16 @@ namespace my_clinic_api.Dto.AuthDtos
 
         public byte[]? Image { get; set; }
 
+        [Required]
         public Gender Gender { get; set; }
 
+        [Required]
+        public List<int> SpecialistIds { get; set; }
 
+        [Required]
+        public List<int> HospitalIds { get; set; }
+
+        [Required]
+        public List<int> InsuranceIds { get; set; }
     }
 }

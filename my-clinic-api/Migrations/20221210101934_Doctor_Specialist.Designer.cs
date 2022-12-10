@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using my_clinic_api.Models;
 
@@ -11,9 +12,10 @@ using my_clinic_api.Models;
 namespace my_clinic_api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221210101934_Doctor_Specialist")]
+    partial class Doctor_Specialist
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +23,36 @@ namespace my_clinic_api.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("DoctorHospital", b =>
+                {
+                    b.Property<int>("HospitalsId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("doctorsId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("HospitalsId", "doctorsId");
+
+                    b.HasIndex("doctorsId");
+
+                    b.ToTable("DoctorHospital");
+                });
+
+            modelBuilder.Entity("DoctorInsurance", b =>
+                {
+                    b.Property<int>("InsurancesId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("doctorsId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("InsurancesId", "doctorsId");
+
+                    b.HasIndex("doctorsId");
+
+                    b.ToTable("DoctorInsurance");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -339,36 +371,6 @@ namespace my_clinic_api.Migrations
                     b.ToTable("Insurances");
                 });
 
-            modelBuilder.Entity("my_clinic_api.Models.M2M.Doctor_Hospital", b =>
-                {
-                    b.Property<int>("HospitalId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("DoctorId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("HospitalId", "DoctorId");
-
-                    b.HasIndex("DoctorId");
-
-                    b.ToTable("Doctor_Hospital");
-                });
-
-            modelBuilder.Entity("my_clinic_api.Models.M2M.Doctor_Insurance", b =>
-                {
-                    b.Property<int>("InsuranceId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("DoctorId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("InsuranceId", "DoctorId");
-
-                    b.HasIndex("DoctorId");
-
-                    b.ToTable("Doctor_Insurance");
-                });
-
             modelBuilder.Entity("my_clinic_api.Models.M2M.Doctor_Specialist", b =>
                 {
                     b.Property<int>("SpecialistId")
@@ -505,6 +507,36 @@ namespace my_clinic_api.Migrations
                     b.ToTable("Doctor", (string)null);
                 });
 
+            modelBuilder.Entity("DoctorHospital", b =>
+                {
+                    b.HasOne("my_clinic_api.Models.Hospital", null)
+                        .WithMany()
+                        .HasForeignKey("HospitalsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("my_clinic_api.Models.Doctor", null)
+                        .WithMany()
+                        .HasForeignKey("doctorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DoctorInsurance", b =>
+                {
+                    b.HasOne("my_clinic_api.Models.Insurance", null)
+                        .WithMany()
+                        .HasForeignKey("InsurancesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("my_clinic_api.Models.Doctor", null)
+                        .WithMany()
+                        .HasForeignKey("doctorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -600,44 +632,6 @@ namespace my_clinic_api.Migrations
                     b.Navigation("RefreshToken");
                 });
 
-            modelBuilder.Entity("my_clinic_api.Models.M2M.Doctor_Hospital", b =>
-                {
-                    b.HasOne("my_clinic_api.Models.Doctor", "doctor")
-                        .WithMany("DoctorHospital")
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("my_clinic_api.Models.Hospital", "Hospital")
-                        .WithMany("DoctorHospital")
-                        .HasForeignKey("HospitalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Hospital");
-
-                    b.Navigation("doctor");
-                });
-
-            modelBuilder.Entity("my_clinic_api.Models.M2M.Doctor_Insurance", b =>
-                {
-                    b.HasOne("my_clinic_api.Models.Doctor", "doctor")
-                        .WithMany("DoctorInsurance")
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("my_clinic_api.Models.Insurance", "Insurance")
-                        .WithMany("DoctorInsurance")
-                        .HasForeignKey("InsuranceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Insurance");
-
-                    b.Navigation("doctor");
-                });
-
             modelBuilder.Entity("my_clinic_api.Models.M2M.Doctor_Specialist", b =>
                 {
                     b.HasOne("my_clinic_api.Models.Doctor", "doctor")
@@ -708,16 +702,6 @@ namespace my_clinic_api.Migrations
                     b.Navigation("specialists");
                 });
 
-            modelBuilder.Entity("my_clinic_api.Models.Hospital", b =>
-                {
-                    b.Navigation("DoctorHospital");
-                });
-
-            modelBuilder.Entity("my_clinic_api.Models.Insurance", b =>
-                {
-                    b.Navigation("DoctorInsurance");
-                });
-
             modelBuilder.Entity("my_clinic_api.Models.Specialist", b =>
                 {
                     b.Navigation("DoctorSpecialist");
@@ -725,10 +709,6 @@ namespace my_clinic_api.Migrations
 
             modelBuilder.Entity("my_clinic_api.Models.Doctor", b =>
                 {
-                    b.Navigation("DoctorHospital");
-
-                    b.Navigation("DoctorInsurance");
-
                     b.Navigation("DoctorSpecialist");
 
                     b.Navigation("RatesAndReviews");

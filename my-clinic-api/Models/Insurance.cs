@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using my_clinic_api.Models.M2M;
+using System.ComponentModel.DataAnnotations;
 
 namespace my_clinic_api.Models
 {
@@ -12,8 +13,9 @@ namespace my_clinic_api.Models
         public string ?CompanyName { get; set; }
 
         public double Discount { get; set; }
-       
-        public ICollection<Doctor>? doctors { get; set; }
+
+        public ICollection<Doctor_Insurance>? DoctorInsurance { get; set; }
+
 
     }
 }

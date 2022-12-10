@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using my_clinic_api.Models.M2M;
+using System.ComponentModel.DataAnnotations;
 
 namespace my_clinic_api.Models
 {
@@ -16,7 +17,7 @@ namespace my_clinic_api.Models
 
         public Department? department { get; set; }
 
-        public ICollection<Doctor>? Doctores { get; set; }
+        public ICollection<Doctor_Specialist>? DoctorSpecialist { get; set; }
 
     }
 }

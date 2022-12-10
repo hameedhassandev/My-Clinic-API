@@ -7,5 +7,7 @@ namespace my_clinic_api.Interfaces
     {
         Task<IEnumerable<Department>> DepartmentNameIsExist(string departmentName);
 
+        
+
     }
 }

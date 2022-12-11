@@ -63,7 +63,7 @@ namespace my_clinic_api.Controllers
         public async Task<IActionResult> GetAllWithDoctors()
         {
             var result = await _insuranceService.GetAllWithIncludeAsync(new List<string>() { "doctors" });
-            var getAllWithDoctors = result.Select(d => new { d.Id, d.CompanyName, d.Discount , d.doctors });
+            var getAllWithDoctors = result.Select(d => new { d.Id, d.CompanyName, d.Discount , d.DoctorInsurance });
             if (getAllWithDoctors == null)
                 return NotFound();
             return Ok(getAllWithDoctors);

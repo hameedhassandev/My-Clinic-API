@@ -20,9 +20,9 @@ namespace my_clinic_api.Services
         {
          
             var doctor = await _context.doctors.Include(d => d.Department)
-                .Include(s => s.Specialists)
-                .Include(i => i.Insurances)
-                .Include(h => h.Hospitals)
+                .Include(s=>s.DoctorSpecialist)
+                .Include(i => i.DoctorInsurance)
+                .Include(h => h.DoctorHospital)
                 .Include(a => a.Area)
                 .Include(r => r.RatesAndReviews)
                 .FirstOrDefaultAsync(d => d.Id == userId);

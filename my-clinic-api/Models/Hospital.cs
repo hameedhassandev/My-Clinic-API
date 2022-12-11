@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using my_clinic_api.Models.M2M;
+using System.ComponentModel.DataAnnotations;
 
 namespace my_clinic_api.Models
 {
@@ -15,7 +16,8 @@ namespace my_clinic_api.Models
         [MaxLength(255)]
         public string ?Address { get; set; }
 
-        public virtual ICollection<Doctor>? doctors { get; set; }
+        public ICollection<Doctor_Hospital>? DoctorHospital { get; set; }
+
 
 
     }

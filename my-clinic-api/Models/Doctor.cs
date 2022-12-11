@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualBasic;
+using my_clinic_api.Models.M2M;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -45,11 +46,13 @@ namespace my_clinic_api.Models
 
         public Department? Department { get; set; }
 
-        public ICollection<Specialist>? Specialists { get; set; }
-        public ICollection<TimesOfWork>? TimesOfWorks { get; set; }
-        public ICollection<Insurance>? Insurances { get; set; }
-        public virtual ICollection<Hospital>? Hospitals { get; set; }
+        public ICollection<Doctor_Specialist>? DoctorSpecialist { get; set; }
+
+        public ICollection<Doctor_Insurance>? DoctorInsurance { get; set; }
+        public ICollection<Doctor_Hospital>? DoctorHospital { get; set; }
         public ICollection<RateAndReview>? RatesAndReviews { get; set; }
+
+        public ICollection<TimesOfWork>? TimesOfWorks { get; set; }
 
     }
 }

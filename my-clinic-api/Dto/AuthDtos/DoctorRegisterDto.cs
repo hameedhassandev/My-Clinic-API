@@ -58,6 +58,6 @@ namespace my_clinic_api.Dto.AuthDtos
 
         public Gender Gender { get; set; }
 
-
+        public List<int> SpecialistsIds { get; set; }
     }
 }

@@ -10,6 +10,7 @@ namespace my_clinic_api.Dto
 
         [Required]
         [MaxLength(255)]
+
         public string? Description { get; set; }
     }
 }

@@ -6,4 +6,5 @@ namespace my_clinic_api.Interfaces
     {
          Task<Doctor> FindDoctorByIdAsync(string userId);
     }
+
 }

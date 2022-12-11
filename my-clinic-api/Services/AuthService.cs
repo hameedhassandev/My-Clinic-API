@@ -24,12 +24,18 @@ namespace my_clinic_api.Services
         private readonly IMapper _mapper;
         private readonly JWT _jwt;
         private readonly IAreaService _areaService;
-        public AuthService(UserManager<ApplicationUser> userManager, IMapper mapper,IOptions<JWT> jwt, IAreaService areaService)
+        private readonly IDoctorService _doctorService;
+        private readonly IDepartmentService _departmentService;
+        private readonly ISpecialistService _specialistService;
+        public AuthService(UserManager<ApplicationUser> userManager, IMapper mapper, IOptions<JWT> jwt, IAreaService areaService, IDoctorService doctorService, IDepartmentService departmentService, ISpecialistService specialistService)
         {
             _userManager = userManager;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _jwt = jwt.Value;
-            _areaService = areaService; 
+            _areaService = areaService;
+            _doctorService = doctorService;
+            _departmentService = departmentService;
+            _specialistService = specialistService;
         }
 
         public async Task<AuthModelDto> DoctorRegisterAsync(DoctorRegisterDto doctorDto, bool isConfirmedFromAdmin)
@@ -48,6 +54,14 @@ namespace my_clinic_api.Services
                 return new AuthModelDto { Massage = "Area name is not right!" };
 
             var areaObj = new Area { Id = doctorDto.AreaId };
+            var departmentIsExist = await _departmentService.DepartmentIsExists(doctorDto.DepartmentId);
+            if (!departmentIsExist)
+                return new AuthModelDto { Massage = "This department is not exists" };
+            var specialist = await _departmentService.IsSpecialistInDepartment(doctorDto.DepartmentId, doctorDto.SpecialistsIds);
+            if (!specialist)
+                return new AuthModelDto { Massage = "Specialists are not exist" };
+            
+            
             var doctor = new Doctor
             {
                 UserName = doctorDto.UserName,
@@ -65,7 +79,6 @@ namespace my_clinic_api.Services
                 Gender = doctorDto.Gender,
                 IsConfirmedFromAdmin = isConfirmedFromAdmin,
                 IsActive = true,
-               
                 //image
             };
 
@@ -98,6 +111,11 @@ namespace my_clinic_api.Services
             else
                 massage = "Doctor Data has registered successfully, and waiting for admin confirmation!";
 
+            var doctorId = doctor.Id;
+            foreach (int specialistId in doctorDto.SpecialistsIds)
+            {
+                await _specialistService.AddSpecialistToDoctor(doctorId, specialistId);
+            }
             return new AuthModelDto
             {
                 Email = doctor.Email,

@@ -10,6 +10,7 @@ using my_clinic_api.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -59,12 +60,12 @@ builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
 
 builder.Services.AddAutoMapper(typeof(Program));
 
-
 builder.Services.AddControllers()
     .AddNewtonsoftJson(options =>
     {
         options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
         options.SerializerSettings.Converters.Add(new StringEnumConverter());
+        options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Ignore;
     });
 
 builder.Services.AddScoped<IHospitalService, HospitalService>();
@@ -72,6 +73,7 @@ builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IInsuranceService, InsuranceService>();
 builder.Services.AddScoped<IAreaService, AreaService>();
 builder.Services.AddScoped<IDoctorService, DoctorService>();
+builder.Services.AddScoped<ISpecialistService, SpecialistService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace my_clinic_api.Models
 {
@@ -12,10 +13,8 @@ namespace my_clinic_api.Models
         [ MaxLength(120)]
         public string ?SpecialistName { get; set; }
 
-
-
         public Department? department { get; set; }
-
+       
         public ICollection<Doctor>? Doctores { get; set; }
 
     }

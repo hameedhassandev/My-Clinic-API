@@ -9,7 +9,8 @@ namespace my_clinic_api.Profiles
         public DoctorProfile()
         {
 
-            CreateMap<Doctor, Dto.DoctorDto>();
+            CreateMap<Doctor, Dto.DoctorDto>()
+                .ForMember(d => d.Specialists , a => a.MapFrom(d => d.Specialists));
             CreateMap<ApplicationUser, Dto.DoctorDto>()
                     .ForMember(d => d.Id, a => a.MapFrom(s => s.Id));
         }

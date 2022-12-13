@@ -7,8 +7,10 @@ namespace my_clinic_api.Services
 {
     public class DepartmentService : BaseRepository<Department>, IDepartmentService
     {
-        public DepartmentService(ApplicationDbContext Context) : base(Context)
+        private readonly IComparer2Lists _comparer2Lists;
+        public DepartmentService(ApplicationDbContext Context, IComparer2Lists comparer2Lists) : base(Context)
         {
+            _comparer2Lists = comparer2Lists;
         }
 
         public async Task<bool> DepartmentIsExists(int departmentId)
@@ -34,27 +36,10 @@ namespace my_clinic_api.Services
                 return false ;
             var specialist = await GetByIdWithIncludeAsync(deptmentId , "specialists" , "Collection");
             var SpeList = specialist.specialists.Select(s=>s.Id).ToList();
-            var compare = Comparer2Lists(SpeList, specialistsIds);
+            var compare = _comparer2Lists.Comparer2IntLists(SpeList, specialistsIds);
             return compare;
         }
 
-        private bool Comparer2Lists (List<int> OrgList , List<int> DocList)
-        {
-            int counter = 0;
-            foreach(var item in DocList)
-            {
-                foreach(var item2 in OrgList)
-                {
-                    if (item == item2)
-                    {
-                        counter++;
-                    }
-                }
-            }
-            if (counter != DocList.Count())
-                return false;
-            return true;
-
-        }
+     
     }
 }

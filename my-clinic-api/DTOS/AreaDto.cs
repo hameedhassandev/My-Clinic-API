@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Xml.Linq;
 
-namespace my_clinic_api.Dto
+namespace my_clinic_api.DTOS
 {
     public class AreaDto
     {

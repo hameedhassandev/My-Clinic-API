@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualBasic;
+using my_clinic_api.DTOS;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;

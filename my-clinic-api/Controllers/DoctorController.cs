@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using my_clinic_api.Dto;
+using my_clinic_api.DTOS;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using System.Linq.Expressions;

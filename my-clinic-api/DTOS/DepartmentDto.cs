@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace my_clinic_api.Dto
+namespace my_clinic_api.DTOS
 {
     public class DepartmentDto
     {
+        public int Id { get; set; }
+
         [Required]
         [MaxLength(120)]
         public string? Name { get; set; }

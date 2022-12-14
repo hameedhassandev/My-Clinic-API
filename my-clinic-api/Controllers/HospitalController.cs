@@ -2,7 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using my_clinic_api.Classes;
-using my_clinic_api.Dto;
+using my_clinic_api.DTOS;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
@@ -99,15 +99,15 @@ namespace my_clinic_api.Controllers
         {
             var hospital = new Hospital
             {
-                Name = dto.HospitalName,
-                Address = dto.HospitalAddress
+                Name = dto.Name,
+                Address = dto.Address
             };
 
             if (!ModelState.IsValid) return BadRequest();
 
             // if model is valid
             //check if name is exist
-            var isExist = await _hospitalService.HospitalNameIsExist(dto.HospitalName);
+            var isExist = await _hospitalService.HospitalNameIsExist(dto.Name);
             if (isExist.Any()) return BadRequest("Hospital name is exist");
             var result = await _hospitalService.AddAsync(hospital);
             _hospitalService.CommitChanges();
@@ -129,10 +129,10 @@ namespace my_clinic_api.Controllers
                 return NotFound($"No hospital was found with ID {id}");
 
 
-            if (hospital.Name == dto.HospitalName && hospital.Address == dto.HospitalAddress)
+            if (hospital.Name == dto.Name && hospital.Address == dto.Address)
                 return BadRequest("No changes were found!");
-            var checkName = await _hospitalService.HospitalNameIsExist(dto.HospitalName);
-            var checkAddress = await _hospitalService.HospitalAddressIsExist(dto.HospitalAddress);
+            var checkName = await _hospitalService.HospitalNameIsExist(dto.Name);
+            var checkAddress = await _hospitalService.HospitalAddressIsExist(dto.Address);
 
             if (checkName.Any(h => h.Id != hospital.Id))
                 return BadRequest("There are the same hospital name!");
@@ -140,8 +140,8 @@ namespace my_clinic_api.Controllers
             if (checkAddress.Any(h => h.Id != hospital.Id))
                 return BadRequest("There are the same hospital address!");
 
-            hospital.Name = dto.HospitalName;
-            hospital.Address = dto.HospitalAddress;
+            hospital.Name = dto.Name;
+            hospital.Address = dto.Address;
             var result =  _hospitalService.Update(hospital);
 
             _hospitalService.CommitChanges();

@@ -1,16 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace my_clinic_api.Dto
+namespace my_clinic_api.DTOS
 {
     public class HospitalDto
     {
+        public int Id { get; set; }
 
         [Required]
         [MaxLength(200)]
-        public string ?HospitalName { get; set; }
+        public string? Name { get; set; }
 
         [Required]
         [MaxLength(255)]
-        public string? HospitalAddress { get; set; }
+        public string? Address { get; set; }
     }
 }

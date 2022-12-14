@@ -1,9 +1,8 @@
-﻿using my_clinic_api.Dto.ReturnDtos;
-using my_clinic_api.Models;
+﻿using my_clinic_api.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace my_clinic_api.Dto
+namespace my_clinic_api.DTOS
 {
     public class SpecialistsDto
     {
@@ -14,10 +13,7 @@ namespace my_clinic_api.Dto
         [Required]
         [MaxLength(120)]
         public string? SpecialistName { get; set; }
-        [JsonIgnore]
-        public ReDepartmentDto? department { get; set; }
-        [JsonIgnore]
-        public ICollection<Doctor>? Doctores { get; set; }
+
 
     }
 }

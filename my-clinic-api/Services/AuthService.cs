@@ -169,7 +169,7 @@ namespace my_clinic_api.Services
 
             var areaObj = new Area { Id = userDto.AreaId};
             //try to make with automapper latter
-            var user = new ApplicationUser
+            var user = new Patient
             {
                 UserName = userDto.UserName,
                 Email = userDto.Email,

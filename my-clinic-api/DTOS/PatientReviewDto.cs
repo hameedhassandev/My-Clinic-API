@@ -1,6 +1,6 @@
 ﻿namespace my_clinic_api.DTOS
 {
-    public class UserReviewDto
+    public class PatientReviewDto
     {
         public string Id { get; set; }
 

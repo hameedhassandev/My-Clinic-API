@@ -18,8 +18,13 @@ namespace my_clinic_api.Models
 
                 m.ToTable("Doctor");
             });
+            modelBuilder.Entity<Patient>(m =>
+            {
+                m.ToTable("Patients");
+            });
         }
 
+        public DbSet<Patient> Patients { get; set; }
         public DbSet<Doctor> doctors { get; set; }
         public DbSet<Area> Areas { get; set; }
         public DbSet<Department> Departments { get; set; }

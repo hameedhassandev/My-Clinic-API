@@ -12,7 +12,7 @@ namespace my_clinic_api.DTOS
 
         [MaxLength(120)]
         public string? Review { get; set; }
-        public UserReviewDto? User { get; set; }
+        public PatientReviewDto? User { get; set; }
         //public Doctor? doctor { get; set; }
         //public string? DoctorId { get; set; }
     }

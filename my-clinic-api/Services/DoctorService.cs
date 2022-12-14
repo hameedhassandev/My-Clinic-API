@@ -25,7 +25,7 @@ namespace my_clinic_api.Services
                 .Include(i => i.Insurances)
                 .Include(h => h.Hospitals)
                 .Include(a => a.Area)
-                .Include(r => r.RatesAndReviews).ThenInclude(u=> u.User )
+                .Include(r => r.RatesAndReviews).ThenInclude(u=> u.Patient )
                 .FirstOrDefaultAsync(d => d.Id == userId);
                 
 

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Xml.Linq;
 
-namespace my_clinic_api.Dto
+namespace my_clinic_api.DTOS
 {
     public class DoctorDto 
     {
@@ -50,10 +50,11 @@ namespace my_clinic_api.Dto
 
         public int DepartmentId { get; set; }
 
+        public DepartmentDto? department { get; set; }
         public ICollection<SpecialistsDto>? Specialists { get; set; }
         public ICollection<TimesOfWork>? TimesOfWorks { get; set; }
-        public ICollection<Insurance>? Insurances { get; set; }
-        public virtual ICollection<Hospital>? Hospitals { get; set; }
-        public ICollection<RateAndReview>? RatesAndReviews { get; set; }
+        public ICollection<InsuranceDto>? Insurances { get; set; }
+        public virtual ICollection<HospitalDto>? Hospitals { get; set; }
+        public ICollection<RateAndReviewDto>? RatesAndReviews { get; set; }
     }
 }

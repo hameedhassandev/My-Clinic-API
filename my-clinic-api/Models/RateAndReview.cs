@@ -13,7 +13,7 @@ namespace my_clinic_api.Models
         [MaxLength(120)]
         public string ?Review { get; set; }
 
-
+        public Patient? Patient { get; set; }
         public Doctor? doctor { get; set; }
     }
 }

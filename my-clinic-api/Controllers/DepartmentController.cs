@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using my_clinic_api.Dto;
+using my_clinic_api.DTOS;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
@@ -138,7 +138,7 @@ namespace my_clinic_api.Controllers
 
         //PUT:api/Department/UpadteDepartment
         [HttpPut("UpadteDepartment")]
-        public async Task<IActionResult> UpadteDepartment(int id, [FromForm] DepartmentDto dto)
+        public async Task<IActionResult> UpadteDepartment([FromForm]int id, [FromForm] DepartmentDto dto)
         {
             var department = await _departmentService.GetByIdAsync(id);
             if (department == null)
@@ -158,7 +158,7 @@ namespace my_clinic_api.Controllers
 
         //DELETE:api/Department/DeleteDepartment
         [HttpDelete("DeleteDepartment")]
-        public async Task<IActionResult> DeleteDepartment(int id)
+        public async Task<IActionResult> DeleteDepartment([FromForm] int id)
         {
             var department = await _departmentService.GetByIdAsync(id);
 

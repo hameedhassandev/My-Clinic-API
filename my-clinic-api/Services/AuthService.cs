@@ -24,18 +24,21 @@ namespace my_clinic_api.Services
         private readonly IMapper _mapper;
         private readonly JWT _jwt;
         private readonly IAreaService _areaService;
-        private readonly IDoctorService _doctorService;
+        private readonly IHospitalService _hospitalService;
         private readonly IDepartmentService _departmentService;
         private readonly ISpecialistService _specialistService;
-        public AuthService(UserManager<ApplicationUser> userManager, IMapper mapper, IOptions<JWT> jwt, IAreaService areaService, IDoctorService doctorService, IDepartmentService departmentService, ISpecialistService specialistService)
+        private readonly IInsuranceService _insuranceService;
+        public AuthService(UserManager<ApplicationUser> userManager, IMapper mapper, IOptions<JWT> jwt, IAreaService areaService, IHospitalService hospitalService,
+            IDepartmentService departmentService, ISpecialistService specialistService, IInsuranceService insuranceService)
         {
             _userManager = userManager;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _jwt = jwt.Value;
             _areaService = areaService;
-            _doctorService = doctorService;
+            _hospitalService = hospitalService;
             _departmentService = departmentService;
             _specialistService = specialistService;
+            _insuranceService = insuranceService;
         }
 
         public async Task<AuthModelDto> DoctorRegisterAsync(DoctorRegisterDto doctorDto, bool isConfirmedFromAdmin)
@@ -61,7 +64,14 @@ namespace my_clinic_api.Services
             if (!specialist)
                 return new AuthModelDto { Massage = "Specialists are not exist" };
             
-            
+            var hospitals = await _hospitalService.IsHospitalIdsIsExist(doctorDto.HospitalsIds);
+            if(!hospitals)
+                return new AuthModelDto { Massage = "Hospitals are not exist" };
+
+            var insurance = await _insuranceService.IsInsuranceIdsIsExist(doctorDto.InsuranceIds);
+            if (!insurance)
+                return new AuthModelDto { Massage = "Insurances are not exist" };
+
             var doctor = new Doctor
             {
                 UserName = doctorDto.UserName,
@@ -112,10 +122,22 @@ namespace my_clinic_api.Services
                 massage = "Doctor Data has registered successfully, and waiting for admin confirmation!";
 
             var doctorId = doctor.Id;
+            //add spcialist to doctor
             foreach (int specialistId in doctorDto.SpecialistsIds)
             {
                 await _specialistService.AddSpecialistToDoctor(doctorId, specialistId);
             }
+            //add hospital to doctor
+            foreach (int hosptalId in doctorDto.HospitalsIds)
+            {
+                await _hospitalService.AddHospitalToDoctor(doctorId, hosptalId);
+            }
+            //add insurance to doctor
+            foreach (int insuranceId in doctorDto.InsuranceIds)
+            {
+                await _insuranceService.AddInsuranceToDoctor(doctorId, insuranceId);
+            }
+
             return new AuthModelDto
             {
                 Email = doctor.Email,
@@ -147,7 +169,7 @@ namespace my_clinic_api.Services
 
             var areaObj = new Area { Id = userDto.AreaId};
             //try to make with automapper latter
-            var user = new ApplicationUser
+            var user = new Patient
             {
                 UserName = userDto.UserName,
                 Email = userDto.Email,

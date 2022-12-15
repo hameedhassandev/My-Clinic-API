@@ -16,8 +16,8 @@ namespace my_clinic_api.Controllers
             _authService = authService;
         }
 
-        [HttpPost("RegisterAsUser")]
-        public async Task<IActionResult> RegisterAsUser([FromBody] UserRegisterDto model)
+        [HttpPost("RegisterAsPatient")]
+        public async Task<IActionResult> RegisterAsPatient([FromBody] UserRegisterDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

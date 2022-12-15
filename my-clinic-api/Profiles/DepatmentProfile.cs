@@ -7,7 +7,7 @@ namespace my_clinic_api.Profiles
     {
         public DepatmentProfile()
         {
-            CreateMap<Department, Dto.ReturnDtos.ReDepartmentDto>();        
+            CreateMap<Department, DTOS.DepartmentDto>();        
         }
     }
 }

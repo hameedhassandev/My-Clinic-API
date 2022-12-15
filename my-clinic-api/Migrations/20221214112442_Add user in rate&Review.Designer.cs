@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using my_clinic_api.Models;
 
@@ -11,9 +12,10 @@ using my_clinic_api.Models;
 namespace my_clinic_api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221214112442_Add user in rate&Review")]
+    partial class AdduserinrateReview
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -392,9 +394,6 @@ namespace my_clinic_api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("PatientId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("Rate")
                         .HasColumnType("int");
 
@@ -402,12 +401,15 @@ namespace my_clinic_api.Migrations
                         .HasMaxLength(120)
                         .HasColumnType("nvarchar(120)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("doctorId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PatientId");
+                    b.HasIndex("UserId");
 
                     b.HasIndex("doctorId");
 
@@ -508,13 +510,6 @@ namespace my_clinic_api.Migrations
                     b.HasIndex("DepartmentId");
 
                     b.ToTable("Doctor", (string)null);
-                });
-
-            modelBuilder.Entity("my_clinic_api.Models.Patient", b =>
-                {
-                    b.HasBaseType("my_clinic_api.Models.ApplicationUser");
-
-                    b.ToTable("Patients", (string)null);
                 });
 
             modelBuilder.Entity("DoctorHospital", b =>
@@ -659,15 +654,15 @@ namespace my_clinic_api.Migrations
 
             modelBuilder.Entity("my_clinic_api.Models.RateAndReview", b =>
                 {
-                    b.HasOne("my_clinic_api.Models.Patient", "Patient")
-                        .WithMany("RateAndReviews")
-                        .HasForeignKey("PatientId");
+                    b.HasOne("my_clinic_api.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
 
                     b.HasOne("my_clinic_api.Models.Doctor", "doctor")
                         .WithMany("RatesAndReviews")
                         .HasForeignKey("doctorId");
 
-                    b.Navigation("Patient");
+                    b.Navigation("User");
 
                     b.Navigation("doctor");
                 });
@@ -707,15 +702,6 @@ namespace my_clinic_api.Migrations
                     b.Navigation("Department");
                 });
 
-            modelBuilder.Entity("my_clinic_api.Models.Patient", b =>
-                {
-                    b.HasOne("my_clinic_api.Models.ApplicationUser", null)
-                        .WithOne()
-                        .HasForeignKey("my_clinic_api.Models.Patient", "Id")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("my_clinic_api.Models.Department", b =>
                 {
                     b.Navigation("doctors");
@@ -728,11 +714,6 @@ namespace my_clinic_api.Migrations
                     b.Navigation("RatesAndReviews");
 
                     b.Navigation("TimesOfWorks");
-                });
-
-            modelBuilder.Entity("my_clinic_api.Models.Patient", b =>
-                {
-                    b.Navigation("RateAndReviews");
                 });
 #pragma warning restore 612, 618
         }

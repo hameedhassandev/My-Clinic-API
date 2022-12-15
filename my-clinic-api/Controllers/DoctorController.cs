@@ -44,32 +44,8 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
-
-
         [HttpGet("GetDoctorById")]
         public async Task<IActionResult> GetDoctorById(string doctorId)
-        {
-            var doctor = await _doctorService.FindDoctorByIdAsync(doctorId);
-
-            if (doctor == null) return NotFound();
-
-            var result = _mapper.Map<DoctorDto>(doctor);
-            return Ok(result);
-        }
-
-        [HttpGet("GetDoctorByIdWithDepartment")]
-        public async Task<IActionResult> GetDoctorByIdWithDepartment(string doctorId)
-        {
-            Expression<Func<Doctor, bool>> predicate = h => h.Id == doctorId;
-            var doctor = await _doctorService.FindWithIncludesAsync(predicate, new List<string> {  "Hospitals" });
-
-            if (doctor == null) return NotFound();
-
-            var result = _mapper.Map<DoctorDto>(doctor);
-            return Ok(result);
-        }
-        [HttpGet("GetDoctorByIdTestInclude")]
-        public async Task<IActionResult> GetDoctorByIdTestInclude(string doctorId)
         {
             var doctor = await _doctorService.FindDoctorByIdAsync(doctorId);
 

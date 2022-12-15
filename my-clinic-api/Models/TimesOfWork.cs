@@ -7,7 +7,6 @@ namespace my_clinic_api.Models
         [Required]
         public int Id { get; set; }
 
-       
 
         [Required]
 

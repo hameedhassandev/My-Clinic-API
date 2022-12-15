@@ -14,6 +14,8 @@ namespace my_clinic_api.Models
         public string ?Review { get; set; }
 
         public Patient? Patient { get; set; }
+        public string? PatientId { get; set; }
         public Doctor? doctor { get; set; }
+        public string? doctorId { get; set; }
     }
 }

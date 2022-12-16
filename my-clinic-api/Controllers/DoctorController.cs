@@ -46,6 +46,7 @@ namespace my_clinic_api.Controllers
 
 
 
+
         [HttpGet("GetDoctorById")]
         public async Task<IActionResult> GetDoctorById(string doctorId)
         {

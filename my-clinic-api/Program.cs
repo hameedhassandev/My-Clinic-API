@@ -65,7 +65,7 @@ builder.Services.AddControllers()
     {
         options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
         options.SerializerSettings.Converters.Add(new StringEnumConverter());
-        options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Ignore;
+        //options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Ignore;
     });
 
 builder.Services.AddScoped<IHospitalService, HospitalService>();
@@ -76,6 +76,7 @@ builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<IPatientService, PatientService>();
 builder.Services.AddScoped<ISpecialistService, SpecialistService>();
 builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<ITimesOfWorkService, TimesOfWorkService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IComparer2Lists, Comparer2Lists>();
 

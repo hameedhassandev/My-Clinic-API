@@ -46,5 +46,12 @@ namespace my_clinic_api.Services
             return allDoctors;
         }
 
+        public async Task<int> GetWaitingTimeOfDoctor(string Id)
+        {
+            Expression<Func<Doctor, bool>> expression = h => h.Id == Id;
+            var doctor = await FindAsync(expression);
+            return doctor.WaitingTime;
+        }
+
     }
 }

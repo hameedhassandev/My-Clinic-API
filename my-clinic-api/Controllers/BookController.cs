@@ -12,10 +12,13 @@ namespace my_clinic_api.Controllers
     public class BookController : ControllerBase
     {
         private readonly IBookService _bookService;
-
-        public BookController(IBookService bookService)
+        private readonly ITimesOfWorkService _timesOfWorkService;
+        private readonly IDoctorService _doctorService;
+        public BookController(IBookService bookService, ITimesOfWorkService timesOfWorkService, IDoctorService doctorService)
         {
             _bookService = bookService;
+            _timesOfWorkService = timesOfWorkService;
+            _doctorService = doctorService;
         }
 
         [HttpGet("GetAllBookings")]
@@ -34,8 +37,12 @@ namespace my_clinic_api.Controllers
             {
                 DoctorId = dto.DoctorId,
                 PatientId = dto.PatientId,
-                Time = dto.Time,
             };
+            //var doctorWaiting = await _doctorService.GetWaitingTimeOfDoctor(dto.DoctorId);
+            var checkTimeIsAvailable = await _timesOfWorkService.TimeIsAvailable(dto);
+            if (!checkTimeIsAvailable) return NotFound("The doctor is not available at this time!");
+            var checkBookIsAvailable = await _bookService.IsBookAvailable(dto);
+            if (!checkBookIsAvailable) return NotFound("This time is already booked");
             var result = await _bookService.AddAsync(book);
             _bookService.CommitChanges();
             return Ok(result);

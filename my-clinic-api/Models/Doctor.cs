@@ -51,6 +51,7 @@ namespace my_clinic_api.Models
         public ICollection<Insurance>? Insurances { get; set; }
         public virtual ICollection<Hospital>? Hospitals { get; set; }
         public ICollection<RateAndReview>? RatesAndReviews { get; set; }
+        public ICollection<Book>? Bookings { get; set; }
 
     }
 }

@@ -103,7 +103,7 @@ namespace my_clinic_api.Services
 
         public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria)
         {
-            return await _Context.Set<T>().AsNoTracking().AsQueryable().Where(criteria).ToListAsync();
+            return await _Context.Set<T>().AsQueryable().Where(criteria).ToListAsync();
         }
 
         public void CommitChanges()

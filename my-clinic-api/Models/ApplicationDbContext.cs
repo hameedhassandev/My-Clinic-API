@@ -33,5 +33,6 @@ namespace my_clinic_api.Models
         public DbSet<TimesOfWork> TimesOfWork { get; set; }
         public DbSet<Insurance> Insurances { get; set; }
         public DbSet<RateAndReview> RatesAndReviews { get; set; }
+        public DbSet<Book> Bookings { get; set; }
     }
 }

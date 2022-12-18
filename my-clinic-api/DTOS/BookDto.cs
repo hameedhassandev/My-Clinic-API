@@ -5,7 +5,7 @@ namespace my_clinic_api.DTOS
 {
     public class BookDto
     {
-        public int Id { get; set; } = 0;
+        public int Id { get; set; } 
 
         [Required]
         [DisplayFormat(DataFormatString = "{dddd/dd/MMMM/yyyy}")]

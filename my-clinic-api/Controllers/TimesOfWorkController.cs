@@ -5,6 +5,7 @@ using my_clinic_api.DTOS;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
+using System.Linq.Expressions;
 
 namespace my_clinic_api.Controllers
 {
@@ -13,12 +14,16 @@ namespace my_clinic_api.Controllers
     public class TimesOfWorkController : ControllerBase
     {
         private readonly ITimesOfWorkService _timesOfWorkService;
+        private readonly IBookService _bookService;
+        private readonly IDoctorService _doctorService;
         private readonly IMapper _mapper;
 
-        public TimesOfWorkController(ITimesOfWorkService timesOfWorkService, IMapper mapper)
+        public TimesOfWorkController(ITimesOfWorkService timesOfWorkService, IMapper mapper, IBookService bookService, IDoctorService doctorService)
         {
             _timesOfWorkService = timesOfWorkService;
             _mapper = mapper;
+            _bookService = bookService;
+            _doctorService = doctorService;
         }
 
         // GET: api/TimesOfWork/GetAll
@@ -42,6 +47,36 @@ namespace my_clinic_api.Controllers
                 return NotFound();
             var result = _mapper.Map<IEnumerable<TimesOfWorkDto>>(times);
             return Ok(result);
+        }
+        [HttpGet("GetAvailableTimesOfDoctor")]
+        public async Task<IActionResult> GetAvailableTimesOfDoctor(string doctorId)
+        {
+
+            var times = await _timesOfWorkService.GetTimesOfDoctor(doctorId);
+            var bookings = await _bookService.GetBookingsOfDoctor(doctorId);
+            var waitingTime = await _doctorService.GetWaitingTimeOfDoctor(doctorId);
+            Dictionary<string, IList<TimeSpan>> days = new Dictionary<string, IList<TimeSpan>>();
+            var i = TimeSpan.Zero;
+            foreach (var time in times)
+            {
+                i = time.StartWork.TimeOfDay;
+                IList<TimeSpan> availables = new List<TimeSpan>();
+                while (i <= time.EndWork.TimeOfDay)
+                {
+                    if (!bookings.Any(t=>t.Time.TimeOfDay == i) )
+                    {
+                        availables.Add(i);
+                    }
+                    var timeToAdd = TimeSpan.FromMinutes(waitingTime);
+                    i = i.Add(timeToAdd);
+                }
+                days.Add(time.day.ToString(),availables);
+                    
+            }
+                
+            if (days == null || !days.Any())
+                return NotFound();
+            return Ok(days);
         }
 
         [HttpPost("AddTimeToDoctor")]

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using my_clinic_api.DTOS;
 using my_clinic_api.Interfaces;
@@ -14,20 +15,22 @@ namespace my_clinic_api.Controllers
         private readonly IBookService _bookService;
         private readonly ITimesOfWorkService _timesOfWorkService;
         private readonly IDoctorService _doctorService;
-        public BookController(IBookService bookService, ITimesOfWorkService timesOfWorkService, IDoctorService doctorService)
+        private readonly IMapper _mapper;
+        public BookController(IBookService bookService, ITimesOfWorkService timesOfWorkService, IDoctorService doctorService, IMapper mapper)
         {
             _bookService = bookService;
             _timesOfWorkService = timesOfWorkService;
             _doctorService = doctorService;
+            _mapper = mapper;
         }
 
         [HttpGet("GetAllBookings")]
         public async Task<IActionResult> GetAllBookings()
         {
-            var result = await _bookService.GetAllAsync();
+            var Bookings = await _bookService.GetAllAsync();
 
-            if (result == null) return NotFound();
-
+            if (Bookings == null) return NotFound();
+            var result = _mapper.Map<IEnumerable<BookDto>>(Bookings);
             return Ok(result);
         }
         [HttpPost("AddBook")]

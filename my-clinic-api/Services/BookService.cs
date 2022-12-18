@@ -10,6 +10,13 @@ namespace my_clinic_api.Services
         public BookService(ApplicationDbContext Context) : base(Context)
         {
         }
+        public async Task<IEnumerable<Book>> GetBookingsOfDoctor(string doctorId)
+        {
+            Expression<Func<Book, bool>> predicate = h => h.DoctorId == doctorId;
+            var bookings = await FindAllAsync(predicate);
+            if (bookings.Any()) return bookings;
+            return Enumerable.Empty<Book>();
+        }
         public async Task<bool> IsBookAvailable(BookDto bookDto )
         {
             Expression<Func<Book, bool>> predicate =

@@ -44,10 +44,9 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("AddOrUpdateTimeToDoctor")]
+        [HttpPost("AddTimeToDoctor")]
         public async Task<IActionResult> AddTimeToDoctor([FromForm] TimesOfWorkDto dto)
         {
-            
             var time = new TimesOfWork
             {
                 day = dto.day,
@@ -58,7 +57,39 @@ namespace my_clinic_api.Controllers
             if (!ModelState.IsValid) return BadRequest();
             var result = await _timesOfWorkService.AddAsync(time);
             _timesOfWorkService.CommitChanges();
-            return Ok(result);  
+            return Ok(result);
+        }
+
+        [HttpPut("UpdateTimeOfDoctor")]
+        public async Task<IActionResult> UpdateTimeOfDoctor(int TimeId, [FromBody] TimesOfWorkDto dto)
+        {
+            var checkIsExist = await _timesOfWorkService.GetByIdAsync(TimeId);
+            if (checkIsExist == null) return BadRequest();
+            else if (checkIsExist.doctorId != dto.doctorId) return BadRequest("This id for another doctor!");
+            else if (checkIsExist.day != dto.day) return BadRequest("This day is incorrect");
+            else if (checkIsExist.day == dto.day && checkIsExist.StartWork == dto.StartWork && checkIsExist.EndWork == dto.EndWork) return BadRequest("There are no changes found");
+            var time = new TimesOfWork
+            {
+                Id = TimeId,
+                day = dto.day,
+                StartWork = dto.StartWork,
+                EndWork = dto.EndWork,
+                doctorId = dto.doctorId
+            };
+            if (!ModelState.IsValid) return BadRequest();
+            var result = _timesOfWorkService.Update(time);
+            _timesOfWorkService.CommitChanges();
+            return Ok(result);
+
+        }
+        [HttpDelete("DeleteTimeOfDoctor")]
+        public async Task<IActionResult> DeleteTimeOfDoctor([FromForm] int TimeIdo)
+        {
+            var time = await _timesOfWorkService.GetByIdAsync(TimeIdo);
+            if (time == null) return BadRequest("No time was found");
+            var result = _timesOfWorkService.Delete(time);
+            _timesOfWorkService.CommitChanges();
+            return Ok(result);
         }
     }
 }

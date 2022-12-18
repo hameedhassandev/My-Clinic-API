@@ -5,7 +5,7 @@ namespace my_clinic_api.DTOS
 {
     public class TimesOfWorkDto
     {
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         [Required]
 

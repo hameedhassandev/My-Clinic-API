@@ -12,7 +12,7 @@ namespace my_clinic_api.Services
 
         public async Task<bool>  AreaIdIsExist(int id)
         {
-            var isExist = await GetByIdAsync(id);
+            var isExist = await FindByIdAsync(id);
             if(isExist == null) return false;
             return true;
         }

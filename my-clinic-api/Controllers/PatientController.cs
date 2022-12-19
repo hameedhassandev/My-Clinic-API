@@ -31,14 +31,37 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("GetAllWithReviews")]
-        public async Task<IActionResult> GetAllWithReviews()
+        [HttpGet("GetAllWithData")]
+        public async Task<IActionResult> GetAllWithData()
         {
-            var patients = await _patienService.GetAllWithIncludeAsync(new List<string> { "RateAndReviews" });
+            var patients = await _patienService.GetAllWithIncludeAsync(new List<string> { "RateAndReviews", "Bookings" });
             if (patients == null)
                 return NotFound();
             var result = _mapper.Map<IEnumerable<PatientDto>>(patients);
             return Ok(result);
         }
+
+        [HttpGet("GetPatientById")]
+        public async Task<IActionResult> GetPatientById(string patientId)
+        {
+            var patient = await _patienService.FindPatientByIdAsync(patientId);
+
+            if (patient == null) return NotFound($"No patient was found with ID {patientId}");
+
+            var result = _mapper.Map<PatientDto>(patient);
+            return Ok(result);
+        }
+        [HttpGet("GetPatientByIdWithData")]
+        public async Task<IActionResult> GetPatientByIdWithData(string patientId)
+        {
+            var patient = await _patienService.FindPatientByIdWithIncludeAsync(patientId);
+
+            if (patient == null) return NotFound($"No patient was found with ID {patientId}");
+
+            var result = _mapper.Map<PatientDto>(patient);
+            return Ok(result);
+        }
+
+        
     }
 }

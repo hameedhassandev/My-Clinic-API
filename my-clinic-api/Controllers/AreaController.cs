@@ -25,7 +25,7 @@ namespace my_clinic_api.Controllers
         public async Task<IActionResult> GetAreaById(int id)
         {
 
-            var result = await _areaService.GetByIdAsync(id);
+            var result = await _areaService.FindByIdAsync(id);
             if (result == null)
                 return NotFound();
 
@@ -71,7 +71,7 @@ namespace my_clinic_api.Controllers
         [HttpPut("UpadteArea")]
         public async Task<IActionResult> UpadteArea(int id, [FromForm] AreaDto dto)
         {
-            var area = await _areaService.GetByIdAsync(id);
+            var area = await _areaService.FindByIdAsync(id);
             if (area == null)
                 return NotFound($"No area was found with ID {id}");
             if (area.AreaName == dto.AreaName && area.City == dto.City)
@@ -90,7 +90,7 @@ namespace my_clinic_api.Controllers
         [HttpDelete("DeleteArea")]
         public async Task<IActionResult> DeleteArea(int id)
         {
-            var area = await _areaService.GetByIdAsync(id);
+            var area = await _areaService.FindByIdAsync(id);
 
             if (area == null)
                 return NotFound($"No area was found with ID {id}");

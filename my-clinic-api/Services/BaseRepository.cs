@@ -41,7 +41,7 @@ namespace my_clinic_api.Services
             return await _Context.Set<T>().ToListAsync();
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<T> FindByIdAsync(int id)
         {
             var entity = await _Context.Set<T>().FindAsync(id);
             if (entity == null) return null;
@@ -49,7 +49,7 @@ namespace my_clinic_api.Services
             _Context.Entry(entity).State = EntityState.Detached;
             return entity;
         }
-        public async Task<T> GetByIdWithIncludeAsync(int id , string Include , string navType)
+        public async Task<T> FindByIdWithIncludeAsync(int id , string Include , string navType)
         {
             var entity = await _Context.Set<T>().FindAsync(id);
             if (entity == null) return null;

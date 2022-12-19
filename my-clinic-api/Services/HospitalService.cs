@@ -41,7 +41,7 @@ namespace my_clinic_api.Services
 
         public async Task<bool> AddHospitalToDoctor(string doctorId, int HospitalId)
         {
-            var Hospital = await GetByIdAsync(HospitalId);
+            var Hospital = await FindByIdAsync(HospitalId);
 
             var doctor = await _doctorService.FindDoctorByIdAsync(doctorId);
             if (doctor == null)

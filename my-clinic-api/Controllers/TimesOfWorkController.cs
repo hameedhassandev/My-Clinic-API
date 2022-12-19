@@ -102,14 +102,15 @@ namespace my_clinic_api.Controllers
             };
             if (!ModelState.IsValid) return BadRequest();
             var result = await _timesOfWorkService.AddAsync(time);
+            var output = _mapper.Map<TimesOfWorkDto>(result);
             _timesOfWorkService.CommitChanges();
-            return Ok(result);
+            return Ok(output);
         }
 
         [HttpPut("UpdateTimeOfDoctor")]
         public async Task<IActionResult> UpdateTimeOfDoctor(int TimeId, [FromBody] TimesOfWorkDto dto)
         {
-            var checkIsExist = await _timesOfWorkService.GetByIdAsync(TimeId);
+            var checkIsExist = await _timesOfWorkService.FindByIdAsync(TimeId);
             if (checkIsExist == null) return BadRequest();
             else if (checkIsExist.doctorId != dto.doctorId) return BadRequest("This id for another doctor!");
             else if (checkIsExist.day != dto.day) return BadRequest("This day is incorrect");
@@ -124,18 +125,20 @@ namespace my_clinic_api.Controllers
             };
             if (!ModelState.IsValid) return BadRequest();
             var result = _timesOfWorkService.Update(time);
+            var output = _mapper.Map<TimesOfWorkDto>(result);
             _timesOfWorkService.CommitChanges();
-            return Ok(result);
+            return Ok(output);
 
         }
         [HttpDelete("DeleteTimeOfDoctor")]
         public async Task<IActionResult> DeleteTimeOfDoctor([FromForm] int TimeIdo)
         {
-            var time = await _timesOfWorkService.GetByIdAsync(TimeIdo);
+            var time = await _timesOfWorkService.FindByIdAsync(TimeIdo);
             if (time == null) return BadRequest("No time was found");
             var result = _timesOfWorkService.Delete(time);
+            var output = _mapper.Map<TimesOfWorkDto>(result);
             _timesOfWorkService.CommitChanges();
-            return Ok(result);
+            return Ok(output);
         }
     }
 }

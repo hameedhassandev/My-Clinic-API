@@ -23,7 +23,7 @@ namespace my_clinic_api.Controllers
         public async Task<IActionResult> GetInsuranceById(int id)
         {
 
-            var result = await _insuranceService.GetByIdAsync(id);
+            var result = await _insuranceService.FindByIdAsync(id);
             var obj = new  { Id = result.Id, CompanyName = result.CompanyName, Discount = result.Discount};
            
 
@@ -36,7 +36,7 @@ namespace my_clinic_api.Controllers
         [HttpGet("GetInsuranceWithDoctorsById/{id}")]
         public async Task<IActionResult> GetInsuranceWithDoctorsById(int id )
         {
-            var result = await _insuranceService.GetByIdWithIncludeAsync(id ,  "doctors" , "Collection");
+            var result = await _insuranceService.FindByIdWithIncludeAsync(id ,  "doctors" , "Collection");
 
             if (result == null)
                 return NotFound();
@@ -134,7 +134,7 @@ namespace my_clinic_api.Controllers
         [HttpPut("UpadteInsurance")]
         public async Task<IActionResult> UpadteInsurance(int id, [FromForm] InsuranceDto dto)
         {
-            var insurance = await _insuranceService.GetByIdAsync(id);
+            var insurance = await _insuranceService.FindByIdAsync(id);
             if (insurance == null)
                 return NotFound($"No insurance was found with ID {id}");
             if (insurance.CompanyName == dto.CompanyName && insurance.Discount == dto.Discount)
@@ -154,7 +154,7 @@ namespace my_clinic_api.Controllers
         [HttpDelete("DeleteInsurance")]
         public async Task<IActionResult> DeleteInsurance(int id)
         {
-            var insurance = await _insuranceService.GetByIdAsync(id);
+            var insurance = await _insuranceService.FindByIdAsync(id);
 
             if (insurance == null)
                 return NotFound($"No insurance was found with ID {id}");

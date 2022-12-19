@@ -20,20 +20,27 @@ namespace my_clinic_api.Services
         public async Task<Doctor> FindDoctorByIdAsync(string doctorId)
         {
 
-            var doctor = await _context.doctors.Include(d => d.Department)
-                .Include(s => s.Specialists)
-                .Include(i => i.Insurances)
-                .Include(h => h.Hospitals)
-                .Include(a => a.Area)
-                .Include(r => r.TimesOfWorks)
-                .Include(r => r.RatesAndReviews).ThenInclude(u=> u.Patient )
-                .FirstOrDefaultAsync(d => d.Id == doctorId);
-                
-
+            //var doctor = await _context.doctors.Include(d => d.Department)
+            //    .Include(s => s.Specialists)
+            //    .Include(i => i.Insurances)
+            //    .Include(h => h.Hospitals)
+            //    .Include(a => a.Area)
+            //    .Include(r => r.TimesOfWorks)
+            //    .Include(r => r.RatesAndReviews).ThenInclude(u=> u.Patient )
+            //    .FirstOrDefaultAsync(d => d.Id == doctorId);
+            Expression<Func<Doctor, bool>> criteria = d=>d.Id == doctorId;
+            var doctor = await FindAsync(criteria);
             return doctor;
         }
 
-      public async Task<IEnumerable<Doctor>> GetAllDoctorAsync()
+        public async Task<Doctor> FindDoctorByIdWithDataAsync(string doctorId)
+        {
+
+            Expression<Func<Doctor, bool>> criteria = d => d.Id == doctorId;
+            var doctor = await FindWithIncludesAsync(criteria,new List<string> { "Specialists" , "Insurances" , "Hospitals" , "Area" , "TimesOfWorks" , "RatesAndReviews" });
+            return doctor;
+        }
+        public async Task<IEnumerable<Doctor>> GetAllDoctorAsync()
         {
             var allDoctors = await _context.doctors.Include(d => d.Department)
                .Include(s => s.Specialists)
@@ -43,8 +50,6 @@ namespace my_clinic_api.Services
                .Include(r => r.TimesOfWorks)
                .Include(r => r.RatesAndReviews).ThenInclude(u => u.Patient)
                .ToListAsync();
-
-
             return allDoctors;
         }
 

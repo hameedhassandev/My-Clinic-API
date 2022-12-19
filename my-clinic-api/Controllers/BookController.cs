@@ -36,7 +36,6 @@ namespace my_clinic_api.Controllers
         [HttpPost("AddBook")]
         public async Task<IActionResult> AddBook([FromForm] BookDto dto)
         {
-            
             var checkBookIsAvailable = await _bookService.IsBookAvailable(dto);
             if (!checkBookIsAvailable) return NotFound("This time is already booked!");
             if (dto.Time < DateTime.Now) return NotFound("This time has passed!");
@@ -57,10 +56,10 @@ namespace my_clinic_api.Controllers
                     timeOfDay.EndWork.TimeOfDay.Minutes,
                     timeOfDay.EndWork.TimeOfDay.Seconds),
             };
-            
             var result = await _bookService.AddAsync(book);
+            var output = _mapper.Map<IEnumerable<BookDto>>(result);
             _bookService.CommitChanges();
-            return Ok(result);
+            return Ok(output);
 
         }
 

@@ -23,7 +23,7 @@ namespace my_clinic_api.Controllers
         public async Task<IActionResult> GetDepartmentById(int id)
         {
 
-            var result = await _departmentService.GetByIdAsync(id);
+            var result = await _departmentService.FindByIdAsync(id);
             if (result == null)
                 return NotFound();
 
@@ -140,7 +140,7 @@ namespace my_clinic_api.Controllers
         [HttpPut("UpadteDepartment")]
         public async Task<IActionResult> UpadteDepartment([FromForm]int id, [FromForm] DepartmentDto dto)
         {
-            var department = await _departmentService.GetByIdAsync(id);
+            var department = await _departmentService.FindByIdAsync(id);
             if (department == null)
                 return NotFound($"No department was found with ID {id}");
             if (department.Name == dto.Name && department.Description == dto.Description)
@@ -160,7 +160,7 @@ namespace my_clinic_api.Controllers
         [HttpDelete("DeleteDepartment")]
         public async Task<IActionResult> DeleteDepartment([FromForm] int id)
         {
-            var department = await _departmentService.GetByIdAsync(id);
+            var department = await _departmentService.FindByIdAsync(id);
 
             if (department == null)
                 return NotFound($"No department was found with ID {id}");

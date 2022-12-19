@@ -36,7 +36,7 @@ namespace my_clinic_api.Controllers
         [HttpGet("GetAllDoctors")]
         public async Task<IActionResult> GetAllDoctors()
         {
-            var doctors = await _doctorService.GetAllDoctorAsync();
+            var doctors = await _doctorService.GetAllAsync();
 
             if (doctors == null) return NotFound();
 
@@ -47,7 +47,21 @@ namespace my_clinic_api.Controllers
         [HttpGet("GetDoctorById")]
         public async Task<IActionResult> GetDoctorById(string doctorId)
         {
-            var doctor = await _doctorService.FindDoctorByIdAsync(doctorId);
+
+            Expression<Func<Doctor, bool>> criteria = d => d.Id == doctorId;
+            var doctor = await _doctorService.FindAsync(criteria);
+
+            if (doctor == null) return NotFound($"No user was found with ID {doctorId}");
+
+            var result = _mapper.Map<DoctorDto>(doctor);
+            return Ok(result);
+        }
+        [HttpGet("GetDoctorByIdWithData")]
+        public async Task<IActionResult> GetDoctorByIdWithData(string doctorId)
+        {
+
+            Expression<Func<Doctor, bool>> criteria = d => d.Id == doctorId;
+            var doctor = await _doctorService.FindWithIncludesAsync(criteria, new List<string> { "Specialists", "Insurances", "Hospitals", "Area", "TimesOfWorks", "RatesAndReviews" });
 
             if (doctor == null) return NotFound($"No user was found with ID {doctorId}");
 

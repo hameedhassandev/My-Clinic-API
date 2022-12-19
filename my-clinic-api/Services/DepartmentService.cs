@@ -15,7 +15,7 @@ namespace my_clinic_api.Services
 
         public async Task<bool> DepartmentIsExists(int departmentId)
         {
-            var deparment = await GetByIdAsync(departmentId);
+            var deparment = await FindByIdAsync(departmentId);
             if (deparment is not null)
                 return true;
             return false;
@@ -34,7 +34,7 @@ namespace my_clinic_api.Services
             var isExists = await DepartmentIsExists(deptmentId);
             if (!isExists)
                 return false ;
-            var specialist = await GetByIdWithIncludeAsync(deptmentId , "specialists" , "Collection");
+            var specialist = await FindByIdWithIncludeAsync(deptmentId , "specialists" , "Collection");
             var SpeList = specialist.specialists.Select(s=>s.Id).ToList();
             var compare = _comparer2Lists.Comparer2IntLists(SpeList, specialistsIds);
             return compare;

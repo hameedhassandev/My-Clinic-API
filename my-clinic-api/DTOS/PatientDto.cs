@@ -34,5 +34,8 @@ namespace my_clinic_api.DTOS
         [DefaultValue(true)]
         public bool IsActive { get; set; }
         public ICollection<RateAndReviewDto> RateAndReviews { get; set; }
+        public ICollection<BookDto>? Bookings { get; set; }
+
+
     }
 }

@@ -28,7 +28,7 @@ namespace my_clinic_api.Controllers
         public async Task<IActionResult> GetById(int id)
         {
 
-            var result = await _hospitalService.GetByIdAsync(id);
+            var result = await _hospitalService.FindByIdAsync(id);
             if (result == null)
                 return NotFound();
 
@@ -123,7 +123,7 @@ namespace my_clinic_api.Controllers
         [HttpPut("UpadteHospital")]
         public async Task<IActionResult> UpadteHospital( int id, [FromForm] HospitalDto dto)
         {
-            var hospital = await _hospitalService.GetByIdAsync(id);
+            var hospital = await _hospitalService.FindByIdAsync(id);
 
             if (hospital == null)
                 return NotFound($"No hospital was found with ID {id}");
@@ -151,7 +151,7 @@ namespace my_clinic_api.Controllers
         [HttpDelete("DeleteHospital")]
         public async Task<IActionResult> DeleteHospital(int id)
         {
-            var hospital = await _hospitalService.GetByIdAsync(id);
+            var hospital = await _hospitalService.FindByIdAsync(id);
 
             if (hospital == null)
                 return NotFound($"No hospital was found with ID {id}");

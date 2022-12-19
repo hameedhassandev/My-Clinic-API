@@ -36,16 +36,28 @@ namespace my_clinic_api.Controllers
         [HttpPost("AddBook")]
         public async Task<IActionResult> AddBook([FromForm] BookDto dto)
         {
+            
+            var checkBookIsAvailable = await _bookService.IsBookAvailable(dto);
+            if (!checkBookIsAvailable) return NotFound("This time is already booked!");
+            if (dto.Time < DateTime.Now) return NotFound("This time has passed!");
+            var allTimes = await _timesOfWorkService.GetTimesOfDoctor(dto.DoctorId);
+            if(allTimes == null || !allTimes.Any()) return NotFound("This doctor is not available!");
+            // Get Time Of specific DayOfWeak 
+            var timeOfDay = allTimes.SingleOrDefault(d => d.day.ToString() == dto.Time.DayOfWeek.ToString());
+            var checkTimeIsAvailable = await _timesOfWorkService.TimeIsAvailable(dto);
+            if (!checkTimeIsAvailable || timeOfDay is null) return NotFound("The doctor is not available at this time!");
             var book = new Book
             {
                 DoctorId = dto.DoctorId,
                 PatientId = dto.PatientId,
+                Time = dto.Time,
+                CreatedAt = DateTime.Now,
+                ExpiryDate = new DateTime(dto.Time.Year,dto.Time.Month,
+                    dto.Time.Day, timeOfDay.EndWork.TimeOfDay.Hours,
+                    timeOfDay.EndWork.TimeOfDay.Minutes,
+                    timeOfDay.EndWork.TimeOfDay.Seconds),
             };
-            //var doctorWaiting = await _doctorService.GetWaitingTimeOfDoctor(dto.DoctorId);
-            var checkTimeIsAvailable = await _timesOfWorkService.TimeIsAvailable(dto);
-            if (!checkTimeIsAvailable) return NotFound("The doctor is not available at this time!");
-            var checkBookIsAvailable = await _bookService.IsBookAvailable(dto);
-            if (!checkBookIsAvailable) return NotFound("This time is already booked");
+            
             var result = await _bookService.AddAsync(book);
             _bookService.CommitChanges();
             return Ok(result);

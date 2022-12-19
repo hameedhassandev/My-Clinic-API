@@ -7,5 +7,6 @@ namespace my_clinic_api.Interfaces
     {
         Task<IEnumerable<TimesOfWork>> GetTimesOfDoctor(string doctorId);
         Task<bool> TimeIsAvailable(BookDto bookDto);
+        public string GetNextDaysFromNow(int TimeToAdd);
     }
 }

@@ -28,5 +28,12 @@ namespace my_clinic_api.Services
             var end = TimeSpan.Compare(check.EndWork.TimeOfDay , bookDto.Time.TimeOfDay);
             return ((start == -1 || start == 0) && (end == 1));
         }
+
+        public string GetNextDaysFromNow(int TimeToAdd)
+        {
+            var EnumValueToAdd = (((int)DateTime.Now.DayOfWeek) + TimeToAdd) % 7;
+            var check = Enum.GetName(typeof(DayOfWeek), EnumValueToAdd);
+            return check;
+        }
     }
 }

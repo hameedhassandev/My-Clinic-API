@@ -44,7 +44,7 @@ namespace my_clinic_api.Controllers
 
             var times = await _timesOfWorkService.GetTimesOfDoctor(doctorId);
             if (times == null || !times.Any())
-                return NotFound();
+                return NotFound("Doctor has no times!");
             var result = _mapper.Map<IEnumerable<TimesOfWorkDto>>(times);
             return Ok(result);
         }
@@ -53,9 +53,20 @@ namespace my_clinic_api.Controllers
         {
 
             var times = await _timesOfWorkService.GetTimesOfDoctor(doctorId);
+            // Filter times to get today and the next 2 days only
+            times = times.Where(t => t.day.ToString() == _timesOfWorkService.GetNextDaysFromNow(0) ||
+                t.day.ToString() == _timesOfWorkService.GetNextDaysFromNow(1) ||
+                t.day.ToString() == _timesOfWorkService.GetNextDaysFromNow(2)
+            );
+            if (!times.Any()) return NotFound("Doctor has no times! ");
             var bookings = await _bookService.GetBookingsOfDoctor(doctorId);
-            var waitingTime = await _doctorService.GetWaitingTimeOfDoctor(doctorId);
+            // Filter bookings to remove expierd 
+            bookings = bookings.Where(b=> 
+                b.ExpiryDate.Date > DateTime.Now.Date);
             Dictionary<string, IList<TimeSpan>> days = new Dictionary<string, IList<TimeSpan>>();
+            //if (!bookings.Any()) return BadRequest("No available times are found");
+
+            var waitingTime = await _doctorService.GetWaitingTimeOfDoctor(doctorId);
             var i = TimeSpan.Zero;
             foreach (var time in times)
             {

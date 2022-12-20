@@ -5,7 +5,8 @@ namespace my_clinic_api.Interfaces
     public interface IDoctorService : IBaseRepository<Doctor>
     {
         Task<Doctor> FindDoctorByIdAsync(string doctorId);
-        //Task<IEnumerable<Doctor>> GetAllDoctorAsync();
+        Task<Doctor> FindDoctorByIdWithDataAsync(string doctorId);
+        Task<IEnumerable<Doctor>> GetAllDoctorWithDataAsync();
         Task<int> GetWaitingTimeOfDoctor(string Id);
 
     }

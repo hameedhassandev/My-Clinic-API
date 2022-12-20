@@ -16,6 +16,8 @@ namespace my_clinic_api.Controllers
         private readonly ITimesOfWorkService _timesOfWorkService;
         private readonly IDoctorService _doctorService;
         private readonly IMapper _mapper;
+        
+
         public BookController(IBookService bookService, ITimesOfWorkService timesOfWorkService, IDoctorService doctorService, IMapper mapper)
         {
             _bookService = bookService;
@@ -23,6 +25,7 @@ namespace my_clinic_api.Controllers
             _doctorService = doctorService;
             _mapper = mapper;
         }
+        
 
         [HttpGet("GetAllBookings")]
         public async Task<IActionResult> GetAllBookings()

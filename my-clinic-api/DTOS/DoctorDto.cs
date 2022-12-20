@@ -56,5 +56,7 @@ namespace my_clinic_api.DTOS
         public ICollection<InsuranceDto>? Insurances { get; set; }
         public virtual ICollection<HospitalDto>? Hospitals { get; set; }
         public ICollection<RateAndReviewDto>? RatesAndReviews { get; set; }
+        public ICollection<BookDto>? Bookings { get; set; }
+
     }
 }

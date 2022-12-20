@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -118,10 +119,12 @@ namespace my_clinic_api.Services
                                     && p.PropertyType != typeof(byte[]) 
                                     || p.PropertyType.Namespace == entityType.Namespace)
                                 .Select(p => p.Name)
-                                .ToList();
+            .ToList();
             
         }
- 
+        
+
+
 
     }
 }

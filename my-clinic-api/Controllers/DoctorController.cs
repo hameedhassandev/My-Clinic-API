@@ -43,16 +43,6 @@ namespace my_clinic_api.Controllers
            var result = _mapper.Map<IEnumerable<DoctorDto>>(doctors);
             return Ok(result);
         }
-        [HttpGet("GetAllDoctorsWithData")]
-        public async Task<IActionResult> GetAllDoctorsWithData()
-        {
-            var doctors = await _doctorService.GetAllWithIncludeAsync(new List<string> { "Specialists", "Insurances", "Hospitals", "Area", "TimesOfWorks", "RatesAndReviews" });
-
-            if (doctors == null) return NotFound();
-
-           var result = _mapper.Map<IEnumerable<DoctorDto>>(doctors);
-            return Ok(result);
-        }
 
         [HttpGet("GetDoctorById")]
         public async Task<IActionResult> GetDoctorById(string doctorId)

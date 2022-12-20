@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using my_clinic_api.DTOS;
@@ -93,6 +93,10 @@ namespace my_clinic_api.Controllers
         [HttpPost("AddTimeToDoctor")]
         public async Task<IActionResult> AddTimeToDoctor([FromForm] TimesOfWorkDto dto)
         {
+            Expression<Func<TimesOfWork , bool>> criteria = t=>t.doctorId==dto.doctorId && t.day==dto.day;
+
+            var DayIsExist = await _timesOfWorkService.FindAsync(criteria);
+            if(DayIsExist is not null) return BadRequest("This day is already exists");
             var time = new TimesOfWork
             {
                 day = dto.day,

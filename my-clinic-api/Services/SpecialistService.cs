@@ -16,7 +16,7 @@ namespace my_clinic_api.Services
         {
             var specialist = await FindByIdAsync(specialistId);
 
-            var doctor = await _doctorService.FindDoctorByIdAsync(doctorId);
+            var doctor = await _doctorService.FindDoctorByIdWithDataAsync(doctorId);
             if (doctor == null)
                 return false;
             doctor.Specialists.Add(new Specialist { Id = specialistId , SpecialistName = specialist.SpecialistName});

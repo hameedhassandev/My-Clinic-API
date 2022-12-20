@@ -43,7 +43,7 @@ namespace my_clinic_api.Services
         {
             var Hospital = await FindByIdAsync(HospitalId);
 
-            var doctor = await _doctorService.FindDoctorByIdAsync(doctorId);
+            var doctor = await _doctorService.FindDoctorByIdWithDataAsync(doctorId);
             if (doctor == null)
                 return false;
 

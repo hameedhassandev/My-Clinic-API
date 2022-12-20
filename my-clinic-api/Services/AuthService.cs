@@ -131,6 +131,7 @@ namespace my_clinic_api.Services
 
             return new AuthModelDto
             {
+                Id = doctorId,
                 Email = doctor.Email,
                 ExpiresOn = jwtSecurityToken.ValidTo,
                 IsAuth = true,

@@ -5,10 +5,12 @@ using Microsoft.IdentityModel.Tokens;
 using my_clinic_api.Classes;
 using my_clinic_api.Dto;
 using my_clinic_api.Dto.AuthDtos;
+using my_clinic_api.DTOS;
 using my_clinic_api.Helpers;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Models.RefreshTokens;
+using my_clinic_api.Services;
 using System.ComponentModel;
 using System.IdentityModel.Tokens.Jwt;
 using System.Numerics;
@@ -63,9 +65,9 @@ namespace my_clinic_api.Services
             var specialist = await _departmentService.IsSpecialistInDepartment(doctorDto.DepartmentId, doctorDto.SpecialistsIds);
             if (!specialist)
                 return new AuthModelDto { Massage = "Specialists are not exist" };
-            
+
             var hospitals = await _hospitalService.IsHospitalIdsIsExist(doctorDto.HospitalsIds);
-            if(!hospitals)
+            if (!hospitals)
                 return new AuthModelDto { Massage = "Hospitals are not exist" };
 
             var insurance = await _insuranceService.IsInsuranceIdsIsExist(doctorDto.InsuranceIds);
@@ -122,21 +124,10 @@ namespace my_clinic_api.Services
                 massage = "Doctor Data has registered successfully, and waiting for admin confirmation!";
 
             var doctorId = doctor.Id;
-            //add spcialist to doctor
-            foreach (int specialistId in doctorDto.SpecialistsIds)
-            {
-                await _specialistService.AddSpecialistToDoctor(doctorId, specialistId);
-            }
-            //add hospital to doctor
-            foreach (int hosptalId in doctorDto.HospitalsIds)
-            {
-                await _hospitalService.AddHospitalToDoctor(doctorId, hosptalId);
-            }
-            //add insurance to doctor
-            foreach (int insuranceId in doctorDto.InsuranceIds)
-            {
-                await _insuranceService.AddInsuranceToDoctor(doctorId, insuranceId);
-            }
+
+            AddSpecialistToDoctor(doctorDto.SpecialistsIds, doctorId);
+            AddHospitalToDoctor(doctorDto.HospitalsIds, doctorId);
+            AddInsuranceToDoctor(doctorDto.InsuranceIds, doctorId);
 
             return new AuthModelDto
             {
@@ -167,7 +158,7 @@ namespace my_clinic_api.Services
             if (!isAreaIdExist)
                 return new AuthModelDto { Massage = "Area name is not right!" };
 
-            var areaObj = new Area { Id = userDto.AreaId};
+            var areaObj = new Area { Id = userDto.AreaId };
             //try to make with automapper latter
             var user = new Patient
             {
@@ -191,7 +182,7 @@ namespace my_clinic_api.Services
             if (!result.Succeeded)
             {
                 var errors = string.Empty;
-                foreach(var error in result.Errors)
+                foreach (var error in result.Errors)
                 {
                     errors += $"{error.Description}, ";
                 }
@@ -208,7 +199,8 @@ namespace my_clinic_api.Services
             user.RefreshToken?.Add(refreshToken);
             await _userManager.UpdateAsync(user);
 
-            return new AuthModelDto{
+            return new AuthModelDto
+            {
                 Email = user.Email,
                 ExpiresOn = jwtSecurityToken.ValidTo,
                 IsAuth = true,
@@ -269,5 +261,39 @@ namespace my_clinic_api.Services
                 CreatedOn = DateTime.UtcNow
             };
         }
+
+
+        private async void AddSpecialistToDoctor(List<int> SpecialistsIds, string doctorId)
+        {
+            //add spcialist to doctor
+
+            foreach (int specialistId in SpecialistsIds)
+            {
+                await _specialistService.AddSpecialistToDoctor(doctorId, specialistId);
+            }
+
+        }
+        private async void AddHospitalToDoctor(List<int> HospitalsIds, string doctorId)
+        {
+            //add hospital to doctor
+
+            foreach (int hosptalId in HospitalsIds)
+            {
+                await _specialistService.AddSpecialistToDoctor(doctorId, hosptalId);
+            }
+
+        }
+
+        private async void AddInsuranceToDoctor(List<int> InsuranceIds, string doctorId)
+        {
+            //add InsuranceIds to doctor
+
+            foreach (int insuranceId in InsuranceIds)
+            {
+                await _specialistService.AddSpecialistToDoctor(doctorId, insuranceId);
+            }
+
+        }
+
     }
 }

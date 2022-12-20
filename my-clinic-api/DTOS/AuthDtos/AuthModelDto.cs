@@ -6,8 +6,8 @@ namespace my_clinic_api.Dto.AuthDtos
     {
         public string? Massage { get; set; }
         public bool IsAuth { get; set; }
-        public string ?Email { get; set; }
-        public string ?UserName { get; set; }
+        public string? Email { get; set; }
+        public string? UserName { get; set; }
         public string? Token { get; set; }
         public List<string>? Roles { get; set; }
         public DateTime? ExpiresOn { get; set; }
@@ -16,6 +16,7 @@ namespace my_clinic_api.Dto.AuthDtos
         public string? RefreshToken { get; set; }
 
         public DateTime RefreshTokenExpiration { get; set; }
+
 
     }
 }

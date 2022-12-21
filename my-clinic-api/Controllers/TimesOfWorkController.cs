@@ -88,12 +88,12 @@ namespace my_clinic_api.Controllers
         {
 
             var times = await _timesOfWorkService.GetTimesOfDoctor(doctorId);
+            if (!times.Any()) return NotFound("Doctor has no times! ");
             // Filter times to get today and the next 2 days only
             times = times.Where(t => t.day.ToString() == _timesOfWorkService.GetNextDaysFromNow(0) ||
                 t.day.ToString() == _timesOfWorkService.GetNextDaysFromNow(1) ||
                 t.day.ToString() == _timesOfWorkService.GetNextDaysFromNow(2)
             );
-            if (!times.Any()) return NotFound("Doctor has no times! ");
             var bookings = await _bookService.GetBookingsOfDoctor(doctorId);
             // Filter bookings to remove expierd 
             bookings = bookings.Where(b=> 
@@ -128,22 +128,10 @@ namespace my_clinic_api.Controllers
         [HttpPost("AddTimeToDoctor")]
         public async Task<IActionResult> AddTimeToDoctor([FromForm] TimesOfWorkDto dto)
         {
-            Expression<Func<TimesOfWork , bool>> criteria = t=>t.doctorId==dto.doctorId && t.day==dto.day;
-
-            var DayIsExist = await _timesOfWorkService.FindAsync(criteria);
-            if(DayIsExist is not null) return BadRequest("This day is already exists");
-            var time = new TimesOfWork
-            {
-                day = dto.day,
-                StartWork = dto.StartWork,
-                EndWork = dto.EndWork,
-                doctorId = dto.doctorId
-            };
-            if (!ModelState.IsValid) return BadRequest();
-            var result = await _timesOfWorkService.AddAsync(time);
-            var output = _mapper.Map<TimesOfWorkDto>(result);
-            _timesOfWorkService.CommitChanges();
-            return Ok(output);
+            var add = await _timesOfWorkService.AddTimetoDoctor(dto);
+            /// Return problem same as AddBook Function 
+            if(add != "Success") return BadRequest(add);
+            return Ok(dto);
         }
 
         [HttpPut("UpdateTimeOfDoctor")]

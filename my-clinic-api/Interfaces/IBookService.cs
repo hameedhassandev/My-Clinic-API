@@ -5,6 +5,7 @@ namespace my_clinic_api.Interfaces
 {
     public interface IBookService : IBaseRepository<Book> 
     {
+        Task<string> AddBook(BookDto bookDto);
         Task<bool> IsBookAvailable(BookDto bookDto);
         Task<IEnumerable<Book>> GetBookingsOfDoctor(string doctorId);
 

@@ -6,7 +6,6 @@ namespace my_clinic_api.Interfaces
     {
         Task<Doctor> FindDoctorByIdAsync(string doctorId);
         Task<Doctor> FindDoctorByIdWithDataAsync(string doctorId);
-        Task<IEnumerable<Doctor>> GetAllDoctorWithDataAsync();
         Task<int> GetWaitingTimeOfDoctor(string Id);
 
     }

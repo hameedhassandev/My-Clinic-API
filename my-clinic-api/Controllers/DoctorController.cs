@@ -47,7 +47,7 @@ namespace my_clinic_api.Controllers
         [HttpGet("GetAllDoctorsWithData")]
         public async Task<IActionResult> GetAllDoctorsWithData()
         {
-            var doctors = await _doctorService.GetAllDoctorWithDataAsync();
+            var doctors = await _doctorService.GetAllWithData();
 
             if (doctors == null) return NotFound();
 

@@ -11,6 +11,14 @@ namespace my_clinic_api.Services
         {
         }
 
+        public async Task<TimesOfWork> FindTimeByIdWithData(int timeId)
+        {
+            var data = GetCollections(typeof(TimesOfWork));
+            Expression<Func<TimesOfWork, bool>> criteria = d => d.Id == timeId;
+            var time = await FindWithIncludesAsync(criteria, data);
+            return time;
+        }
+
         public async Task<IEnumerable<TimesOfWork>> GetTimesOfDoctor(string doctorId)
         {
             Expression<Func<TimesOfWork, bool>> predicate = h => h.doctorId == doctorId;

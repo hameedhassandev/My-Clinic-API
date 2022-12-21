@@ -50,17 +50,18 @@ namespace my_clinic_api.Services
             _Context.Entry(entity).State = EntityState.Detached;
             return entity;
         }
-        public async Task<T> FindByIdWithIncludeAsync(int id , string Include , string navType)
-        {
-            var entity = await _Context.Set<T>().FindAsync(id);
-            if (entity == null) return null;
-            if (navType == "Collection")
-                _Context.Entry(entity).Collection(Include).Load();
-            else if(navType == "Reference")
-                _Context.Entry(entity).Reference(Include).Load();
-            _Context.Entry(entity).State = EntityState.Detached;
-            return entity;
-        }
+        //public async Task<T> FindByIdWithIncludeAsync(int id, string Include, string navType)
+        //{
+        //    var entity = await _Context.Set<T>().FindAsync(id);
+        //    if (entity == null) return null;
+        //    if (navType == "Collection")
+        //        _Context.Entry(entity).Collection(Include).Load();
+        //    else if (navType == "Reference")
+        //        _Context.Entry(entity).Reference(Include).Load();
+        //    _Context.Entry(entity).State = EntityState.Detached;
+        //    return entity;
+
+        //}
 
 
         public async Task<int> CountAsync()
@@ -71,12 +72,12 @@ namespace my_clinic_api.Services
         public async Task<IEnumerable<T>> GetAllPaginationAsync(int skip, int take)
         {
             return await _Context.Set<T>().Skip(skip).Take(take).ToListAsync();
-
         }
-        public async Task<IEnumerable<T>> GetAllWithIncludeAsync(List<string> Includes)
+        public async Task<IEnumerable<T>> GetAllWithData()
         {
             var query = _Context.Set<T>().AsQueryable();
-            foreach(var inc in Includes)
+            var includes = GetCollections(typeof(T));
+            foreach(var inc in includes)
             {
                 query = query.Include(inc);
             }

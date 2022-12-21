@@ -37,6 +37,41 @@ namespace my_clinic_api.Controllers
             var result = _mapper.Map<IEnumerable<TimesOfWorkDto>>(times);
             return Ok(result);
         }
+
+        // GET: api/TimesOfWork/GetAllWithData
+        [HttpGet("GetAllWithData")]
+        public async Task<IActionResult> GetAllWithData()
+        {
+            var result = await _timesOfWorkService.GetAllWithData();
+            if (result == null)
+                return NotFound();
+            var output = _mapper.Map<IEnumerable<TimesOfWorkDto>>(result);
+
+            return Ok(output);
+        }
+
+        // GET: api/TimesOfWork/GetById/5
+        [HttpGet("GetById/{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+
+            var result = await _timesOfWorkService.FindByIdAsync(id);
+            if (result == null)
+                return NotFound();
+            var output = _mapper.Map<TimesOfWorkDto>(result);
+            return Ok(output);
+        }
+        // GET: api/TimesOfWork/GetByIdWithData/5
+        [HttpGet("GetByIdWithData/{id}")]
+        public async Task<IActionResult> GetByIdWithData(int id)
+        {
+
+            var result = await _timesOfWorkService.FindTimeByIdWithData(id);
+            if (result == null)
+                return NotFound();
+            var output = _mapper.Map<TimesOfWorkDto>(result);
+            return Ok(output);
+        }
         // GET: api/TimesOfWork/GetTimesOfDoctor
         [HttpGet("GetTimesOfDoctor")]
         public async Task<IActionResult> GetTimesOfDoctor(string doctorId)

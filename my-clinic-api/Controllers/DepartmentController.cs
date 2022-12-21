@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using my_clinic_api.DTOS;
 using my_clinic_api.Interfaces;
@@ -14,9 +15,11 @@ namespace my_clinic_api.Controllers
     public class DepartmentController : ControllerBase
     {
         private readonly IDepartmentService _departmentService;
-        public DepartmentController(IDepartmentService departmentService)
+        private readonly IMapper _mapper;
+        public DepartmentController(IDepartmentService departmentService, IMapper mapper)
         {
             _departmentService = departmentService;
+            _mapper = mapper;
         }
 
         [HttpGet("GetDepartmentById/{id}")]
@@ -26,8 +29,19 @@ namespace my_clinic_api.Controllers
             var result = await _departmentService.FindByIdAsync(id);
             if (result == null)
                 return NotFound();
+            var output = _mapper.Map<DepartmentDto>(result);
+            return Ok(output);
+        }
+        
+        [HttpGet("GetDepartmentByIdWithData/{id}")]
+        public async Task<IActionResult> GetDepartmentByIdWithData(int id)
+        {
 
-            return Ok(result);
+            var result = await _departmentService.FindDepartmentByIdWithData(id);
+            if (result == null)
+                return NotFound();
+            var output = _mapper.Map<DepartmentDto>(result);
+            return Ok(output);
         }
 
 
@@ -38,45 +52,24 @@ namespace my_clinic_api.Controllers
         {
 
             var result = await _departmentService.GetAllAsync();
-            var getNameAndDesc = result.Select(d => new { d.Id, d.Name, d.Description });
 
 
-            if (getNameAndDesc == null)
+            if (result == null)
                 return NotFound();
-
-            return Ok(getNameAndDesc);
+            var output = _mapper.Map<IEnumerable<DepartmentDto>>(result);
+            return Ok(output);
         }
 
-        // GET: api/Department/GetAllWithSpicialist
-        [HttpGet("GetAllWithSpecialist")]
-        public async Task<IActionResult> GetAllWithSpecialist()
+        // GET: api/Department/GetAllWithData
+        [HttpGet("GetAllWithData")]
+        public async Task<IActionResult> GetAllWithData()
         {
-            var result = await _departmentService.GetAllWithIncludeAsync(new List<string>() { "specialists" });
-            var getAllDepartmentWithSpecialist = result.Select(d => new { d.Id, d.Name, d.Description, Specialists = d.specialists.Select(d=> new {d.Id , d.SpecialistName }) });
-            if (getAllDepartmentWithSpecialist == null)
+            var result = await _departmentService.GetAllWithData();
+            if (result == null)
                 return NotFound();
-            return Ok(getAllDepartmentWithSpecialist);
+            var output = _mapper.Map<IEnumerable<DepartmentDto>>(result);
+            return Ok(output);
         }
-        [HttpGet("GetAllWithDoctor")]
-        public async Task<IActionResult> GetAllWithDoctor()
-        {
-            var result = await _departmentService.GetAllWithIncludeAsync(new List<string>() { "doctors" });
-            var GetAllWithDoctor = result.Select(d => new { d.Id, d.Name, d.Description, d.doctors });
-            if (GetAllWithDoctor == null)
-                return NotFound();
-            return Ok(GetAllWithDoctor);
-        }
-        // GET: api/Department/GetAllWithSpicialistAndDoctors
-        [HttpGet("GetAllWithSpicialistAndDoctors")]
-        public async Task<IActionResult> GetAllWithSpicialistAndDoctors()
-        {
-            var result = await _departmentService.GetAllWithIncludeAsync(new List<string>() { "specialists" , "doctors" });
-            var getAllDepartmentWithSpecialist = result.Select(d => new { d.Id, d.Name, d.Description, Specialists = d.specialists.Select(d => new { d.Id, d.SpecialistName }) , d.doctors });
-            if (getAllDepartmentWithSpecialist == null)
-                return NotFound();
-            return Ok(getAllDepartmentWithSpecialist);
-        }
-
 
         // GET: api/Department/GetAllPagination
         [HttpGet("GetAllPagination")]

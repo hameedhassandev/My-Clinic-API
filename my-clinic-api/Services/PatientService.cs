@@ -10,6 +10,12 @@ namespace my_clinic_api.Services
         public PatientService(ApplicationDbContext Context) : base(Context)
         {
         }
+        public async Task<IEnumerable<Patient>> GetAllPatientsWithData()
+        {
+            var patients = await GetAllWithData();
+            if (patients == null) return Enumerable.Empty<Patient>();
+            return patients;
+        }
 
         public async Task<Patient> FindPatientByIdAsync(string patientId)
         {
@@ -17,10 +23,11 @@ namespace my_clinic_api.Services
             var Patient = await FindAsync(predicate);
             return Patient;
         }
-        public async Task<Patient> FindPatientByIdWithIncludeAsync(string patientId)
+        public async Task<Patient> FindPatientByIdWithData(string patientId)
         {
             Expression<Func<Patient , bool>> predicate = h => h.Id == patientId;
-            var Patient = await FindWithIncludesAsync(predicate, new List<string> { "RateAndReviews", "Bookings" });
+            var data = GetCollections(typeof(Patient));
+            var Patient = await FindWithIncludesAsync(predicate, data );
             return Patient;
         }
     }

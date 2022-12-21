@@ -33,16 +33,40 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
-        // GET: api/Specialist/GetAllWithDoctors
-        [HttpGet("GetAllWithDoctors")]
-        public async Task<IActionResult> GetAllWithDoctors()
+        // GET: api/Specialist/GetAllWithData
+        [HttpGet("GetAllWithData")]
+        public async Task<IActionResult> GetAllWithData()
         {
-            var result = await _specialistService.GetAllWithIncludeAsync(new List<string>() { "Doctores" });
+            var result = await _specialistService.GetAllWithData();
             if (result == null)
                 return NotFound();
-            var output = _mapper.Map<IEnumerable<SpecialistsDto>>(result);
+            var output = _mapper.Map<IEnumerable<SpecialistDto>>(result);
 
             return Ok(output);
         }
+
+        // GET: api/Specialist/GetById/5
+        [HttpGet("GetById/{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+
+            var result = await _specialistService.FindByIdAsync(id);
+            if (result == null)
+                return NotFound();
+            var output = _mapper.Map<SpecialistDto>(result);
+            return Ok(output);
+        }
+        // GET: api/Specialist/GetByIdWithData/5
+        [HttpGet("GetByIdWithData/{id}")]
+        public async Task<IActionResult> GetByIdWithData(int id)
+        {
+
+            var result = await _specialistService.FindSpecialistByIdWithData(id);
+            if (result == null)
+                return NotFound();
+            var output = _mapper.Map<SpecialistDto>(result);
+            return Ok(output);
+        }
+
     }
 }

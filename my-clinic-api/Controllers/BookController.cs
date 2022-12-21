@@ -27,10 +27,19 @@ namespace my_clinic_api.Controllers
         }
         
 
-        [HttpGet("GetAllBookings")]
-        public async Task<IActionResult> GetAllBookings()
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAll()
         {
             var Bookings = await _bookService.GetAllAsync();
+
+            if (Bookings == null) return NotFound();
+            var result = _mapper.Map<IEnumerable<BookDto>>(Bookings);
+            return Ok(result);
+        }
+        [HttpGet("GetAllWithData")]
+        public async Task<IActionResult> GetAllWithData()
+        {
+            var Bookings = await _bookService.GetAllWithData();
 
             if (Bookings == null) return NotFound();
             var result = _mapper.Map<IEnumerable<BookDto>>(Bookings);
@@ -39,6 +48,8 @@ namespace my_clinic_api.Controllers
         [HttpPost("AddBook")]
         public async Task<IActionResult> AddBook([FromForm] BookDto dto)
         {
+            //check that the time not passed
+            if (dto.Time < DateTime.Now) return NotFound("This time has passed!");
             //Check if doctor has no working days
             var allTimes = await _timesOfWorkService.GetTimesOfDoctor(dto.DoctorId);
             if(allTimes == null || !allTimes.Any()) return NotFound("This doctor is not available!");
@@ -50,8 +61,7 @@ namespace my_clinic_api.Controllers
             //Ensure that no bookings at same time 
             var checkBookIsAvailable = await _bookService.IsBookAvailable(dto); 
             if (!checkBookIsAvailable) return NotFound("This time is already booked!");
-            //check that the time not passed
-            if (dto.Time < DateTime.Now) return NotFound("This time has passed!");
+            
             var book = new Book
             {
                 DoctorId = dto.DoctorId,
@@ -64,7 +74,7 @@ namespace my_clinic_api.Controllers
                     timeOfDay.EndWork.TimeOfDay.Seconds),
             };
             var result = await _bookService.AddAsync(book);
-            var output = _mapper.Map<IEnumerable<BookDto>>(result);
+            var output = _mapper.Map<BookDto>(result);
             _bookService.CommitChanges();
             return Ok(output);
 

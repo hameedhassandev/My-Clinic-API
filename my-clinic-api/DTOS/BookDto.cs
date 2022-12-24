@@ -5,12 +5,16 @@ namespace my_clinic_api.DTOS
 {
     public class BookDto
     {
-        public int Id { get; set; } = 0;
+        public int Id { get; set; } 
 
         [Required]
         [DisplayFormat(DataFormatString = "{dddd/dd/MMMM/yyyy}")]
         public DateTime Time { get; set; }
 
+        public DateTime? CreatedAt { get; set; }
+
+        [DisplayFormat(DataFormatString = "{dddd/dd/MMMM/yyyy}")]
+        public DateTime? ExpiryDate { get; set; }
         public bool IsConfirmed { get; set; } = false;
 
         [Required]

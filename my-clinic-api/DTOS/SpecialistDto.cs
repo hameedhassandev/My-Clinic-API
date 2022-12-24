@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace my_clinic_api.DTOS
 {
-    public class SpecialistsDto
+    public class SpecialistDto
     {
         [Required]
         public int Id { get; set; }

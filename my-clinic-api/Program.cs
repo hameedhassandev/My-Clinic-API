@@ -68,6 +68,13 @@ builder.Services.AddControllers()
         //options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Ignore;
     });
 
+
+//add cors service to test api to test it 
+builder.Services.AddCors(policyBuilder =>
+    policyBuilder.AddDefaultPolicy(policy =>
+        policy.WithOrigins("*").AllowAnyHeader().AllowAnyHeader())
+);
+
 builder.Services.AddScoped<IHospitalService, HospitalService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IInsuranceService, InsuranceService>();
@@ -79,6 +86,7 @@ builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<ITimesOfWorkService, TimesOfWorkService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IComparer2Lists, Comparer2Lists>();
+builder.Services.AddScoped<IEnumBaseRepositry, EnumBaseRepositry>();
 
 
 var app = builder.Build();
@@ -97,5 +105,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors();
 
 app.Run();

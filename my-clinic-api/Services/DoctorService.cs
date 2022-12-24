@@ -16,35 +16,21 @@ namespace my_clinic_api.Services
             _context = Context;
 
         }
-
         public async Task<Doctor> FindDoctorByIdAsync(string doctorId)
         {
-
-            var doctor = await _context.doctors.Include(d => d.Department)
-                .Include(s => s.Specialists)
-                .Include(i => i.Insurances)
-                .Include(h => h.Hospitals)
-                .Include(a => a.Area)
-                .Include(r => r.RatesAndReviews).ThenInclude(u=> u.Patient )
-                .FirstOrDefaultAsync(d => d.Id == doctorId);
-                
-
+            Expression<Func<Doctor, bool>> criteria = d=>d.Id == doctorId;
+            var doctor = await FindAsync(criteria);
             return doctor;
         }
 
-      public async Task<IEnumerable<Doctor>> GetAllDoctorAsync()
+        public async Task<Doctor> FindDoctorByIdWithDataAsync(string doctorId)
         {
-            var allDoctors = await _context.doctors.Include(d => d.Department)
-               .Include(s => s.Specialists)
-               .Include(i => i.Insurances)
-               .Include(h => h.Hospitals)
-               .Include(a => a.Area)
-               .Include(r => r.RatesAndReviews).ThenInclude(u => u.Patient)
-               .ToListAsync();
-
-
-            return allDoctors;
+            var data = GetCollections(typeof(Doctor));
+            Expression<Func<Doctor, bool>> criteria = d => d.Id == doctorId;
+            var doctor = await FindWithIncludesAsync(criteria,data);
+            return doctor;
         }
+        
 
         public async Task<int> GetWaitingTimeOfDoctor(string Id)
         {

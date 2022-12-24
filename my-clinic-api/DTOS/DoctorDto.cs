@@ -51,10 +51,12 @@ namespace my_clinic_api.DTOS
         public int DepartmentId { get; set; }
 
         public DepartmentDto? department { get; set; }
-        public ICollection<SpecialistsDto>? Specialists { get; set; }
-        public ICollection<TimesOfWork>? TimesOfWorks { get; set; }
+        public ICollection<SpecialistDto>? Specialists { get; set; }
+        public ICollection<TimesOfWorkDto>? TimesOfWorks { get; set; }
         public ICollection<InsuranceDto>? Insurances { get; set; }
         public virtual ICollection<HospitalDto>? Hospitals { get; set; }
         public ICollection<RateAndReviewDto>? RatesAndReviews { get; set; }
+        public ICollection<BookDto>? Bookings { get; set; }
+
     }
 }

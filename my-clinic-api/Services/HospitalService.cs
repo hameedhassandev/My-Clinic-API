@@ -16,6 +16,13 @@ namespace my_clinic_api.Services
             _doctorService = doctorService; 
         }
 
+        public async Task<Hospital> FindHospitalByIdWithData(int hospitalId)
+        {
+            var data = GetCollections(typeof(Hospital));
+            Expression<Func<Hospital, bool>> criteria = d => d.Id == hospitalId;
+            var hospital = await FindWithIncludesAsync(criteria, data);
+            return hospital;
+        }
         public async Task<IEnumerable<Hospital>> HospitalNameIsExist(string hospitalName)
         {
             Expression<Func<Hospital, bool>> predicate = h => h.Name.Equals(hospitalName);
@@ -41,9 +48,9 @@ namespace my_clinic_api.Services
 
         public async Task<bool> AddHospitalToDoctor(string doctorId, int HospitalId)
         {
-            var Hospital = await GetByIdAsync(HospitalId);
+            var Hospital = await FindByIdAsync(HospitalId);
 
-            var doctor = await _doctorService.FindDoctorByIdAsync(doctorId);
+            var doctor = await _doctorService.FindDoctorByIdWithDataAsync(doctorId);
             if (doctor == null)
                 return false;
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using my_clinic_api.DTOS;
 using my_clinic_api.Interfaces;
@@ -13,35 +14,36 @@ namespace my_clinic_api.Controllers
     public class InsuranceController : ControllerBase
     {
         private readonly IInsuranceService _insuranceService;
+        private readonly IMapper _mapper;
 
-        public InsuranceController(IInsuranceService insuranceService)
+
+        public InsuranceController(IInsuranceService insuranceService, IMapper mapper)
         {
             _insuranceService = insuranceService;
+            _mapper = mapper;
         }
         // GET: api/Insurance/GetInsuranceById/{id}
         [HttpGet("GetInsuranceById/{id}")]
         public async Task<IActionResult> GetInsuranceById(int id)
         {
 
-            var result = await _insuranceService.GetByIdAsync(id);
-            var obj = new  { Id = result.Id, CompanyName = result.CompanyName, Discount = result.Discount};
-           
-
-            if (obj == null)
-                return NotFound();
-
-            return Ok(obj);
-        }
-        // GET: api/Insurance/GetInsuranceByIdWithDoctors/{id}
-        [HttpGet("GetInsuranceWithDoctorsById/{id}")]
-        public async Task<IActionResult> GetInsuranceWithDoctorsById(int id )
-        {
-            var result = await _insuranceService.GetByIdWithIncludeAsync(id ,  "doctors" , "Collection");
+            var result = await _insuranceService.FindByIdAsync(id);
 
             if (result == null)
                 return NotFound();
-
+            var output = _mapper.Map<InsuranceDto>(result);    
             return Ok(result);
+        }
+        // GET: api/Insurance/GetInsuranceByIdWithDoctors/{id}
+        [HttpGet("GetInsuranceWithDataById/{id}")]
+        public async Task<IActionResult> GetInsuranceWithDoctorsById(int id )
+        {
+            var result = await _insuranceService.FindInsuranceByIdWithData(id);
+
+            if (result == null)
+                return NotFound();
+            var output = _mapper.Map<InsuranceDto>(result);
+            return Ok(output);
         }
 
 
@@ -51,22 +53,21 @@ namespace my_clinic_api.Controllers
         {
 
             var result = await _insuranceService.GetAllAsync();
-            var output = result.Select(d => new { d.Id, d.CompanyName, d.Discount });
-
-            if (output == null)
+            if (result == null)
                 return NotFound();
+            var output = _mapper.Map<IEnumerable<InsuranceDto>>(result);
             return Ok(output);
         }
 
-        // GET: api/Insurance/GetAllWithDoctors
-        [HttpGet("GetAllWithDoctors")]
-        public async Task<IActionResult> GetAllWithDoctors()
+        // GET: api/Insurance/GetAllWithData
+        [HttpGet("GetAllWithData")]
+        public async Task<IActionResult> GetAllWithData()
         {
-            var result = await _insuranceService.GetAllWithIncludeAsync(new List<string>() { "doctors" });
-            var getAllWithDoctors = result.Select(d => new { d.Id, d.CompanyName, d.Discount , d.doctors });
-            if (getAllWithDoctors == null)
+            var result = await _insuranceService.GetAllWithData();
+            if (result == null)
                 return NotFound();
-            return Ok(getAllWithDoctors);
+            var output = _mapper.Map<IEnumerable<InsuranceDto>>(result);
+            return Ok(output);
         }
         // GET: api/Insurance/GetAllPagination
         [HttpGet("GetAllPagination")]
@@ -134,7 +135,7 @@ namespace my_clinic_api.Controllers
         [HttpPut("UpadteInsurance")]
         public async Task<IActionResult> UpadteInsurance(int id, [FromForm] InsuranceDto dto)
         {
-            var insurance = await _insuranceService.GetByIdAsync(id);
+            var insurance = await _insuranceService.FindByIdAsync(id);
             if (insurance == null)
                 return NotFound($"No insurance was found with ID {id}");
             if (insurance.CompanyName == dto.CompanyName && insurance.Discount == dto.Discount)
@@ -154,13 +155,10 @@ namespace my_clinic_api.Controllers
         [HttpDelete("DeleteInsurance")]
         public async Task<IActionResult> DeleteInsurance(int id)
         {
-            var insurance = await _insuranceService.GetByIdAsync(id);
-
+            var insurance = await _insuranceService.FindByIdAsync(id);
             if (insurance == null)
                 return NotFound($"No insurance was found with ID {id}");
-
             var result = _insuranceService.Delete(insurance);
-
             _insuranceService.CommitChanges();
             return Ok(result);
         }

@@ -169,7 +169,7 @@ namespace my_clinic_api.Controllers
 
             hospital.Name = dto.Name;
             hospital.Address = dto.Address;
-            var result =  _hospitalService.Update(hospital);
+            var result = await _hospitalService.Update(hospital);
 
             _hospitalService.CommitChanges();
             return Ok(result);
@@ -183,7 +183,7 @@ namespace my_clinic_api.Controllers
             if (hospital == null)
                 return NotFound($"No hospital was found with ID {id}");
 
-            var result = _hospitalService.Delete(hospital);
+            var result = await _hospitalService.Delete(hospital);
 
             _hospitalService.CommitChanges();
             return Ok(result);

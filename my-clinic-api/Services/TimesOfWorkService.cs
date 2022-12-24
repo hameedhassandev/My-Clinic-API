@@ -16,7 +16,7 @@ namespace my_clinic_api.Services
         {
             var data = GetCollections(typeof(TimesOfWork));
             Expression<Func<TimesOfWork, bool>> criteria = d => d.Id == timeId;
-            var time = await FindWithIncludesAsync(criteria, data);
+            var time = await FindWithData(criteria);
             return time;
         }
 

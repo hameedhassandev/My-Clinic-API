@@ -81,7 +81,7 @@ namespace my_clinic_api.Controllers
                 return BadRequest("There is another area has this name!");
             area.AreaName = dto.AreaName;
             area.City = dto.City;
-            var result = _areaService.Update(area);
+            var result = await _areaService.Update(area);
 
             _areaService.CommitChanges();
             return Ok(result);
@@ -95,7 +95,7 @@ namespace my_clinic_api.Controllers
             if (area == null)
                 return NotFound($"No area was found with ID {id}");
 
-            var result = _areaService.Delete(area);
+            var result = await _areaService.Delete(area);
 
             _areaService.CommitChanges();
             return Ok(result);

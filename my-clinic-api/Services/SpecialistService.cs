@@ -16,7 +16,7 @@ namespace my_clinic_api.Services
         {
             var data = GetCollections(typeof(Specialist));
             Expression<Func<Specialist, bool>> criteria = d => d.Id == specialistId;
-            var specialist = await FindWithIncludesAsync(criteria, data);
+            var specialist = await FindWithData(criteria);
             return specialist;
         }
         public async Task<bool> AddSpecialistToDoctor(string doctorId, int specialistId)

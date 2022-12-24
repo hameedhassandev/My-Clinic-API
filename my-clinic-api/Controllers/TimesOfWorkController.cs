@@ -151,7 +151,7 @@ namespace my_clinic_api.Controllers
                 doctorId = dto.doctorId
             };
             if (!ModelState.IsValid) return BadRequest();
-            var result = _timesOfWorkService.Update(time);
+            var result = await _timesOfWorkService.Update(time);
             var output = _mapper.Map<TimesOfWorkDto>(result);
             _timesOfWorkService.CommitChanges();
             return Ok(output);
@@ -162,7 +162,7 @@ namespace my_clinic_api.Controllers
         {
             var time = await _timesOfWorkService.FindByIdAsync(TimeIdo);
             if (time == null) return BadRequest("No time was found");
-            var result = _timesOfWorkService.Delete(time);
+            var result = await _timesOfWorkService.Delete(time);
             var output = _mapper.Map<TimesOfWorkDto>(result);
             _timesOfWorkService.CommitChanges();
             return Ok(output);

@@ -20,7 +20,7 @@ namespace my_clinic_api.Services
         {
             var data = GetCollections(typeof(Hospital));
             Expression<Func<Hospital, bool>> criteria = d => d.Id == hospitalId;
-            var hospital = await FindWithIncludesAsync(criteria, data);
+            var hospital = await FindWithData(criteria);
             return hospital;
         }
         public async Task<IEnumerable<Hospital>> HospitalNameIsExist(string hospitalName)

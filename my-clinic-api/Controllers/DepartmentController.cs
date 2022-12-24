@@ -143,7 +143,7 @@ namespace my_clinic_api.Controllers
                 return BadRequest("There is another hospital has this name!");
             department.Name = dto.Name;
             department.Description = dto.Description;
-            var result = _departmentService.Update(department);
+            var result = await _departmentService.Update(department);
 
             _departmentService.CommitChanges();
             return Ok(result);
@@ -158,7 +158,7 @@ namespace my_clinic_api.Controllers
             if (department == null)
                 return NotFound($"No department was found with ID {id}");
 
-            var result = _departmentService.Delete(department);
+            var result = await _departmentService.Delete(department);
 
             _departmentService.CommitChanges();
             return Ok(result);

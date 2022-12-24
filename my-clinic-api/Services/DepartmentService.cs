@@ -16,7 +16,7 @@ namespace my_clinic_api.Services
         {
             var data = GetCollections(typeof(Department));
             Expression<Func<Department, bool>> criteria = d => d.Id == departmentId;
-            var department = await FindWithIncludesAsync(criteria, data);
+            var department = await FindWithData(criteria);
             return department;
         }
 

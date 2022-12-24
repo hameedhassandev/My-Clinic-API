@@ -19,7 +19,7 @@ namespace my_clinic_api.Services
         {
             var data = GetCollections(typeof(Insurance));
             Expression<Func<Insurance, bool>> criteria = d => d.Id == insuranceId;
-            var insurance = await FindWithIncludesAsync(criteria, data);
+            var insurance = await FindWithData(criteria);
             return insurance;
         }
         public async Task<bool> AddInsuranceToDoctor(string doctorId, int InsurancelId)

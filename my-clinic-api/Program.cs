@@ -87,6 +87,7 @@ builder.Services.AddScoped<ITimesOfWorkService, TimesOfWorkService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IComparer2Lists, Comparer2Lists>();
 builder.Services.AddScoped<IEnumBaseRepositry, EnumBaseRepositry>();
+builder.Services.AddScoped<IRateandReviewService, RateandReviewService>();
 
 
 var app = builder.Build();

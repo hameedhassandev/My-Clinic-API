@@ -145,7 +145,7 @@ namespace my_clinic_api.Controllers
                 return BadRequest("There is another insurance has this name!");
             insurance.CompanyName = dto.CompanyName;
             insurance.Discount = dto.Discount;
-            var result = _insuranceService.Update(insurance);
+            var result = await _insuranceService.Update(insurance);
 
             _insuranceService.CommitChanges();
             return Ok(result);
@@ -158,7 +158,7 @@ namespace my_clinic_api.Controllers
             var insurance = await _insuranceService.FindByIdAsync(id);
             if (insurance == null)
                 return NotFound($"No insurance was found with ID {id}");
-            var result = _insuranceService.Delete(insurance);
+            var result = await _insuranceService.Delete(insurance);
             _insuranceService.CommitChanges();
             return Ok(result);
         }

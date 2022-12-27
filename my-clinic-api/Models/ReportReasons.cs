@@ -2,7 +2,7 @@
 
 namespace my_clinic_api.Models
 {
-    public class Problem
+    public class ReportReasons
     {
         public int Id { get; set; }
 

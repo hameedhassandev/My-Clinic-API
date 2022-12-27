@@ -112,13 +112,14 @@ namespace my_clinic_api.Services
         }
         public List<string> GetCollections(Type entityType)
         {
-            return entityType.GetProperties()
-                                .Where(p => (typeof(IEnumerable).IsAssignableFrom(p.PropertyType) 
-                                    && p.PropertyType != typeof(string)) 
-                                    && p.PropertyType != typeof(byte[]) 
+            var col = entityType.GetProperties()
+                                .Where(p => (typeof(IEnumerable).IsAssignableFrom(p.PropertyType)
+                                    && p.PropertyType != typeof(string))
+                                    && p.PropertyType != typeof(byte[])
                                     || p.PropertyType.Namespace == entityType.Namespace)
                                 .Select(p => p.Name)
-            .ToList();
+                                .ToList();
+            return col;
             
         }
         

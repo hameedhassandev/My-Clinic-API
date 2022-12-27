@@ -88,6 +88,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IComparer2Lists, Comparer2Lists>();
 builder.Services.AddScoped<IEnumBaseRepositry, EnumBaseRepositry>();
 builder.Services.AddScoped<IRateandReviewService, RateandReviewService>();
+builder.Services.AddScoped<IReasonService, ReasonService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 
 
 var app = builder.Build();
@@ -99,6 +101,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication(); 
@@ -106,6 +109,11 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Redirect}/{action=Index}");
+
 
 app.UseCors();
 

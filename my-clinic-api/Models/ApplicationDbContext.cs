@@ -35,6 +35,6 @@ namespace my_clinic_api.Models
         public DbSet<RateAndReview> RatesAndReviews { get; set; }
         public DbSet<Book> Bookings { get; set; }
         public DbSet<Report> Reports { get; set; }
-        public DbSet<Problem> Problems { get; set; }
+        public DbSet<ReportReasons> ReportReasons { get; set; }
     }
 }

@@ -10,10 +10,10 @@ namespace my_clinic_api.Models
         [Required, MaxLength(200)]
         public string? Description { get; set; }
 
-        public Problem? Problem { get; set; }
+        public ReportReasons? Reason { get; set; }
 
         [Required]
-        public int ProblemId { get; set; }
+        public int ReasonId { get; set; }
         public Doctor? Doctor { get; set; }
 
         [Required]

@@ -5,7 +5,6 @@ namespace my_clinic_api.Interfaces
     public interface IBaseRepository<T>
     {
         Task<T> FindByIdAsync(int id);
-        //Task<T> FindByIdWithIncludeAsync(int id , string Include, string navType);
         Task<T> AddAsync(T entity);
         Task<T> Update(T entity);
         Task<T> Delete(T entity);

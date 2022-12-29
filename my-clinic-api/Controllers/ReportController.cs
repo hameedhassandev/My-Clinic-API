@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using my_clinic_api.DTOS;
+using my_clinic_api.DTOS.CreateDto;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
@@ -68,10 +69,10 @@ namespace my_clinic_api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddReport([FromForm] AddReportDto addReportDto)
+        public async Task<IActionResult> AddReport([FromForm] CreateReportDto addReportDto)
         {
             if(!ModelState.IsValid) return BadRequest(ModelState);
-            var report = await _repotService.AddReport((ReportDto)addReportDto);
+            var report = await _repotService.AddReport(addReportDto);
             if (report == null || report.Id == 0) return BadRequest(ModelState);
             return Ok(report);
         }

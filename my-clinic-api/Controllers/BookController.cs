@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using my_clinic_api.DTOS;
+using my_clinic_api.DTOS.CreateDto;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
@@ -55,7 +56,7 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
         [HttpPost("AddBook")]
-        public async Task<IActionResult> AddBook([FromForm] BookDto dto)
+        public async Task<IActionResult> AddBook([FromForm] CreateBookDto dto)
         {
             var add = await _bookService.AddBook(dto);
             if (add != "Success") return BadRequest(add);

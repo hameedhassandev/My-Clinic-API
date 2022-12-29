@@ -4,6 +4,7 @@ using my_clinic_api.DTOS;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
+using System.ComponentModel.DataAnnotations;
 
 namespace my_clinic_api.Controllers
 {
@@ -69,7 +70,7 @@ namespace my_clinic_api.Controllers
 
         //PUT:api/Area/UpadteArea/id
         [HttpPut("UpadteArea")]
-        public async Task<IActionResult> UpadteArea(int id, [FromForm] AreaDto dto)
+        public async Task<IActionResult> UpadteArea([FromForm, Required] int id, [FromForm] AreaDto dto)
         {
             var area = await _areaService.FindByIdAsync(id);
             if (area == null)
@@ -88,7 +89,7 @@ namespace my_clinic_api.Controllers
         }
 
         [HttpDelete("DeleteArea")]
-        public async Task<IActionResult> DeleteArea(int id)
+        public async Task<IActionResult> DeleteArea([FromForm, Required] int id)
         {
             var area = await _areaService.FindByIdAsync(id);
 

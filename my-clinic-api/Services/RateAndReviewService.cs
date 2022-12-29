@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using my_clinic_api.DTOS;
+using my_clinic_api.DTOS.CreateDto;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using System.Linq.Expressions;
@@ -33,7 +34,7 @@ namespace my_clinic_api.Services
             return reviews;
         }
 
-        public async Task<RateAndReview> AndRateAndReview(RateAndReviewDto rateAndReviewDto)
+        public async Task<RateAndReview> AndRateAndReview(CreateRateAndReviewDto rateAndReviewDto)
         {
             var review = new RateAndReview
             {

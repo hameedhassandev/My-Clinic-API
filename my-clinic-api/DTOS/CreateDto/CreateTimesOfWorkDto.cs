@@ -1,12 +1,10 @@
 ﻿using my_clinic_api.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace my_clinic_api.DTOS
+namespace my_clinic_api.DTOS.CreateDto
 {
-    public class TimesOfWorkDto
+    public class CreateTimesOfWorkDto
     {
-        public int Id { get; set; }
-
         [Required]
 
         public Days day { get; set; }
@@ -18,7 +16,6 @@ namespace my_clinic_api.DTOS
         [Required]
         public DateTime EndWork { get; set; }
 
-        public Doctor Doctor { get; set; }
         [Required]
         public string? doctorId { get; set; }
     }

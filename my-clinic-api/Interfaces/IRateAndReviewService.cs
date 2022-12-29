@@ -1,4 +1,5 @@
 ﻿using my_clinic_api.DTOS;
+using my_clinic_api.DTOS.CreateDto;
 using my_clinic_api.Models;
 
 namespace my_clinic_api.Interfaces
@@ -8,6 +9,6 @@ namespace my_clinic_api.Interfaces
         Task<RateAndReview> FindReviewByIdWithData(int reviewId);
         Task<IEnumerable<RateAndReview>> GetReviewsOfDoctor(string doctorId);
         Task<IEnumerable<RateAndReview>> GetReviewsOfPatient(string patientId);
-        Task<RateAndReview> AndRateAndReview(RateAndReviewDto rateAndReviewDto);
+        Task<RateAndReview> AndRateAndReview(CreateRateAndReviewDto rateAndReviewDto);
     }
 }

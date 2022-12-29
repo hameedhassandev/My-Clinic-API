@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using my_clinic_api.DTOS;
+using my_clinic_api.DTOS.CreateDto;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using System.Linq.Expressions;
@@ -19,7 +20,7 @@ namespace my_clinic_api.Services
             return report;
         }
 
-        public async Task<Report> AddReport(ReportDto reportDto)
+        public async Task<Report> AddReport(CreateReportDto  reportDto)
         {
             var report = new Report
             {

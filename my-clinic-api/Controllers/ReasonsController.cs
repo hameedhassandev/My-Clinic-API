@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace my_clinic_api.Controllers
 {
@@ -49,7 +50,7 @@ namespace my_clinic_api.Controllers
         }
 
         [HttpPost("AddReason")]
-        public async Task<IActionResult> AddReason([FromForm] string reasonName)
+        public async Task<IActionResult> AddReason([FromForm , Required] string reasonName)
         {
             var reason = new ReportReasons
             {
@@ -62,7 +63,7 @@ namespace my_clinic_api.Controllers
         }
 
         [HttpDelete("DeleteReason")]
-        public async Task<IActionResult> DeleteReason([FromForm] int reasonId)
+        public async Task<IActionResult> DeleteReason([FromForm, Required] int reasonId)
         {
             var reason = await _reasonService.FindByIdAsync(reasonId);
             if (reason is null) return BadRequest("No reason in this id");

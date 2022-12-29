@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using my_clinic_api.DTOS;
+using my_clinic_api.DTOS.CreateDto;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace my_clinic_api.Controllers
 {
@@ -73,7 +75,7 @@ namespace my_clinic_api.Controllers
         }
 
         [HttpPost("AddRateAndReview")]
-        public async Task<IActionResult> AddRateAndReview([FromBody] RateAndReviewDto rateAndReviewDto)
+        public async Task<IActionResult> AddRateAndReview([FromForm] CreateRateAndReviewDto rateAndReviewDto)
         {
             if (rateAndReviewDto == null) return BadRequest("RateAndReview is required");
             else if (!ModelState.IsValid) return BadRequest("RateAndReview is invalid");
@@ -84,7 +86,7 @@ namespace my_clinic_api.Controllers
         }
 
         [HttpDelete("DeleteRateAndReview")]
-        public async Task<IActionResult> DeleteRateAndReview ([FromForm]int reviewId , [FromForm] string patientId)
+        public async Task<IActionResult> DeleteRateAndReview ([FromForm, Required] int reviewId , [FromForm, Required] string patientId)
         {
             var review = await _rateandreviewService.FindByIdAsync(reviewId);
             if (review is not null)

@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using my_clinic_api.DTOS;
+using my_clinic_api.DTOS.CreateDto;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
+using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -56,6 +59,7 @@ namespace my_clinic_api.Controllers
             var output = _mapper.Map<SpecialistDto>(result);
             return Ok(output);
         }
+
         // GET: api/Specialist/GetByIdWithData/5
         [HttpGet("GetByIdWithData/{id}")]
         public async Task<IActionResult> GetByIdWithData(int id)
@@ -66,6 +70,46 @@ namespace my_clinic_api.Controllers
                 return NotFound();
             var output = _mapper.Map<SpecialistDto>(result);
             return Ok(output);
+        }
+
+        [HttpPost("AddSpecialist")]
+        public async Task<IActionResult> AddSpecialist([FromForm] CreateSpecialistDto dto)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+            Expression<Func<Specialist, bool>> criteria = d => d.SpecialistName == dto.SpecialistName;
+            var check = await _specialistService.FindWithData(criteria);
+            if (check is not null) return BadRequest("There ar another specialist in the same name!");
+            var specialist = new Specialist
+            {
+                SpecialistName = dto.SpecialistName,
+                departmentId = dto.departmentId,
+            };
+            var result = await _specialistService.AddAsync(specialist);
+            _specialistService.CommitChanges();
+            if (result.Id == 0) return NotFound();
+            return Ok(result);
+        }
+
+        [HttpDelete("DeleteSpecialist")]
+        public async Task<IActionResult> DeleteSpecialist([FromForm, Required] int specialisId)
+        {
+            var specialist = await _specialistService.FindByIdAsync(specialisId);
+            if (specialist == null) return NotFound("No specialist found in this id!");
+
+
+            var result = await _specialistService.Delete(specialist);
+            _specialistService.CommitChanges();
+            if (result.Id == 0) return NotFound();
+            return Ok(result);
+        }
+
+        [HttpPost("AddSpecialistToDoctor")]
+        public async Task<IActionResult> AddSpecialistToDoctor([FromForm, Required] string doctorId, [FromForm, Required] int specialistId)
+        {
+            var result = await _specialistService.AddSpecialistToDoctor(doctorId, specialistId);
+            if (result)
+                return Ok("Specialist Added Successfully");
+            return BadRequest();
         }
 
     }

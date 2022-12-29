@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using my_clinic_api.DTOS;
+using my_clinic_api.DTOS.CreateDto;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 
 namespace my_clinic_api.Controllers
@@ -112,7 +114,7 @@ namespace my_clinic_api.Controllers
         }
         // Post: api/Insurance/AddInsurance
         [HttpPost("AddInsurance")]
-        public async Task<IActionResult> AddInsurance([FromForm] InsuranceDto dto)
+        public async Task<IActionResult> AddInsurance([FromForm] CreateInsuranceDto dto)
         {
             var insurance = new Insurance
             {
@@ -133,7 +135,7 @@ namespace my_clinic_api.Controllers
 
         //PUT:api/Insurance/UpadteInsurance
         [HttpPut("UpadteInsurance")]
-        public async Task<IActionResult> UpadteInsurance(int id, [FromForm] InsuranceDto dto)
+        public async Task<IActionResult> UpadteInsurance([FromForm, Required] int id, [FromForm] CreateInsuranceDto dto)
         {
             var insurance = await _insuranceService.FindByIdAsync(id);
             if (insurance == null)
@@ -153,7 +155,7 @@ namespace my_clinic_api.Controllers
 
         //DELETE:api/Insurance/DeleteInsurance
         [HttpDelete("DeleteInsurance")]
-        public async Task<IActionResult> DeleteInsurance(int id)
+        public async Task<IActionResult> DeleteInsurance([FromForm, Required] int id)
         {
             var insurance = await _insuranceService.FindByIdAsync(id);
             if (insurance == null)

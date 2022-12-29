@@ -2,9 +2,11 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using my_clinic_api.DTOS;
+using my_clinic_api.DTOS.CreateDto;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 
 namespace my_clinic_api.Controllers
@@ -169,7 +171,7 @@ namespace my_clinic_api.Controllers
         }
 
         [HttpPost("AddTimeToDoctor")]
-        public async Task<IActionResult> AddTimeToDoctor([FromForm] TimesOfWorkDto dto)
+        public async Task<IActionResult> AddTimeToDoctor([FromForm] CreateTimesOfWorkDto dto)
         {
             var add = await _timesOfWorkService.AddTimetoDoctor(dto);
             /// Return problem same as AddBook Function 
@@ -178,7 +180,7 @@ namespace my_clinic_api.Controllers
         }
 
         [HttpPut("UpdateTimeOfDoctor")]
-        public async Task<IActionResult> UpdateTimeOfDoctor(int TimeId, [FromBody] TimesOfWorkDto dto)
+        public async Task<IActionResult> UpdateTimeOfDoctor([FromForm, Required] int TimeId, [FromForm] CreateTimesOfWorkDto dto)
         {
             var checkIsExist = await _timesOfWorkService.FindByIdAsync(TimeId);
             if (checkIsExist == null) return BadRequest();
@@ -201,9 +203,9 @@ namespace my_clinic_api.Controllers
 
         }
         [HttpDelete("DeleteTimeOfDoctor")]
-        public async Task<IActionResult> DeleteTimeOfDoctor([FromForm] int TimeIdo)
+        public async Task<IActionResult> DeleteTimeOfDoctor([FromForm, Required] int TimeId)
         {
-            var time = await _timesOfWorkService.FindByIdAsync(TimeIdo);
+            var time = await _timesOfWorkService.FindByIdAsync(TimeId);
             if (time == null) return BadRequest("No time was found");
             var result = await _timesOfWorkService.Delete(time);
             var output = _mapper.Map<TimesOfWorkDto>(result);

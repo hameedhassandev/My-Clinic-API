@@ -45,6 +45,15 @@ namespace my_clinic_api.Controllers
             var result = _mapper.Map<IEnumerable<BookDto>>(Bookings);
             return Ok(result);
         }
+
+        [HttpGet("GetBookingsOfDoctor")]
+        public async Task<IActionResult> GetBookingsOfDoctor(string doctorId)
+        {
+            var Bookings = await _bookService.GetBookingsOfDoctor(doctorId);
+            if (Bookings == null) return NotFound();
+            var result = _mapper.Map<IEnumerable<BookDto>>(Bookings);
+            return Ok(result);
+        }
         [HttpPost("AddBook")]
         public async Task<IActionResult> AddBook([FromForm] BookDto dto)
         {

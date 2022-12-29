@@ -22,6 +22,9 @@ namespace my_clinic_api.Models
 
         [Required]
         public string? PatientId { get; set; }
-        
+
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+
     }
 }

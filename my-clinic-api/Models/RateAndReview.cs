@@ -17,5 +17,7 @@ namespace my_clinic_api.Models
         public string? PatientId { get; set; }
         public Doctor? doctor { get; set; }
         public string? doctorId { get; set; }
+
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }

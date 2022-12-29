@@ -84,13 +84,18 @@ namespace my_clinic_api.Controllers
         }
 
         [HttpDelete("DeleteRateAndReview")]
-        public async Task<IActionResult> DeleteRateAndReview (int reviewId)
+        public async Task<IActionResult> DeleteRateAndReview ([FromForm]int reviewId , [FromForm] string patientId)
         {
             var review = await _rateandreviewService.FindByIdAsync(reviewId);
-            var result = await _rateandreviewService.Delete(review);
-            _rateandreviewService.CommitChanges();
-            if (result == null) return NotFound();
-            return Ok(result);
+            if (review is not null)
+                if (review.PatientId == patientId)
+                {
+                    var result = await _rateandreviewService.Delete(review);
+                    _rateandreviewService.CommitChanges();
+                    if (result == null) return NotFound();
+                    return Ok(result);
+                }
+            return NotFound();
         }
     }
 }

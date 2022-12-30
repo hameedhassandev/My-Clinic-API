@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using my_clinic_api.DTOS;
+using my_clinic_api.DTOS.CreateDto;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
@@ -45,8 +46,17 @@ namespace my_clinic_api.Controllers
             var result = _mapper.Map<IEnumerable<BookDto>>(Bookings);
             return Ok(result);
         }
+
+        [HttpGet("GetBookingsOfDoctor")]
+        public async Task<IActionResult> GetBookingsOfDoctor(string doctorId)
+        {
+            var Bookings = await _bookService.GetBookingsOfDoctor(doctorId);
+            if (Bookings == null) return NotFound();
+            var result = _mapper.Map<IEnumerable<BookDto>>(Bookings);
+            return Ok(result);
+        }
         [HttpPost("AddBook")]
-        public async Task<IActionResult> AddBook([FromForm] BookDto dto)
+        public async Task<IActionResult> AddBook([FromForm] CreateBookDto dto)
         {
             var add = await _bookService.AddBook(dto);
             if (add != "Success") return BadRequest(add);

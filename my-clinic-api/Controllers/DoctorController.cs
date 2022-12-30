@@ -78,14 +78,7 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("AddSpecialistToDoctor")]
-        public async Task<IActionResult> AddSpecialistToDoctor(string doctorId , int specialistId)
-        {
-            var result = await _specialistService.AddSpecialistToDoctor(doctorId, specialistId);
-            if (result)
-                return Ok("Specialist Added Successfully");
-            return BadRequest();
-        }
+        
 
     }
 }

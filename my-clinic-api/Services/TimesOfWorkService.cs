@@ -1,4 +1,5 @@
 ﻿using my_clinic_api.DTOS;
+using my_clinic_api.DTOS.CreateDto;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using System.Linq.Expressions;
@@ -16,7 +17,7 @@ namespace my_clinic_api.Services
         {
             var data = GetCollections(typeof(TimesOfWork));
             Expression<Func<TimesOfWork, bool>> criteria = d => d.Id == timeId;
-            var time = await FindWithIncludesAsync(criteria, data);
+            var time = await FindWithData(criteria);
             return time;
         }
 
@@ -28,7 +29,7 @@ namespace my_clinic_api.Services
             return Enumerable.Empty<TimesOfWork>();
         }
 
-        public async Task<bool> TimeIsAvailable(BookDto bookDto)
+        public async Task<bool> TimeIsAvailable(CreateBookDto bookDto)
         {
             var day = bookDto.Time.DayOfWeek;
             var times = await GetTimesOfDoctor(bookDto.DoctorId);
@@ -57,7 +58,7 @@ namespace my_clinic_api.Services
             return Times;
         }
 
-        public async Task<string> AddTimetoDoctor(TimesOfWorkDto dto)
+        public async Task<string> AddTimetoDoctor(CreateTimesOfWorkDto dto)
         {
             Expression<Func<TimesOfWork, bool>> criteria = t => t.doctorId == dto.doctorId && t.day == dto.day;
 

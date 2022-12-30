@@ -2,9 +2,11 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using my_clinic_api.DTOS;
+using my_clinic_api.DTOS.CreateDto;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 
 namespace my_clinic_api.Controllers
@@ -72,9 +74,9 @@ namespace my_clinic_api.Controllers
             var output = _mapper.Map<TimesOfWorkDto>(result);
             return Ok(output);
         }
-        // GET: api/TimesOfWork/GetTimesOfDoctor
-        [HttpGet("GetTimesOfDoctor")]
-        public async Task<IActionResult> GetTimesOfDoctor(string doctorId)
+        // GET: api/TimesOfWork/GetDatesOfDoctor
+        [HttpGet("GetDatesOfDoctor")]
+        public async Task<IActionResult> GetDatesOfDoctor(string doctorId)
         {
 
             var times = await _timesOfWorkService.GetTimesOfDoctor(doctorId);
@@ -83,8 +85,51 @@ namespace my_clinic_api.Controllers
             var result = _mapper.Map<IEnumerable<TimesOfWorkDto>>(times);
             return Ok(result);
         }
-        [HttpGet("GetAvailableTimesOfDoctor")]
-        public async Task<IActionResult> GetAvailableTimesOfDoctor(string doctorId)
+
+        [HttpGet("GetAllTimesOfDoctor")]
+        public async Task<IActionResult> GetAllTimesOfDoctor(string doctorId)
+        {
+
+            var times = await _timesOfWorkService.GetTimesOfDoctor(doctorId);
+            if (!times.Any()) return NotFound("Doctor has no times! ");
+            var bookings = await _bookService.GetBookingsOfDoctor(doctorId);
+            // Filter bookings to remove expierd 
+            bookings = bookings.Where(b =>
+                b.ExpiryDate.Date > DateTime.Now.Date);
+            Dictionary<string, Dictionary<TimeSpan , bool>> days = new Dictionary<string, Dictionary<TimeSpan ,bool>>();
+            //if (!bookings.Any()) return BadRequest("No available times are found");
+
+            var waitingTime = await _doctorService.GetWaitingTimeOfDoctor(doctorId);
+            var i = TimeSpan.Zero;
+            foreach (var time in times)
+            {
+                i = time.StartWork.TimeOfDay;
+                Dictionary<TimeSpan, bool> availables = new Dictionary<TimeSpan, bool>();
+                while (i <= time.EndWork.TimeOfDay)
+                {
+                    if (!bookings.Any(t => t.Time.TimeOfDay == i))
+                    {
+                        availables.Add(i , true);
+                    }
+                    else
+                    {
+                        availables.Add(i , false);
+                    }
+                    var timeToAdd = TimeSpan.FromMinutes(waitingTime);
+                    i = i.Add(timeToAdd);
+                }
+                days.Add(time.day.ToString(), availables);
+
+            }
+
+            if (days == null || !days.Any())
+                return NotFound();
+            return Ok(days);
+        }
+
+
+        [HttpGet("GetAvailableTimesOfDoctorNext3Days")]
+        public async Task<IActionResult> GetAvailableTimesOfDoctorNext3Days(string doctorId)
         {
 
             var times = await _timesOfWorkService.GetTimesOfDoctor(doctorId);
@@ -126,7 +171,7 @@ namespace my_clinic_api.Controllers
         }
 
         [HttpPost("AddTimeToDoctor")]
-        public async Task<IActionResult> AddTimeToDoctor([FromForm] TimesOfWorkDto dto)
+        public async Task<IActionResult> AddTimeToDoctor([FromForm] CreateTimesOfWorkDto dto)
         {
             var add = await _timesOfWorkService.AddTimetoDoctor(dto);
             /// Return problem same as AddBook Function 
@@ -135,7 +180,7 @@ namespace my_clinic_api.Controllers
         }
 
         [HttpPut("UpdateTimeOfDoctor")]
-        public async Task<IActionResult> UpdateTimeOfDoctor(int TimeId, [FromBody] TimesOfWorkDto dto)
+        public async Task<IActionResult> UpdateTimeOfDoctor([FromForm, Required] int TimeId, [FromForm] CreateTimesOfWorkDto dto)
         {
             var checkIsExist = await _timesOfWorkService.FindByIdAsync(TimeId);
             if (checkIsExist == null) return BadRequest();
@@ -151,18 +196,18 @@ namespace my_clinic_api.Controllers
                 doctorId = dto.doctorId
             };
             if (!ModelState.IsValid) return BadRequest();
-            var result = _timesOfWorkService.Update(time);
+            var result = await _timesOfWorkService.Update(time);
             var output = _mapper.Map<TimesOfWorkDto>(result);
             _timesOfWorkService.CommitChanges();
             return Ok(output);
 
         }
         [HttpDelete("DeleteTimeOfDoctor")]
-        public async Task<IActionResult> DeleteTimeOfDoctor([FromForm] int TimeIdo)
+        public async Task<IActionResult> DeleteTimeOfDoctor([FromForm, Required] int TimeId)
         {
-            var time = await _timesOfWorkService.FindByIdAsync(TimeIdo);
+            var time = await _timesOfWorkService.FindByIdAsync(TimeId);
             if (time == null) return BadRequest("No time was found");
-            var result = _timesOfWorkService.Delete(time);
+            var result = await _timesOfWorkService.Delete(time);
             var output = _mapper.Map<TimesOfWorkDto>(result);
             _timesOfWorkService.CommitChanges();
             return Ok(output);

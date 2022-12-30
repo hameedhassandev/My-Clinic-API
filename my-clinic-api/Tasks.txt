@@ -1,4 +1,4 @@
-﻿1 - Rate&Reviews Endpoints 
+﻿1 - Rate&Reviews Endpoints (Done)
 2 - return of (AddBook - AddTimeToDoctor)
 3 - Doctor Reports (Reasons =>(ENUM))
 4 - Check Some nulls

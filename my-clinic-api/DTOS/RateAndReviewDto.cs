@@ -6,15 +6,17 @@ namespace my_clinic_api.DTOS
     public class RateAndReviewDto
     {
         public int Id { get; set; }
-
         [Required]
         public int Rate { get; set; }
 
-        [MaxLength(120)]
+        [Required , MaxLength(120)]
         public string? Review { get; set; }
-        //public PatientReviewDto? User { get; set; }
+
+        public PatientDto? Patient { get; set; }
+        [Required]
         public string? PatientId { get; set; }
-        //public Doctor? doctor { get; set; }
+        public DoctorDto? doctor { get; set; }
+        [Required]
         public string? doctorId { get; set; }
     }
 }

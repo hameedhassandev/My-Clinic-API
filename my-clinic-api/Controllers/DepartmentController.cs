@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using my_clinic_api.DTOS;
+using my_clinic_api.DTOS.CreateDto;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 
 namespace my_clinic_api.Controllers
@@ -110,7 +112,7 @@ namespace my_clinic_api.Controllers
         }
         // Post: api/Department/AddDepartment
         [HttpPost("AddDepartment")]
-        public async Task<IActionResult> AddDepratment([FromForm] DepartmentDto dto)
+        public async Task<IActionResult> AddDepratment([FromForm] CreateDepartmentDto dto)
         {
             var department = new Department
             {
@@ -131,7 +133,7 @@ namespace my_clinic_api.Controllers
 
         //PUT:api/Department/UpadteDepartment
         [HttpPut("UpadteDepartment")]
-        public async Task<IActionResult> UpadteDepartment([FromForm]int id, [FromForm] DepartmentDto dto)
+        public async Task<IActionResult> UpadteDepartment([FromForm , Required]int id, [FromForm] CreateDepartmentDto dto)
         {
             var department = await _departmentService.FindByIdAsync(id);
             if (department == null)
@@ -143,7 +145,7 @@ namespace my_clinic_api.Controllers
                 return BadRequest("There is another hospital has this name!");
             department.Name = dto.Name;
             department.Description = dto.Description;
-            var result = _departmentService.Update(department);
+            var result = await _departmentService.Update(department);
 
             _departmentService.CommitChanges();
             return Ok(result);
@@ -151,14 +153,14 @@ namespace my_clinic_api.Controllers
 
         //DELETE:api/Department/DeleteDepartment
         [HttpDelete("DeleteDepartment")]
-        public async Task<IActionResult> DeleteDepartment([FromForm] int id)
+        public async Task<IActionResult> DeleteDepartment([FromForm , Required] int id)
         {
             var department = await _departmentService.FindByIdAsync(id);
 
             if (department == null)
                 return NotFound($"No department was found with ID {id}");
 
-            var result = _departmentService.Delete(department);
+            var result = await _departmentService.Delete(department);
 
             _departmentService.CommitChanges();
             return Ok(result);

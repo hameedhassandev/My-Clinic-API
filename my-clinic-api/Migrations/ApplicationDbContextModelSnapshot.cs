@@ -54,13 +54,13 @@ namespace my_clinic_api.Migrations
 
             modelBuilder.Entity("DoctorSpecialist", b =>
                 {
-                    b.Property<string>("DoctoresId")
+                    b.Property<string>("DoctorsId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("SpecialistsId")
                         .HasColumnType("int");
 
-                    b.HasKey("DoctoresId", "SpecialistsId");
+                    b.HasKey("DoctorsId", "SpecialistsId");
 
                     b.HasIndex("SpecialistsId");
 
@@ -429,6 +429,9 @@ namespace my_clinic_api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("PatientId")
                         .HasColumnType("nvarchar(450)");
 
@@ -451,6 +454,61 @@ namespace my_clinic_api.Migrations
                     b.ToTable("RatesAndReviews");
                 });
 
+            modelBuilder.Entity("my_clinic_api.Models.Report", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("DoctorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("PatientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ReasonId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("PatientId");
+
+                    b.HasIndex("ReasonId");
+
+                    b.ToTable("Reports");
+                });
+
+            modelBuilder.Entity("my_clinic_api.Models.ReportReasons", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ReportReasons");
+                });
+
             modelBuilder.Entity("my_clinic_api.Models.Specialist", b =>
                 {
                     b.Property<int>("Id")
@@ -464,7 +522,7 @@ namespace my_clinic_api.Migrations
                         .HasMaxLength(120)
                         .HasColumnType("nvarchar(120)");
 
-                    b.Property<int?>("departmentId")
+                    b.Property<int>("departmentId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -588,7 +646,7 @@ namespace my_clinic_api.Migrations
                 {
                     b.HasOne("my_clinic_api.Models.Doctor", null)
                         .WithMany()
-                        .HasForeignKey("DoctoresId")
+                        .HasForeignKey("DoctorsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -728,11 +786,40 @@ namespace my_clinic_api.Migrations
                     b.Navigation("doctor");
                 });
 
+            modelBuilder.Entity("my_clinic_api.Models.Report", b =>
+                {
+                    b.HasOne("my_clinic_api.Models.Doctor", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("my_clinic_api.Models.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("my_clinic_api.Models.ReportReasons", "Reason")
+                        .WithMany("Reports")
+                        .HasForeignKey("ReasonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Patient");
+
+                    b.Navigation("Reason");
+                });
+
             modelBuilder.Entity("my_clinic_api.Models.Specialist", b =>
                 {
                     b.HasOne("my_clinic_api.Models.Department", "department")
                         .WithMany("specialists")
-                        .HasForeignKey("departmentId");
+                        .HasForeignKey("departmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("department");
                 });
@@ -777,6 +864,11 @@ namespace my_clinic_api.Migrations
                     b.Navigation("doctors");
 
                     b.Navigation("specialists");
+                });
+
+            modelBuilder.Entity("my_clinic_api.Models.ReportReasons", b =>
+                {
+                    b.Navigation("Reports");
                 });
 
             modelBuilder.Entity("my_clinic_api.Models.Doctor", b =>

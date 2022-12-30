@@ -25,13 +25,13 @@ namespace my_clinic_api.Services
             return entity;
         }
 
-        public T Delete(T entity)
+        public async Task<T> Delete(T entity)
         {
             _Context.Set<T>().Remove(entity);
             return entity;
         }
 
-        public T Update(T entity)
+        public async Task<T> Update(T entity)
         {
             _Context.Set<T>().Update(entity);
             return entity;
@@ -50,19 +50,6 @@ namespace my_clinic_api.Services
             _Context.Entry(entity).State = EntityState.Detached;
             return entity;
         }
-        //public async Task<T> FindByIdWithIncludeAsync(int id, string Include, string navType)
-        //{
-        //    var entity = await _Context.Set<T>().FindAsync(id);
-        //    if (entity == null) return null;
-        //    if (navType == "Collection")
-        //        _Context.Entry(entity).Collection(Include).Load();
-        //    else if (navType == "Reference")
-        //        _Context.Entry(entity).Reference(Include).Load();
-        //    _Context.Entry(entity).State = EntityState.Detached;
-        //    return entity;
-
-        //}
-
 
         public async Task<int> CountAsync()
         {
@@ -88,25 +75,36 @@ namespace my_clinic_api.Services
         {
             return await _Context.Set<T>().AsQueryable().SingleOrDefaultAsync(criteria);
         }
-        public async Task<T> FindWithIncludesAsync(Expression<Func<T, bool>> criteria , List<string> Includes)
+        public async Task<T> FindWithData(Expression<Func<T, bool>> criteria)
         {
+            var col = GetCollections(typeof(T));
             var query = _Context.Set<T>().AsQueryable();
-            foreach (var inc in Includes)
+            foreach (var inc in col)
             {
                 query = query.Include(inc);
             }
             return await query.SingleOrDefaultAsync(criteria);
         }
-
+        public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria)
+        {
+            return await _Context.Set<T>().AsQueryable().Where(criteria).ToListAsync();
+        }
+        public async Task<IEnumerable<T>> FindAllWithData(Expression<Func<T, bool>> criteria)
+        {
+            var col = GetCollections(typeof(T));
+            var query = _Context.Set<T>().AsQueryable().Where(criteria);
+            foreach (var inc in col)
+            {
+                query = query.Include(inc);
+            }
+            return await query.Where(criteria).ToListAsync();
+        }
         public async Task<IEnumerable<T>> FindAllPaginationAsync(Expression<Func<T, bool>> criteria, int skip, int take)
         {
             return await _Context.Set<T>().AsQueryable().Where(criteria).Skip(skip).Take(take).ToListAsync();
         }
 
-        public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria)
-        {
-            return await _Context.Set<T>().AsQueryable().Where(criteria).ToListAsync();
-        }
+        
 
         public void CommitChanges()
         {
@@ -114,13 +112,14 @@ namespace my_clinic_api.Services
         }
         public List<string> GetCollections(Type entityType)
         {
-            return entityType.GetProperties()
-                                .Where(p => (typeof(IEnumerable).IsAssignableFrom(p.PropertyType) 
-                                    && p.PropertyType != typeof(string)) 
-                                    && p.PropertyType != typeof(byte[]) 
+            var col = entityType.GetProperties()
+                                .Where(p => (typeof(IEnumerable).IsAssignableFrom(p.PropertyType)
+                                    && p.PropertyType != typeof(string))
+                                    && p.PropertyType != typeof(byte[])
                                     || p.PropertyType.Namespace == entityType.Namespace)
                                 .Select(p => p.Name)
-            .ToList();
+                                .ToList();
+            return col;
             
         }
         

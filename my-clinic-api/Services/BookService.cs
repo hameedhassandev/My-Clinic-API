@@ -1,4 +1,5 @@
 ﻿using my_clinic_api.DTOS;
+using my_clinic_api.DTOS.CreateDto;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using System.Linq.Expressions;
@@ -15,7 +16,7 @@ namespace my_clinic_api.Services
             _doctorService = doctorService;
         }
 
-        public async Task<string> AddBook(BookDto bookDto)
+        public async Task<string> AddBook(CreateBookDto bookDto)
         {
             //check that the time not passed
             if (bookDto.Time < DateTime.Now) return "This time has passed!";
@@ -58,7 +59,7 @@ namespace my_clinic_api.Services
             if (bookings.Any()) return bookings;
             return Enumerable.Empty<Book>();
         }
-        public async Task<bool> IsBookAvailable(BookDto bookDto )
+        public async Task<bool> IsBookAvailable(CreateBookDto bookDto )
         {
             Expression<Func<Book, bool>> predicate =
                 h => h.DoctorId==bookDto.DoctorId;

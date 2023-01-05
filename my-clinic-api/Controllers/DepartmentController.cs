@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using my_clinic_api.DTOS;
+using my_clinic_api.DTOS.CreateDto;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 
 namespace my_clinic_api.Controllers
@@ -14,9 +17,11 @@ namespace my_clinic_api.Controllers
     public class DepartmentController : ControllerBase
     {
         private readonly IDepartmentService _departmentService;
-        public DepartmentController(IDepartmentService departmentService)
+        private readonly IMapper _mapper;
+        public DepartmentController(IDepartmentService departmentService, IMapper mapper)
         {
             _departmentService = departmentService;
+            _mapper = mapper;
         }
 
         [HttpGet("GetDepartmentById/{id}")]
@@ -26,8 +31,19 @@ namespace my_clinic_api.Controllers
             var result = await _departmentService.FindByIdAsync(id);
             if (result == null)
                 return NotFound();
+            var output = _mapper.Map<DepartmentDto>(result);
+            return Ok(output);
+        }
+        
+        [HttpGet("GetDepartmentByIdWithData/{id}")]
+        public async Task<IActionResult> GetDepartmentByIdWithData(int id)
+        {
 
-            return Ok(result);
+            var result = await _departmentService.FindDepartmentByIdWithData(id);
+            if (result == null)
+                return NotFound();
+            var output = _mapper.Map<DepartmentDto>(result);
+            return Ok(output);
         }
 
 
@@ -38,45 +54,24 @@ namespace my_clinic_api.Controllers
         {
 
             var result = await _departmentService.GetAllAsync();
-            var getNameAndDesc = result.Select(d => new { d.Id, d.Name, d.Description });
 
 
-            if (getNameAndDesc == null)
+            if (result == null)
                 return NotFound();
-
-            return Ok(getNameAndDesc);
+            var output = _mapper.Map<IEnumerable<DepartmentDto>>(result);
+            return Ok(output);
         }
 
-        // GET: api/Department/GetAllWithSpicialist
-        [HttpGet("GetAllWithSpecialist")]
-        public async Task<IActionResult> GetAllWithSpecialist()
+        // GET: api/Department/GetAllWithData
+        [HttpGet("GetAllWithData")]
+        public async Task<IActionResult> GetAllWithData()
         {
-            var result = await _departmentService.GetAllWithIncludeAsync(new List<string>() { "specialists" });
-            var getAllDepartmentWithSpecialist = result.Select(d => new { d.Id, d.Name, d.Description, Specialists = d.specialists.Select(d=> new {d.Id , d.SpecialistName }) });
-            if (getAllDepartmentWithSpecialist == null)
+            var result = await _departmentService.GetAllWithData();
+            if (result == null)
                 return NotFound();
-            return Ok(getAllDepartmentWithSpecialist);
+            var output = _mapper.Map<IEnumerable<DepartmentDto>>(result);
+            return Ok(output);
         }
-        [HttpGet("GetAllWithDoctor")]
-        public async Task<IActionResult> GetAllWithDoctor()
-        {
-            var result = await _departmentService.GetAllWithIncludeAsync(new List<string>() { "doctors" });
-            var GetAllWithDoctor = result.Select(d => new { d.Id, d.Name, d.Description, d.doctors });
-            if (GetAllWithDoctor == null)
-                return NotFound();
-            return Ok(GetAllWithDoctor);
-        }
-        // GET: api/Department/GetAllWithSpicialistAndDoctors
-        [HttpGet("GetAllWithSpicialistAndDoctors")]
-        public async Task<IActionResult> GetAllWithSpicialistAndDoctors()
-        {
-            var result = await _departmentService.GetAllWithIncludeAsync(new List<string>() { "specialists" , "doctors" });
-            var getAllDepartmentWithSpecialist = result.Select(d => new { d.Id, d.Name, d.Description, Specialists = d.specialists.Select(d => new { d.Id, d.SpecialistName }) , d.doctors });
-            if (getAllDepartmentWithSpecialist == null)
-                return NotFound();
-            return Ok(getAllDepartmentWithSpecialist);
-        }
-
 
         // GET: api/Department/GetAllPagination
         [HttpGet("GetAllPagination")]
@@ -117,7 +112,7 @@ namespace my_clinic_api.Controllers
         }
         // Post: api/Department/AddDepartment
         [HttpPost("AddDepartment")]
-        public async Task<IActionResult> AddDepratment([FromForm] DepartmentDto dto)
+        public async Task<IActionResult> AddDepratment([FromForm] CreateDepartmentDto dto)
         {
             var department = new Department
             {
@@ -138,7 +133,7 @@ namespace my_clinic_api.Controllers
 
         //PUT:api/Department/UpadteDepartment
         [HttpPut("UpadteDepartment")]
-        public async Task<IActionResult> UpadteDepartment([FromForm]int id, [FromForm] DepartmentDto dto)
+        public async Task<IActionResult> UpadteDepartment([FromForm , Required]int id, [FromForm] CreateDepartmentDto dto)
         {
             var department = await _departmentService.FindByIdAsync(id);
             if (department == null)
@@ -150,7 +145,7 @@ namespace my_clinic_api.Controllers
                 return BadRequest("There is another hospital has this name!");
             department.Name = dto.Name;
             department.Description = dto.Description;
-            var result = _departmentService.Update(department);
+            var result = await _departmentService.Update(department);
 
             _departmentService.CommitChanges();
             return Ok(result);
@@ -158,14 +153,14 @@ namespace my_clinic_api.Controllers
 
         //DELETE:api/Department/DeleteDepartment
         [HttpDelete("DeleteDepartment")]
-        public async Task<IActionResult> DeleteDepartment([FromForm] int id)
+        public async Task<IActionResult> DeleteDepartment([FromForm , Required] int id)
         {
             var department = await _departmentService.FindByIdAsync(id);
 
             if (department == null)
                 return NotFound($"No department was found with ID {id}");
 
-            var result = _departmentService.Delete(department);
+            var result = await _departmentService.Delete(department);
 
             _departmentService.CommitChanges();
             return Ok(result);

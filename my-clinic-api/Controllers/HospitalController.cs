@@ -1,11 +1,14 @@
 ﻿
 
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using my_clinic_api.Classes;
 using my_clinic_api.DTOS;
+using my_clinic_api.DTOS.CreateDto;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -18,9 +21,12 @@ namespace my_clinic_api.Controllers
     public class HospitalController : ControllerBase
     {
         private readonly IHospitalService _hospitalService;
-        public HospitalController(IHospitalService hospitalService)
+        private readonly IMapper _mapper;
+
+        public HospitalController(IHospitalService hospitalService, IMapper mapper)
         {
             _hospitalService = hospitalService;
+            _mapper = mapper;
         }
 
         // GET: api/Hospital/GetById/5
@@ -31,8 +37,19 @@ namespace my_clinic_api.Controllers
             var result = await _hospitalService.FindByIdAsync(id);
             if (result == null)
                 return NotFound();
+            var output = _mapper.Map<HospitalDto> (result);
+            return Ok(output);
+        }
+        // GET: api/Hospital/GetByIdWithData/5
+        [HttpGet("GetByIdWithData/{id}")]
+        public async Task<IActionResult> GetByIdWithData(int id)
+        {
 
-            return Ok(result);
+            var result = await _hospitalService.FindHospitalByIdWithData(id);
+            if (result == null)
+                return NotFound();
+            var output = _mapper.Map<HospitalDto>(result);
+            return Ok(output);
         }
 
 
@@ -44,8 +61,20 @@ namespace my_clinic_api.Controllers
             var result = await _hospitalService.GetAllAsync();
             if (result == null)
                 return NotFound();
+            var output = _mapper.Map<IEnumerable<HospitalDto>>(result);
+            return Ok(output);
+        }
+        // GET: api/Hospital/GetAllWithData
+        [HttpGet("GetAllWithData")]
+        public async Task<IActionResult> GetAllWithData()
+        {
 
-            return Ok(result);
+            var result = await _hospitalService.GetAllWithData();
+            if (result == null)
+                return NotFound();
+            var output = _mapper.Map<IEnumerable<HospitalDto>>(result);
+
+            return Ok(output);
         }
 
 
@@ -95,7 +124,7 @@ namespace my_clinic_api.Controllers
 
         //POST:api/Hospita/AddHospital
         [HttpPost("AddHospital")]
-        public async Task<IActionResult> AddHospital([FromForm] HospitalDto dto)
+        public async Task<IActionResult> AddHospital([FromForm] CreateHospitalDto dto)
         {
             var hospital = new Hospital
             {
@@ -121,7 +150,7 @@ namespace my_clinic_api.Controllers
         //PUT:api/Hospita/UpadteHospital
 
         [HttpPut("UpadteHospital")]
-        public async Task<IActionResult> UpadteHospital( int id, [FromForm] HospitalDto dto)
+        public async Task<IActionResult> UpadteHospital([FromForm, Required] int id, [FromForm] CreateHospitalDto dto)
         {
             var hospital = await _hospitalService.FindByIdAsync(id);
 
@@ -142,21 +171,21 @@ namespace my_clinic_api.Controllers
 
             hospital.Name = dto.Name;
             hospital.Address = dto.Address;
-            var result =  _hospitalService.Update(hospital);
+            var result = await _hospitalService.Update(hospital);
 
             _hospitalService.CommitChanges();
             return Ok(result);
         }
 
         [HttpDelete("DeleteHospital")]
-        public async Task<IActionResult> DeleteHospital(int id)
+        public async Task<IActionResult> DeleteHospital([FromForm , Required] int id)
         {
             var hospital = await _hospitalService.FindByIdAsync(id);
 
             if (hospital == null)
                 return NotFound($"No hospital was found with ID {id}");
 
-            var result = _hospitalService.Delete(hospital);
+            var result = await _hospitalService.Delete(hospital);
 
             _hospitalService.CommitChanges();
             return Ok(result);

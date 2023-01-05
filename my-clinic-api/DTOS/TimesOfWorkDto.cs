@@ -5,7 +5,7 @@ namespace my_clinic_api.DTOS
 {
     public class TimesOfWorkDto
     {
-        public string? Id { get; set; }
+        public int Id { get; set; }
 
         [Required]
 
@@ -18,7 +18,8 @@ namespace my_clinic_api.DTOS
         [Required]
         public DateTime EndWork { get; set; }
 
-
+        public Doctor Doctor { get; set; }
+        [Required]
         public string? doctorId { get; set; }
     }
 }

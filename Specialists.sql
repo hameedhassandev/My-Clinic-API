@@ -1,0 +1,21 @@
+
+INSERT INTO MyClinicAPI.dbo.Specialists (Id, departmentId, SpecialistName) VALUES (1, 1, N'asthma');
+INSERT INTO MyClinicAPI.dbo.Specialists (Id, departmentId, SpecialistName) VALUES (2, 1, N'Allergic rhinitis');
+INSERT INTO MyClinicAPI.dbo.Specialists (Id, departmentId, SpecialistName) VALUES (3, 1, N'hay fever');
+INSERT INTO MyClinicAPI.dbo.Specialists (Id, departmentId, SpecialistName) VALUES (4, 2, N'Critical Care Anesthesia');
+INSERT INTO MyClinicAPI.dbo.Specialists (Id, departmentId, SpecialistName) VALUES (5, 2, N'Neurosurgical Anesthesia');
+INSERT INTO MyClinicAPI.dbo.Specialists (Id, departmentId, SpecialistName) VALUES (6, 2, N'Obstetric Anesthesia');
+INSERT INTO MyClinicAPI.dbo.Specialists (Id, departmentId, SpecialistName) VALUES (7, 3, N'Varicocele');
+INSERT INTO MyClinicAPI.dbo.Specialists (Id, departmentId, SpecialistName) VALUES (8, 3, N'Vasectomy');
+INSERT INTO MyClinicAPI.dbo.Specialists (Id, departmentId, SpecialistName) VALUES (9, 3, N'Undescended Testicle');
+INSERT INTO MyClinicAPI.dbo.Specialists (Id, departmentId, SpecialistName) VALUES (10, 4, N'Electrocardiography');
+INSERT INTO MyClinicAPI.dbo.Specialists (Id, departmentId, SpecialistName) VALUES (11, 4, N'Geriatrics');
+INSERT INTO MyClinicAPI.dbo.Specialists (Id, departmentId, SpecialistName) VALUES (12, 4, N'Echocardiography');
+INSERT INTO MyClinicAPI.dbo.Specialists (Id, departmentId, SpecialistName) VALUES (13, 4, N'Interventional Cardiology');
+INSERT INTO MyClinicAPI.dbo.Specialists (Id, departmentId, SpecialistName) VALUES (14, 5, N'Gynecologic oncology');
+INSERT INTO MyClinicAPI.dbo.Specialists (Id, departmentId, SpecialistName) VALUES (15, 5, N'Pelvis and surgery');
+INSERT INTO MyClinicAPI.dbo.Specialists (Id, departmentId, SpecialistName) VALUES (16, 5, N'Hypogonadism');
+INSERT INTO MyClinicAPI.dbo.Specialists (Id, departmentId, SpecialistName) VALUES (17, 6, N'Metabolic syndrome');
+INSERT INTO MyClinicAPI.dbo.Specialists (Id, departmentId, SpecialistName) VALUES (18, 6, N'blood vessels');
+INSERT INTO MyClinicAPI.dbo.Specialists (Id, departmentId, SpecialistName) VALUES (19, 6, N'Bronchial');
+INSERT INTO MyClinicAPI.dbo.Specialists (Id, departmentId, SpecialistName) VALUES (20, 6, N'Oncology');

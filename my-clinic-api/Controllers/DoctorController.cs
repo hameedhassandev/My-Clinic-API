@@ -47,7 +47,7 @@ namespace my_clinic_api.Controllers
         [HttpGet("GetAllDoctorsWithData")]
         public async Task<IActionResult> GetAllDoctorsWithData()
         {
-            var doctors = await _doctorService.GetAllDoctorWithDataAsync();
+            var doctors = await _doctorService.GetAllWithData();
 
             if (doctors == null) return NotFound();
 
@@ -78,14 +78,7 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("AddSpecialistToDoctor")]
-        public async Task<IActionResult> AddSpecialistToDoctor(string doctorId , int specialistId)
-        {
-            var result = await _specialistService.AddSpecialistToDoctor(doctorId, specialistId);
-            if (result)
-                return Ok("Specialist Added Successfully");
-            return BadRequest();
-        }
+        
 
     }
 }

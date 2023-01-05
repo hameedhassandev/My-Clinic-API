@@ -12,9 +12,9 @@ namespace my_clinic_api.DTOS
         public DateTime Time { get; set; }
 
         public DateTime? CreatedAt { get; set; }
-        [Required]
+
         [DisplayFormat(DataFormatString = "{dddd/dd/MMMM/yyyy}")]
-        public DateTime ExpiryDate { get; set; }
+        public DateTime? ExpiryDate { get; set; }
         public bool IsConfirmed { get; set; } = false;
 
         [Required]

@@ -1,6 +1,7 @@
 ﻿using my_clinic_api.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using Newtonsoft.Json;
 
 namespace my_clinic_api.DTOS
 {
@@ -33,6 +34,8 @@ namespace my_clinic_api.DTOS
         [Required]
         [DefaultValue(true)]
         public bool IsActive { get; set; }
+
+        //[JsonIgnore]
         public ICollection<RateAndReviewDto> RateAndReviews { get; set; }
         public ICollection<BookDto>? Bookings { get; set; }
 

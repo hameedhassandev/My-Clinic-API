@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using my_clinic_api.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace my_clinic_api.DTOS
 {
@@ -14,5 +15,9 @@ namespace my_clinic_api.DTOS
         [MaxLength(255)]
 
         public string? Description { get; set; }
+
+        public ICollection<DoctorDto>? doctors { get; set; }
+
+        public ICollection<SpecialistDto>? specialists { get; set; }
     }
 }

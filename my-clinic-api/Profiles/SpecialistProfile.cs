@@ -9,7 +9,7 @@ namespace my_clinic_api.Profiles
     {
         public SpecialistProfile()
         {
-            CreateMap<Specialist, DTOS.SpecialistsDto>();
+            CreateMap<Specialist, DTOS.SpecialistDto>();
              //.ForMember(x => x.department, opt => opt.Ignore())
              //.ForMember(x => x.Doctores, opt => opt.Ignore());
         }

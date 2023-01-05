@@ -1,19 +1,14 @@
 ﻿using my_clinic_api.Models;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
-namespace my_clinic_api.DTOS
+namespace my_clinic_api.DTOS.CreateDto
 {
-    public class SpecialistsDto
+    public class CreateSpecialistDto
     {
-        [Required]
-        public int Id { get; set; }
-
-
         [Required]
         [MaxLength(120)]
         public string? SpecialistName { get; set; }
-
-
+        [Required]
+        public int departmentId { get; set; }
     }
 }

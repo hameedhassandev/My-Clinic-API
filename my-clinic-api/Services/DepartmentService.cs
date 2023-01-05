@@ -12,6 +12,13 @@ namespace my_clinic_api.Services
         {
             _comparer2Lists = comparer2Lists;
         }
+        public async Task<Department> FindDepartmentByIdWithData(int departmentId)
+        {
+            var data = GetCollections(typeof(Department));
+            Expression<Func<Department, bool>> criteria = d => d.Id == departmentId;
+            var department = await FindWithData(criteria);
+            return department;
+        }
 
         public async Task<bool> DepartmentIsExists(int departmentId)
         {
@@ -34,8 +41,8 @@ namespace my_clinic_api.Services
             var isExists = await DepartmentIsExists(deptmentId);
             if (!isExists)
                 return false ;
-            var specialist = await FindByIdWithIncludeAsync(deptmentId , "specialists" , "Collection");
-            var SpeList = specialist.specialists.Select(s=>s.Id).ToList();
+            var department = await FindDepartmentByIdWithData(deptmentId);
+            var SpeList = department.specialists.Select(s=>s.Id).ToList();
             var compare = _comparer2Lists.Comparer2IntLists(SpeList, specialistsIds);
             return compare;
         }

@@ -34,7 +34,7 @@ namespace my_clinic_api.Controllers
         [HttpGet("GetAllWithData")]
         public async Task<IActionResult> GetAllWithData()
         {
-            var patients = await _patienService.GetAllWithIncludeAsync(new List<string> { "RateAndReviews", "Bookings" });
+            var patients = await _patienService.GetAllPatientsWithData();
             if (patients == null)
                 return NotFound();
             var result = _mapper.Map<IEnumerable<PatientDto>>(patients);
@@ -54,7 +54,7 @@ namespace my_clinic_api.Controllers
         [HttpGet("GetPatientByIdWithData")]
         public async Task<IActionResult> GetPatientByIdWithData(string patientId)
         {
-            var patient = await _patienService.FindPatientByIdWithIncludeAsync(patientId);
+            var patient = await _patienService.FindPatientByIdWithData(patientId);
 
             if (patient == null) return NotFound($"No patient was found with ID {patientId}");
 

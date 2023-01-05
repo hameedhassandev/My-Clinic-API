@@ -4,6 +4,7 @@ using my_clinic_api.DTOS;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
+using System.ComponentModel.DataAnnotations;
 
 namespace my_clinic_api.Controllers
 {
@@ -69,7 +70,7 @@ namespace my_clinic_api.Controllers
 
         //PUT:api/Area/UpadteArea/id
         [HttpPut("UpadteArea")]
-        public async Task<IActionResult> UpadteArea(int id, [FromForm] AreaDto dto)
+        public async Task<IActionResult> UpadteArea([FromForm, Required] int id, [FromForm] AreaDto dto)
         {
             var area = await _areaService.FindByIdAsync(id);
             if (area == null)
@@ -81,21 +82,21 @@ namespace my_clinic_api.Controllers
                 return BadRequest("There is another area has this name!");
             area.AreaName = dto.AreaName;
             area.City = dto.City;
-            var result = _areaService.Update(area);
+            var result = await _areaService.Update(area);
 
             _areaService.CommitChanges();
             return Ok(result);
         }
 
         [HttpDelete("DeleteArea")]
-        public async Task<IActionResult> DeleteArea(int id)
+        public async Task<IActionResult> DeleteArea([FromForm, Required] int id)
         {
             var area = await _areaService.FindByIdAsync(id);
 
             if (area == null)
                 return NotFound($"No area was found with ID {id}");
 
-            var result = _areaService.Delete(area);
+            var result = await _areaService.Delete(area);
 
             _areaService.CommitChanges();
             return Ok(result);

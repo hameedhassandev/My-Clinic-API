@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Extensions;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;

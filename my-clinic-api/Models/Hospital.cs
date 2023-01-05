@@ -17,6 +17,9 @@ namespace my_clinic_api.Models
 
         public virtual ICollection<Doctor>? doctors { get; set; }
 
-
+        public static implicit operator int(Hospital v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

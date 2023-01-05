@@ -61,5 +61,7 @@ namespace my_clinic_api.Dto.AuthDtos
         public List<int> SpecialistsIds { get; set; }
         public List<int> HospitalsIds { get; set; }
         public List<int> InsuranceIds { get; set; }
+
+      
     }
 }

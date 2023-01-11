@@ -6,6 +6,7 @@ using my_clinic_api.Classes;
 using my_clinic_api.Helpers;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
+using my_clinic_api.Models.MailConfirmation;
 using my_clinic_api.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -28,10 +29,19 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString);
     
 });
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(
+      opts =>
+      {
+          opts.SignIn.RequireConfirmedEmail = true;
+
+      })
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+
+//add email config.
+var emailConfig = builder.Configuration.GetSection("EmailCongiguration").Get<EmailCongiguration>();
+builder.Services.AddSingleton(emailConfig);
 
 //To add authorization services to your application, your Program.cs should also include the following code snippet.
 builder.Services.AddAuthentication(options =>
@@ -51,7 +61,8 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true,
         ValidIssuer = builder.Configuration["JWT:Issuer"],
         ValidAudience = builder.Configuration["JWT:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
+        ClockSkew = TimeSpan.Zero
 
     };
 });
@@ -72,7 +83,7 @@ builder.Services.AddControllers()
 //add cors service to test api to test it 
 builder.Services.AddCors(policyBuilder =>
     policyBuilder.AddDefaultPolicy(policy =>
-        policy.WithOrigins("*").AllowAnyHeader().AllowAnyHeader())
+        policy.WithOrigins("*").AllowAnyMethod().AllowAnyHeader())
 );
 
 builder.Services.AddScoped<IHospitalService, HospitalService>();
@@ -90,6 +101,8 @@ builder.Services.AddScoped<IEnumBaseRepositry, EnumBaseRepositry>();
 builder.Services.AddScoped<IRateandReviewService, RateandReviewService>();
 builder.Services.AddScoped<IReasonService, ReasonService>();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
+
 
 
 var app = builder.Build();

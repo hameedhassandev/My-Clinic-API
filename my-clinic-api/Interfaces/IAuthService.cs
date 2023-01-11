@@ -13,11 +13,10 @@ namespace my_clinic_api.Interfaces
         Task<DoctorDropDownDto> getDropDownForDoctor();
         Task<AuthModelDto> GetTokenAsync(TokenRequestModelDto modelDto);
         Task<AuthModelDto> ConfirmDoctor(string doctorId);
-        Task<AuthModelDto> testRegisteration(DoctorRegisterDto doctorDto);
+        Task<AuthModelDto> testRegisteration(DoctorRegisterDto doctorDto, bool isConfirmed);
 
         Task<List<IdentityRole>> GetRoles();
         Task<bool> AddRole(string roleName);
-        Task<bool> UserIsExist(string userId);
 
 
     }

@@ -83,7 +83,7 @@ builder.Services.AddControllers()
 //add cors service to test api to test it 
 builder.Services.AddCors(policyBuilder =>
     policyBuilder.AddDefaultPolicy(policy =>
-        policy.WithOrigins("*").AllowAnyHeader().AllowAnyHeader())
+        policy.WithOrigins("*").AllowAnyMethod().AllowAnyHeader())
 );
 
 builder.Services.AddScoped<IHospitalService, HospitalService>();

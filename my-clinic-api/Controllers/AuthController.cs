@@ -10,6 +10,7 @@ using my_clinic_api.Dto.AuthDtos;
 using my_clinic_api.DTOS;
 using my_clinic_api.DTOS.AuthDtos;
 using my_clinic_api.Interfaces;
+using my_clinic_api.Models;
 using System.Data;
 
 namespace my_clinic_api.Controllers
@@ -20,13 +21,14 @@ namespace my_clinic_api.Controllers
     {
         private readonly IAuthService _authService;
         private readonly IMapper _mapper;
+        private readonly ApplicationDbContext _context; 
 
 
-
-        public AuthController(IAuthService authService, IMapper mapper)
+        public AuthController(IAuthService authService, IMapper mapper, ApplicationDbContext contxt)
         {
             _authService = authService;
             _mapper = mapper;
+            _context = contxt;
         }
 
         [HttpPost("RegisterAsPatient")]
@@ -61,16 +63,32 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
-
-       /* [HttpPost("RegAsDo")]
-        public async Task<IActionResult> RegAsDo() 
+        [HttpPost("testDoctorRegister")]
+        public async Task<IActionResult> testDoctorRegister([FromBody] DoctorRegisterDto dto)
         {
-            var result = await _authService.getDropDownForDoctor();
-            var docFormData = new doctorFormData
-            {
-                Hospitals = new SelectList(result.Hospitals, "Id", "Name"),
-            };
-        }*/
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _authService.testRegisteration(dto, false);
+
+            if (!result.IsAuth)
+                return BadRequest(result.Massage);
+
+            setTokenInCookie(result.Token, (DateTime)result.ExpiresOn);
+
+            return Ok(result);
+        }
+
+
+        /* [HttpPost("RegAsDo")]
+         public async Task<IActionResult> RegAsDo() 
+         {
+             var result = await _authService.getDropDownForDoctor();
+             var docFormData = new doctorFormData
+             {
+                 Hospitals = new SelectList(result.Hospitals, "Id", "Name"),
+             };
+         }*/
 
 
         [HttpPost("AddDoctorByAdmin")]
@@ -163,6 +181,19 @@ namespace my_clinic_api.Controllers
                 Expires = expiresOn.ToLocalTime(),
             };
             Response.Cookies.Append("Token", token, cookieOptions);
+        }
+
+        [HttpGet("TestList")]
+        public async Task<IActionResult> testLList()
+        {
+            var ddl = new DoctorDropDownDto();
+            var lis = new List<SelectList>();
+            var hospitals = await _context.Hospitals.ToListAsync();
+            SelectList objj = new SelectList(hospitals, "Id", "Name");
+
+            lis.Add(objj);
+            return Ok(lis);
+
         }
 
     }

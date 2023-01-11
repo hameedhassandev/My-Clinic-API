@@ -228,6 +228,7 @@ namespace my_clinic_api.Services
             // in case creation is fail
             if (!result.Succeeded)
             {
+                
                 var errors = string.Empty;
                 foreach (var error in result.Errors)
                 {
@@ -305,10 +306,18 @@ namespace my_clinic_api.Services
         }
 
 
-        public async Task<bool> UserIsExist(string userId)
+        private async Task<bool> UserNameIsExist(string userName)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByNameAsync(userName);
             if(user == null) return false;  
+
+            return true;
+        }
+
+        public async Task<bool> EmailIsExist(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null) return false;
 
             return true;
         }
@@ -350,25 +359,21 @@ namespace my_clinic_api.Services
 
         private async void AddSpecialistToDoctor(List<int> SpecialistsIds, string doctorId)
         {
-            //add spcialist to doctor
-
             foreach (int specialistId in SpecialistsIds)
-            {
                 await _specialistService.AddSpecialistToDoctor(doctorId, specialistId);
-            }
-
         }
 
         
         private async void AddInsuranceToDoctor(List<int> InsuranceIds, string doctorId)
         {
-            //add InsuranceIds to doctor
-
             foreach (int insuranceId in InsuranceIds)
-            {
-                await _specialistService.AddSpecialistToDoctor(doctorId, insuranceId);
-            }
+                await _insuranceService.AddInsuranceToDoctor(doctorId, insuranceId);
+        }
 
+        private async void AddHospitalToDoctor(List<int> HospitalIds, string doctorId)
+        {
+            foreach (int hospitalId in HospitalIds)
+                await _hospitalService.AddHospitalToDoctor(doctorId, hospitalId);
         }
 
         private async Task<bool> confirmationMail(ApplicationUser userModel)
@@ -395,13 +400,67 @@ namespace my_clinic_api.Services
             throw new NotImplementedException();
         }
 
-        public async Task<AuthModelDto> testRegisteration(DoctorRegisterDto dto)
+        public async Task<AuthModelDto> testRegisteration(DoctorRegisterDto dto, bool isConfirmed)
         {
-            var user = await _userManager.FindByEmailAsync(dto.Email);
-            if (user is not null) return new AuthModelDto { Massage = "Email Alerdy Exist!" };
+            if (await EmailIsExist(dto.Email)) return new AuthModelDto { Massage = "Email is exist!"};
+            if(await UserNameIsExist(dto.UserName)) return new AuthModelDto { Massage = "Username is exist!"};
 
-            throw new NotImplementedException();
+            var doctor = new Doctor
+            {
+                UserName = dto.UserName,
+                Email = dto.Email,
+                FullName = dto.FullName,
+                DoctorTitle = dto.DoctorTitle,
+                Bio = dto.Bio,
+                Cost = dto.Cost,
+                WaitingTime = dto.WaitingTime,
+                DepartmentId = dto.DepartmentId,
+                Cities = dto.Cities,
+                AreaId = dto.AreaId,
+                Address = dto.Address,
+                PhoneNo = dto.PhoneNo,
+                Gender = dto.Gender,
+                IsConfirmedFromAdmin = isConfirmed,
+                IsActive = true,
+                //image
+            };
 
+            var result = await _userManager.CreateAsync(doctor, dto.Password);
+
+            var err = ErrorOfIdentityResult(result);
+            if (!err.IsNullOrEmpty()) return new AuthModelDto { Massage = err };
+
+            await _userManager.AddToRoleAsync(doctor, RoleNames.DoctorRole);
+
+            var doctorId = doctor.Id;
+            var getDoctor = await _userManager.FindByIdAsync(doctorId);
+            try
+            {
+                AddSpecialistToDoctor(dto.SpecialistsIds, doctorId);
+                AddHospitalToDoctor(dto.HospitalsIds, doctorId);
+                AddInsuranceToDoctor(dto.InsuranceIds, doctorId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return new AuthModelDto { Massage = "Somthing error, try again!" };
+
+            }
+
+
+            return new AuthModelDto { Massage = $"Follow your email {doctor.Email} until approval to join is sent from the admin." };
+        }
+
+        private string ErrorOfIdentityResult(IdentityResult result)
+        {
+            var errors = string.Empty;
+            if (result.Succeeded)
+                return String.Empty;
+
+            foreach (var error in result.Errors)
+                errors += $"{error.Description}, ";
+
+            return errors;
         }
     }
 }

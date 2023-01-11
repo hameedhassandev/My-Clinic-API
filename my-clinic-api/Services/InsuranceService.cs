@@ -27,7 +27,7 @@ namespace my_clinic_api.Services
 
             var Insurance = await FindByIdAsync(InsurancelId);
 
-            var doctor = await _doctorService.FindDoctorByIdWithDataAsync(doctorId);
+            var doctor = await _doctorService.FindDoctorByIdAsync(doctorId);
             if (doctor == null)
                 return false;
 

@@ -38,21 +38,15 @@ namespace my_clinic_api.Services
             return allSpecialistsWithDep;   
         }
 
-        public async Task<bool> AddSpecialistToDoctor(string doctorId, int specialistId)
+        public async Task<Doctor> AddSpecialistToDoctor(List<int> SpecialistsIds, Doctor doctor)
         {
-            var specialist = await FindByIdAsync(specialistId);
-
-            var doctor = await _doctorService.FindDoctorByIdAsync(doctorId);
-            if (doctor == null)
-                return false;
-            if (doctor.Specialists is null)
+            doctor.Specialists ??= new Collection<Specialist>();
+            foreach (int specialistId in SpecialistsIds)
             {
-                doctor.Specialists = new Collection<Specialist>();
+                var specialist = await FindByIdAsync(specialistId);
+                doctor.Specialists.Add(specialist);
             }
-            doctor.Specialists.Add(new Specialist { Id = specialistId, SpecialistName = specialist.SpecialistName });
-            //await _doctorService.Update(doctor);
-            //CommitChanges();
-            return true;
+            return doctor;
         }
 
    

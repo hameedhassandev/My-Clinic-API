@@ -46,18 +46,10 @@ namespace my_clinic_api.Services
 
         public async Task<T> FindByIdAsync(int id)
         {
-            //using (var db = new ApplicationDbContext(OptionsBuilder.Options))
-            //using (var context = new ApplicationDbContext(_contextOptions))
-            //using (ApplicationDbContext dbContext = new ApplicationDbContext(_Context._options))
-            //{
-            //    //...do stuff
-            
-            
-                var entity = await _Context.Set<T>().FindAsync(id);
-                if (entity == null) return null;
-
-                _Context.Entry(entity).State = EntityState.Detached;
-                return entity;
+            var entity = await _Context.Set<T>().FindAsync(id);
+            if (entity == null) return null;
+            _Context.Entry(entity).State = EntityState.Detached;
+            return entity;
             
         }
 

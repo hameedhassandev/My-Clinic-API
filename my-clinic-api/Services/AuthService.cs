@@ -145,22 +145,13 @@ namespace my_clinic_api.Services
 
             
             var doctorId = doctor.Id;
-            //var getDoctor = await _userManager.FindByIdAsync(doctorId);
-            try
-            {
-                AddSpecialistToDoctor(doctorDto.SpecialistsIds, doctorId);
-                AddHospitalToDoctor(doctorDto.HospitalsIds, doctorId);
-                AddInsuranceToDoctor(doctorDto.InsuranceIds, doctorId);
-                _doctorService.CommitChanges();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return new AuthModelDto { Massage = "Somthing error, try again!" };
+            var getDoctor = await _doctorService.FindDoctorByIdWithDataAsync(doctorId);
 
-            }
-
-
+            var doc = await AddSpecialistToDoctor(doctorDto.SpecialistsIds, doctor);
+            doc = await AddHospitalToDoctor(doctorDto.HospitalsIds, doc);
+            doc = await AddInsuranceToDoctor(doctorDto.InsuranceIds, doc);
+            _context.doctors.Update(doc);
+            var count = _context.SaveChanges();
 
             return new AuthModelDto
             {
@@ -340,23 +331,20 @@ namespace my_clinic_api.Services
         }
 
 
-        private async Task AddSpecialistToDoctor(List<int> SpecialistsIds, string doctorId)
+        private async Task<Doctor> AddSpecialistToDoctor(List<int> SpecialistsIds , Doctor doctor )
         {
-            foreach (int specialistId in SpecialistsIds)
-                await _specialistService.AddSpecialistToDoctor(doctorId, specialistId);
+            return await _specialistService.AddSpecialistToDoctor(SpecialistsIds,doctor);
         }
 
-        
-        private async Task AddInsuranceToDoctor(List<int> InsuranceIds, string doctorId)
+
+        private async Task<Doctor> AddInsuranceToDoctor(List<int> InsuranceIds, Doctor doctor)
         {
-            foreach (int insuranceId in InsuranceIds)
-                await _insuranceService.AddInsuranceToDoctor(doctorId, insuranceId);
+            return await _insuranceService.AddInsuranceToDoctor(InsuranceIds, doctor);
         }
 
-        private async Task AddHospitalToDoctor(List<int> HospitalIds, string doctorId)
+        private async Task<Doctor> AddHospitalToDoctor(List<int> SpecialistsIds, Doctor doctor)
         {
-            foreach (int hospitalId in HospitalIds)
-                await _hospitalService.AddHospitalToDoctor(doctorId, hospitalId);
+            return await _hospitalService.AddHospitalToDoctor(SpecialistsIds, doctor);
         }
 
         private async Task<bool> confirmationMail(ApplicationUser userModel)
@@ -412,18 +400,18 @@ namespace my_clinic_api.Services
 
             var doctorId = doctor.Id;
             //var getDoctor = await _userManager.FindByIdAsync(doctorId);
-            try
-            {
-                AddSpecialistToDoctor(dto.SpecialistsIds, doctorId);
-                AddHospitalToDoctor(dto.HospitalsIds, doctorId);
-                AddInsuranceToDoctor(dto.InsuranceIds, doctorId);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return new AuthModelDto { Massage = "Somthing error, try again!" };
+            //try
+            //{
+            //    AddSpecialistToDoctor(dto.SpecialistsIds, doctorId);
+            //    AddHospitalToDoctor(dto.HospitalsIds, doctorId);
+            //    AddInsuranceToDoctor(dto.InsuranceIds, doctorId);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine(ex);
+            //    return new AuthModelDto { Massage = "Somthing error, try again!" };
 
-            }
+            //}
 
 
             return new AuthModelDto { Massage = $"Follow your email {doctor.Email} until approval to join is sent from the admin." };

@@ -8,6 +8,6 @@ namespace my_clinic_api.Interfaces
         Task<IEnumerable<Specialist>> FindSpecialistByDepartmentId(int departmentId);
 
         Task<IEnumerable<Specialist>> GetAllSpecialistWithDepartment();
-        Task<bool> AddSpecialistToDoctor(string doctorId , int specialistId);
+        Task<Doctor> AddSpecialistToDoctor(List<int> SpecialistsIds, Doctor doctor );
     }
 }

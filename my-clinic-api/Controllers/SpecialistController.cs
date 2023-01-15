@@ -118,14 +118,14 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("AddSpecialistToDoctor")]
-        public async Task<IActionResult> AddSpecialistToDoctor([FromForm, Required] string doctorId, [FromForm, Required] int specialistId)
-        {
-            var result = await _specialistService.AddSpecialistToDoctor(doctorId, specialistId);
-            if (result)
-                return Ok("Specialist Added Successfully");
-            return BadRequest();
-        }
+        //[HttpPost("AddSpecialistToDoctor")]
+        //public async Task<IActionResult> AddSpecialistToDoctor([FromForm, Required] string doctorId, [FromForm, Required] int specialistId)
+        //{
+        //    var result = await _specialistService.AddSpecialistToDoctor(doctorId, specialistId);
+        //    if (result)
+        //        return Ok("Specialist Added Successfully");
+        //    return BadRequest();
+        //}
 
         [HttpDelete("DeleteSpecialist")]
         public async Task<IActionResult> DeleteSpecialist([FromForm, Required] int specialisId)

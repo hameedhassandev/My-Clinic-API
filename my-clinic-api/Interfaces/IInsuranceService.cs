@@ -7,6 +7,6 @@ namespace my_clinic_api.Interfaces
         Task<Insurance> FindInsuranceByIdWithData(int insuranceId);
         Task<IEnumerable<Insurance>> InsuranceNameIsExist(string insuranceName);
         Task<bool> IsInsuranceIdsIsExist(List<int> doctorInsuranceIds);
-        Task<bool> AddInsuranceToDoctor(string doctorId, int InsurancelId);
+        Task<Doctor> AddInsuranceToDoctor(List<int> InsurancesIds, Doctor doctor);
     }
 }

@@ -171,6 +171,8 @@ namespace my_clinic_api.Controllers
         }
 
 
+        [HttpPost("")]
+
 
         //save token in cookie
         private void setTokenInCookie(string token, DateTime expiresOn)

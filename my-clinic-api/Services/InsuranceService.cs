@@ -1,4 +1,5 @@
-﻿using my_clinic_api.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
@@ -9,11 +10,13 @@ namespace my_clinic_api.Services
     {
         private readonly IComparer2Lists _comparer2Lists;
         private readonly IDoctorService _doctorService;
+        private readonly ApplicationDbContext _context;
 
-        public InsuranceService(ApplicationDbContext Context, IComparer2Lists comparer2Lists, IDoctorService doctorService) : base(Context)
+        public InsuranceService(ApplicationDbContext Context, IComparer2Lists comparer2Lists, IDoctorService doctorService, ApplicationDbContext context) : base(Context)
         {
-            _comparer2Lists = comparer2Lists;   
-            _doctorService = doctorService; 
+            _comparer2Lists = comparer2Lists;
+            _doctorService = doctorService;
+            _context = context;
         }
 
         public async Task<Insurance> FindInsuranceByIdWithData(int insuranceId)
@@ -23,21 +26,15 @@ namespace my_clinic_api.Services
             var insurance = await FindWithData(criteria);
             return insurance;
         }
-        public async Task<bool> AddInsuranceToDoctor(string doctorId, int InsurancelId)
+        public async Task<Doctor> AddInsuranceToDoctor(List<int> InsuranceIds, Doctor doctor)
         {
-
-            var Insurance = await FindByIdAsync(InsurancelId);
-
-            var doctor = await _doctorService.FindDoctorByIdAsync(doctorId);
-            if (doctor == null)
-                return false;
-            if (doctor.Insurances is null)
+            doctor.Insurances ??= new Collection<Insurance>();
+            foreach (int insuranceId in InsuranceIds)
             {
-                doctor.Insurances = new Collection<Insurance>();
+                var Insurance = await FindByIdAsync(insuranceId);
+                doctor.Insurances.Add(Insurance);
             }
-            doctor.Insurances.Add(new Insurance { Id = InsurancelId,CompanyName = Insurance.CompanyName,Discount = Insurance.Discount });
-
-            return true;
+            return doctor;
         }
 
         public async Task<IEnumerable<Insurance>> InsuranceNameIsExist(string insuranceName)

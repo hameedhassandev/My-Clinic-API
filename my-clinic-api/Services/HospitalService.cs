@@ -11,10 +11,12 @@ namespace my_clinic_api.Services
     {
         private readonly IComparer2Lists _comparer2Lists;
         private readonly IDoctorService _doctorService;
-        public HospitalService(ApplicationDbContext Context, IComparer2Lists comparer2Lists, IDoctorService doctorService) : base(Context)
+        private readonly ApplicationDbContext _context;
+        public HospitalService(ApplicationDbContext Context, IComparer2Lists comparer2Lists, IDoctorService doctorService, ApplicationDbContext context) : base(Context)
         {
             _comparer2Lists = comparer2Lists;
-            _doctorService = doctorService; 
+            _doctorService = doctorService;
+            _context = context;
         }
 
         public async Task<Hospital> FindHospitalByIdWithData(int hospitalId)
@@ -47,20 +49,15 @@ namespace my_clinic_api.Services
             return compare;
         }
 
-        public async Task<bool> AddHospitalToDoctor(string doctorId, int HospitalId)
+        public async Task<Doctor> AddHospitalToDoctor(List<int> HospitalsIds, Doctor doctor)
         {
-            var Hospital = await FindByIdAsync(HospitalId);
-
-            var doctor = await _doctorService.FindDoctorByIdAsync(doctorId);
-            if (doctor == null)
-                return false;
-            if (doctor.Hospitals is null)
+            doctor.Hospitals ??= new Collection<Hospital>();
+            foreach (int hospitalId in HospitalsIds)
             {
-                doctor.Hospitals = new Collection<Hospital>();
+                var Hospital = await FindByIdAsync(hospitalId);
+                doctor.Hospitals.Add(Hospital);
             }
-            doctor.Hospitals.Add(new Hospital { Id = HospitalId, Name = Hospital.Name, Address = Hospital.Address });
-
-            return true;
+            return doctor;
         }
 
 

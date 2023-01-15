@@ -10,7 +10,6 @@ namespace my_clinic_api.Interfaces
     {
         Task<AuthModelDto> UserRegisterAsync(UserRegisterDto userDto);
         Task<AuthModelDto> DoctorRegisterAsync(DoctorRegisterDto doctorDto,bool isConfirmedFromAdmin);
-        Task<DoctorDropDownDto> getDropDownForDoctor();
         Task<AuthModelDto> GetTokenAsync(TokenRequestModelDto modelDto);
         Task<AuthModelDto> ConfirmDoctor(string doctorId);
         Task<AuthModelDto> testRegisteration(DoctorRegisterDto doctorDto, bool isConfirmed);

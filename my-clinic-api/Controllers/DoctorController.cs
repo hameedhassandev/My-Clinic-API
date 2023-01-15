@@ -44,6 +44,7 @@ namespace my_clinic_api.Controllers
            var result = _mapper.Map<IEnumerable<DoctorDto>>(doctors);
             return Ok(result);
         }
+
         [HttpGet("GetAllDoctorsWithData")]
         public async Task<IActionResult> GetAllDoctorsWithData()
         {

@@ -27,8 +27,9 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
-    
-});
+    options.EnableSensitiveDataLogging();
+},
+    ServiceLifetime.Transient); 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(
       opts =>
       {

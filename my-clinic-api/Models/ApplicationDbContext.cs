@@ -5,10 +5,16 @@ namespace my_clinic_api.Models
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        public readonly DbContextOptions<ApplicationDbContext> _options;
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-            this.ChangeTracker.LazyLoadingEnabled = false;
+            ChangeTracker.LazyLoadingEnabled = false;
+            _options = options;
+            
         }
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

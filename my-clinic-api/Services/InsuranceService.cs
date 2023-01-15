@@ -1,5 +1,6 @@
 ﻿using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
+using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 
 namespace my_clinic_api.Services
@@ -30,10 +31,12 @@ namespace my_clinic_api.Services
             var doctor = await _doctorService.FindDoctorByIdAsync(doctorId);
             if (doctor == null)
                 return false;
-
+            if (doctor.Insurances is null)
+            {
+                doctor.Insurances = new Collection<Insurance>();
+            }
             doctor.Insurances.Add(new Insurance { Id = InsurancelId,CompanyName = Insurance.CompanyName,Discount = Insurance.Discount });
 
-            CommitChanges();
             return true;
         }
 

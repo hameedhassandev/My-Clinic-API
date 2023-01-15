@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
+using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 
 namespace my_clinic_api.Services
@@ -44,8 +45,13 @@ namespace my_clinic_api.Services
             var doctor = await _doctorService.FindDoctorByIdAsync(doctorId);
             if (doctor == null)
                 return false;
-            doctor.Specialists.Add(new Specialist { Id = specialistId , SpecialistName = specialist.SpecialistName});
-            CommitChanges();
+            if (doctor.Specialists is null)
+            {
+                doctor.Specialists = new Collection<Specialist>();
+            }
+            doctor.Specialists.Add(new Specialist { Id = specialistId, SpecialistName = specialist.SpecialistName });
+            //await _doctorService.Update(doctor);
+            //CommitChanges();
             return true;
         }
 

@@ -51,8 +51,7 @@ namespace my_clinic_api.Controllers
             var doctors = await _doctorService.GetAllWithData();
 
             if (doctors == null) return NotFound();
-
-           var result = _mapper.Map<IEnumerable<DoctorDto>>(doctors);
+            var result = _mapper.Map<IEnumerable<DoctorDto>>(doctors);
             return Ok(result);
         }
 

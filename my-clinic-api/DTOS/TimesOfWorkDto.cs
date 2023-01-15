@@ -18,7 +18,7 @@ namespace my_clinic_api.DTOS
         [Required]
         public DateTime EndWork { get; set; }
 
-        public Doctor Doctor { get; set; }
+        //public Doctor Doctor { get; set; }
         [Required]
         public string? doctorId { get; set; }
     }

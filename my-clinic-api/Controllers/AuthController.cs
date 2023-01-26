@@ -64,12 +64,12 @@ namespace my_clinic_api.Controllers
         }
 
         [HttpPost("testDoctorRegister")]
-        public async Task<IActionResult> testDoctorRegister([FromBody] DoctorRegisterDto dto)
+        public async Task<IActionResult> testDoctorRegister([FromForm] DoctorRegisterDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _authService.testRegisteration(dto, false);
+            var result = await _authService.testRegisteration(dto);
 
             if (!result.IsAuth)
                 return BadRequest(result.Massage);

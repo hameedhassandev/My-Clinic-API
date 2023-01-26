@@ -40,7 +40,10 @@ namespace my_clinic_api.Services
         private readonly IDoctorService _doctorService;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IEmailSender _emailSender;
+        private new List<string> _allowsImageExtenstions = new List<string> { ".jpej",".png",".jpg"};
+        private long _allowMaxImageLength = 943718;//0.9MB
         private readonly ApplicationDbContext _context;
+        
        
 
         public AuthService(UserManager<ApplicationUser> userManager, IMapper mapper, IOptions<JWT> jwt, IAreaService areaService, IHospitalService hospitalService,
@@ -225,6 +228,13 @@ namespace my_clinic_api.Services
         {
             var authModel = new AuthModelDto();
             var user = await _userManager.FindByEmailAsync(modelDto.Email);
+
+            var isMailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
+            if(!isMailConfirmed)
+            {
+                authModel.Massage = "Email not confirmed yet!";
+                return authModel;
+            }
             //check if email is exist
             if (user is null || ! await _userManager.CheckPasswordAsync(user, modelDto.Password))
             {
@@ -366,10 +376,26 @@ namespace my_clinic_api.Services
             return false;
         }
 
-        public async Task<AuthModelDto> testRegisteration(DoctorRegisterDto dto, bool isConfirmed)
+        private bool allowExtenstions(string path)
+        {
+            if (!_allowsImageExtenstions.Contains(path)) return false;
+            return true;
+        }
+        private bool allowImageMaxLength(long imageLength)
+        {
+            if(imageLength > _allowMaxImageLength) return false;
+            return true;
+        }
+
+        public async Task<AuthModelDto> testRegisteration(DoctorRegisterDto dto)
         {
             if (await EmailIsExist(dto.Email)) return new AuthModelDto { Massage = "Email is exist!"};
             if(await UserNameIsExist(dto.UserName)) return new AuthModelDto { Massage = "Username is exist!"};
+            if(!allowExtenstions(Path.GetExtension(dto.Image.FileName).ToLower())) return new AuthModelDto { Massage = "Only .jpeg, .jpg and .png are allowed" };
+            if (!allowImageMaxLength(dto.Image.Length)) return new AuthModelDto { Massage = "Max image allowed size is 0.9 MB" };
+            
+            using var dataStream = new MemoryStream();
+            await dto.Image.CopyToAsync(dataStream);
 
             var doctor = new Doctor
             {
@@ -386,9 +412,8 @@ namespace my_clinic_api.Services
                 Address = dto.Address,
                 PhoneNo = dto.PhoneNo,
                 Gender = dto.Gender,
-                IsConfirmedFromAdmin = isConfirmed,
                 IsActive = true,
-                //image
+                Image = dataStream.ToArray(),
             };
 
             var result = await _userManager.CreateAsync(doctor, dto.Password);
@@ -397,26 +422,24 @@ namespace my_clinic_api.Services
             if (!err.IsNullOrEmpty()) return new AuthModelDto { Massage = err };
 
             await _userManager.AddToRoleAsync(doctor, RoleNames.DoctorRole);
+            try
+            {
+                var doc = await AddSpecialistToDoctor(dto.SpecialistsIds, doctor);
+                doc = await AddHospitalToDoctor(dto.HospitalsIds, doc);
+                doc = await AddInsuranceToDoctor(dto.InsuranceIds, doc);
+                _context.doctors.Update(doc);
+                var count = _context.SaveChanges();
+            }
+            catch(Exception ex)
+            {
+                return new AuthModelDto { Massage = $"Somthing error, try again!, {ex}" };
 
-            var doctorId = doctor.Id;
-            //var getDoctor = await _userManager.FindByIdAsync(doctorId);
-            //try
-            //{
-            //    AddSpecialistToDoctor(dto.SpecialistsIds, doctorId);
-            //    AddHospitalToDoctor(dto.HospitalsIds, doctorId);
-            //    AddInsuranceToDoctor(dto.InsuranceIds, doctorId);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine(ex);
-            //    return new AuthModelDto { Massage = "Somthing error, try again!" };
-
-            //}
-
-
+            }
+    
             return new AuthModelDto { Massage = $"Follow your email {doctor.Email} until approval to join is sent from the admin." };
         }
 
+        
         private string ErrorOfIdentityResult(IdentityResult result)
         {
             var errors = string.Empty;

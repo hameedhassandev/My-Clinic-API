@@ -39,7 +39,7 @@ namespace my_clinic_api.Dto.AuthDtos
         [MaxLength(20)]
         public string  PhoneNo { get; set; }
 
-        public byte[] ? Image { get; set; }
+        public IFormFile? Image { get; set; }
 
         public Gender  Gender { get; set; }
 

@@ -44,6 +44,16 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
+        // GET: api/Area/GetAllAreasByDepartmentId/city/1
+        [HttpGet("GetAllAreasByCityId/cityId")]
+        public async Task<IActionResult> GetAllAreasByCityId(int cityId)
+        {
+            var result = await _areaService.getAreaByCityId(cityId);
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
 
         // POST: api/Area/AddArea/
         [HttpPost("AddArea")]

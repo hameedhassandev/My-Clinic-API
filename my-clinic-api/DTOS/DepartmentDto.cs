@@ -19,5 +19,15 @@ namespace my_clinic_api.DTOS
         public ICollection<DoctorDto>? doctors { get; set; }
 
         public ICollection<SpecialistDto>? specialists { get; set; }
+
+        //public static explicit operator DepartmentDto(Department department)
+        //{
+        //    return new DepartmentDto
+        //    {
+        //        Id = department.Id,
+        //        Name = department.Name,
+        //        Description = department.Description,
+        //    };
+        //}
     }
 }

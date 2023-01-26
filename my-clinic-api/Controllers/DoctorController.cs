@@ -44,14 +44,14 @@ namespace my_clinic_api.Controllers
            var result = _mapper.Map<IEnumerable<DoctorDto>>(doctors);
             return Ok(result);
         }
+
         [HttpGet("GetAllDoctorsWithData")]
         public async Task<IActionResult> GetAllDoctorsWithData()
         {
             var doctors = await _doctorService.GetAllWithData();
 
             if (doctors == null) return NotFound();
-
-           var result = _mapper.Map<IEnumerable<DoctorDto>>(doctors);
+            var result = _mapper.Map<IEnumerable<DoctorDto>>(doctors);
             return Ok(result);
         }
 

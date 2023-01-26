@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using my_clinic_api.Models.RefreshTokens;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -34,8 +33,7 @@ namespace my_clinic_api.Models
         [DefaultValue(true)]
         public bool IsActive { get; set; }
 
-        //refresh token NP
-        public List<RefreshToken>? RefreshToken { get; set; }
+ 
 
     }
 }

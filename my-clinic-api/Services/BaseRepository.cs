@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -13,7 +14,8 @@ namespace my_clinic_api.Services
     public abstract class BaseRepository<T> : IBaseRepository<T> where T : class
     {
 
-        public ApplicationDbContext _Context { get; }
+        private readonly ApplicationDbContext _Context;
+
         public BaseRepository(ApplicationDbContext Context)
         {
             _Context = Context;
@@ -46,9 +48,9 @@ namespace my_clinic_api.Services
         {
             var entity = await _Context.Set<T>().FindAsync(id);
             if (entity == null) return null;
-
             _Context.Entry(entity).State = EntityState.Detached;
             return entity;
+            
         }
 
         public async Task<int> CountAsync()
@@ -73,17 +75,23 @@ namespace my_clinic_api.Services
 
         public async Task<T> FindAsync(Expression<Func<T, bool>> criteria)
         {
-            return await _Context.Set<T>().AsQueryable().SingleOrDefaultAsync(criteria);
+
+            var result = await _Context.Set<T>().AsQueryable().AsNoTracking().FirstOrDefaultAsync();
+            _Context.Entry(result).State = EntityState.Detached;
+            return result;
+            
         }
         public async Task<T> FindWithData(Expression<Func<T, bool>> criteria)
         {
             var col = GetCollections(typeof(T));
-            var query = _Context.Set<T>().AsQueryable();
+            var query = _Context.Set<T>().AsQueryable().AsNoTracking();
             foreach (var inc in col)
             {
                 query = query.Include(inc);
             }
-            return await query.SingleOrDefaultAsync(criteria);
+            var entity = await query.SingleOrDefaultAsync(criteria);
+            _Context.Entry(entity).State = EntityState.Detached;
+            return entity;
         }
         public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria)
         {

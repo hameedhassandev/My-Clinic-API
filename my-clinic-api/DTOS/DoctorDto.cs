@@ -25,7 +25,6 @@ namespace my_clinic_api.DTOS
         public bool IsActive { get; set; }
 
         public string? DoctorTitle { get; set; }
-
         public float AvgRate { get; set; }
 
         public string Bio { get; set; } = string.Empty;
@@ -33,6 +32,8 @@ namespace my_clinic_api.DTOS
         public int NumberOfViews { get; set; }
 
         public int WaitingTime { get; set; }
+        public double Cost { get; set; }
+
 
         public bool IsConfirmedFromAdmin { get; set; }
 
@@ -50,7 +51,7 @@ namespace my_clinic_api.DTOS
 
         public int DepartmentId { get; set; }
 
-        public DepartmentDto? department { get; set; }
+        public DepartmentDtoForDoctor? department { get; set; }
         public ICollection<SpecialistDto>? Specialists { get; set; }
         public ICollection<TimesOfWorkDto>? TimesOfWorks { get; set; }
         public ICollection<InsuranceDto>? Insurances { get; set; }

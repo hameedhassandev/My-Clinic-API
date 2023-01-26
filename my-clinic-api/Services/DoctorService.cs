@@ -9,13 +9,10 @@ namespace my_clinic_api.Services
 {
     public class DoctorService : BaseRepository<Doctor>, IDoctorService
     {
-        private readonly ApplicationDbContext _context;
-
         public DoctorService(ApplicationDbContext Context) : base(Context)
         {
-            _context = Context;
-
         }
+
         public async Task<Doctor> FindDoctorByIdAsync(string doctorId)
         {
             Expression<Func<Doctor, bool>> criteria = d=>d.Id == doctorId;

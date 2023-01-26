@@ -36,6 +36,34 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
+        // GET: api/Specialist/GetAllWithDepartment
+        [HttpGet("GetAllWithDepartment")]
+        public async Task<IActionResult> GetAllWithDepartment()
+        {
+
+            var allWirhDep = await _specialistService.GetAllSpecialistWithDepartment();
+            if (allWirhDep == null)
+                return NotFound();
+
+            var result = _mapper.Map<List<SpecialistDepartmentDto>>(allWirhDep);
+
+            return Ok(result);
+        }
+
+        // GET: api/Specialist/GetAllByDepartmentId/2
+        [HttpGet("GetAllByDepartmentId/{departmentId}")]
+        public async Task<IActionResult> GetAllByDepartmentId(int departmentId)
+        {
+
+            var getAllByDepId = await _specialistService.FindSpecialistByDepartmentId(departmentId);
+            if (getAllByDepId == null)
+                return NotFound();
+
+            var result = _mapper.Map<List<SpecialistDto>>(getAllByDepId);
+
+            return Ok(result);
+        }
+
         // GET: api/Specialist/GetAllWithData
         [HttpGet("GetAllWithData")]
         public async Task<IActionResult> GetAllWithData()
@@ -90,6 +118,15 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
+        //[HttpPost("AddSpecialistToDoctor")]
+        //public async Task<IActionResult> AddSpecialistToDoctor([FromForm, Required] string doctorId, [FromForm, Required] int specialistId)
+        //{
+        //    var result = await _specialistService.AddSpecialistToDoctor(doctorId, specialistId);
+        //    if (result)
+        //        return Ok("Specialist Added Successfully");
+        //    return BadRequest();
+        //}
+
         [HttpDelete("DeleteSpecialist")]
         public async Task<IActionResult> DeleteSpecialist([FromForm, Required] int specialisId)
         {
@@ -103,14 +140,7 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("AddSpecialistToDoctor")]
-        public async Task<IActionResult> AddSpecialistToDoctor([FromForm, Required] string doctorId, [FromForm, Required] int specialistId)
-        {
-            var result = await _specialistService.AddSpecialistToDoctor(doctorId, specialistId);
-            if (result)
-                return Ok("Specialist Added Successfully");
-            return BadRequest();
-        }
+       
 
     }
 }

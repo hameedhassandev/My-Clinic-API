@@ -1,18 +1,25 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using my_clinic_api.Classes;
 using my_clinic_api.Dto;
 using my_clinic_api.Dto.AuthDtos;
 using my_clinic_api.DTOS;
+using my_clinic_api.DTOS.AuthDtos;
 using my_clinic_api.Helpers;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
-using my_clinic_api.Models.RefreshTokens;
+using my_clinic_api.Models.MailConfirmation;
 using my_clinic_api.Services;
+using Newtonsoft.Json.Linq;
 using System.ComponentModel;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq.Expressions;
 using System.Numerics;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -30,8 +37,19 @@ namespace my_clinic_api.Services
         private readonly IDepartmentService _departmentService;
         private readonly ISpecialistService _specialistService;
         private readonly IInsuranceService _insuranceService;
+        private readonly IDoctorService _doctorService;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IEmailSender _emailSender;
+        private new List<string> _allowsImageExtenstions = new List<string> { ".jpej",".png",".jpg"};
+        private long _allowMaxImageLength = 943718;//0.9MB
+        private readonly ApplicationDbContext _context;
+        
+       
+
         public AuthService(UserManager<ApplicationUser> userManager, IMapper mapper, IOptions<JWT> jwt, IAreaService areaService, IHospitalService hospitalService,
-            IDepartmentService departmentService, ISpecialistService specialistService, IInsuranceService insuranceService)
+            IDepartmentService departmentService, ISpecialistService specialistService,
+            IInsuranceService insuranceService,RoleManager<IdentityRole> roleManager,
+            IEmailSender emailSende, IDoctorService doctorServicer,ApplicationDbContext context)
         {
             _userManager = userManager;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -41,7 +59,26 @@ namespace my_clinic_api.Services
             _departmentService = departmentService;
             _specialistService = specialistService;
             _insuranceService = insuranceService;
+            _roleManager = roleManager;
+            _emailSender = emailSende;
+            _doctorService = doctorServicer;  
+            _context = context;
         }
+
+        async Task<DoctorDropDownDto> getDropDownForDoctor()
+        {
+            var ddlDto = new DoctorDropDownDto
+            {
+                Hospitals = await _context.Hospitals.ToListAsync(),
+                Specialists = await _context.Specialists.ToListAsync(),  
+                Insurances = await _context.Insurances.ToListAsync(),
+                Areas = await _context.Areas.ToListAsync(), 
+            };
+
+            return ddlDto;
+        }
+
+      
 
         public async Task<AuthModelDto> DoctorRegisterAsync(DoctorRegisterDto doctorDto, bool isConfirmedFromAdmin)
         {
@@ -55,24 +92,22 @@ namespace my_clinic_api.Services
 
             //chech area is exist
             var isAreaIdExist = await _areaService.AreaIdIsExist(doctorDto.AreaId);
-            if (!isAreaIdExist)
-                return new AuthModelDto { Massage = "Area name is not right!" };
+            if (!isAreaIdExist)return new AuthModelDto { Massage = "Area name is not right!" };
+
+          
 
             var areaObj = new Area { Id = doctorDto.AreaId };
             var departmentIsExist = await _departmentService.DepartmentIsExists(doctorDto.DepartmentId);
-            if (!departmentIsExist)
-                return new AuthModelDto { Massage = "This department is not exists" };
+            if (!departmentIsExist) return new AuthModelDto { Massage = "This department is not exists" };
+
             var specialist = await _departmentService.IsSpecialistInDepartment(doctorDto.DepartmentId, doctorDto.SpecialistsIds);
-            if (!specialist)
-                return new AuthModelDto { Massage = "Specialists are not exist" };
+            if (!specialist) return new AuthModelDto { Massage = "Specialists are not exist" };
 
             var hospitals = await _hospitalService.IsHospitalIdsIsExist(doctorDto.HospitalsIds);
-            if (!hospitals)
-                return new AuthModelDto { Massage = "Hospitals are not exist" };
+            if (!hospitals) return new AuthModelDto { Massage = "Hospitals are not exist" }; 
 
             var insurance = await _insuranceService.IsInsuranceIdsIsExist(doctorDto.InsuranceIds);
-            if (!insurance)
-                return new AuthModelDto { Massage = "Insurances are not exist" };
+            if (!insurance) return new AuthModelDto { Massage = "Insurances are not exist" };
 
             var doctor = new Doctor
             {
@@ -110,37 +145,25 @@ namespace my_clinic_api.Services
             // if creation is success assign role to doctor
             await _userManager.AddToRoleAsync(doctor, RoleNames.DoctorRole);
             //create token
-            var jwtSecurityToken = await CreateJwtToken(doctor);
 
-            //refresh token
-            var refreshToken = GenerateRefreshToken();
-            doctor.RefreshToken?.Add(refreshToken);
-            await _userManager.UpdateAsync(doctor);
-
-            string massage = "";
-            if (isConfirmedFromAdmin)
-                massage = "Doctor Data has confirmed and registered successfully!";
-            else
-                massage = "Doctor Data has registered successfully, and waiting for admin confirmation!";
-
+            
             var doctorId = doctor.Id;
+            var getDoctor = await _doctorService.FindDoctorByIdWithDataAsync(doctorId);
 
-            AddSpecialistToDoctor(doctorDto.SpecialistsIds, doctorId);
-            AddHospitalToDoctor(doctorDto.HospitalsIds, doctorId);
-            AddInsuranceToDoctor(doctorDto.InsuranceIds, doctorId);
+            var doc = await AddSpecialistToDoctor(doctorDto.SpecialistsIds, doctor);
+            doc = await AddHospitalToDoctor(doctorDto.HospitalsIds, doc);
+            doc = await AddInsuranceToDoctor(doctorDto.InsuranceIds, doc);
+            _context.doctors.Update(doc);
+            var count = _context.SaveChanges();
 
             return new AuthModelDto
             {
-                Id = doctorId,
+    
                 Email = doctor.Email,
-                ExpiresOn = jwtSecurityToken.ValidTo,
                 IsAuth = true,
                 Roles = new List<string> { RoleNames.DoctorRole },
-                Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
                 UserName = doctor.UserName,
-                RefreshToken = refreshToken.Token,
-                RefreshTokenExpiration = refreshToken.ExpiresOn,
-                Massage = massage
+                Massage = "Test"
             };
         }
 
@@ -182,6 +205,7 @@ namespace my_clinic_api.Services
             // in case creation is fail
             if (!result.Succeeded)
             {
+                
                 var errors = string.Empty;
                 foreach (var error in result.Errors)
                 {
@@ -192,28 +216,46 @@ namespace my_clinic_api.Services
             }
             // if creation is success assign role to user
             await _userManager.AddToRoleAsync(user, RoleNames.PatientRole);
-            //create token
-            var jwtSecurityToken = await CreateJwtToken(user);
 
-            //refresh token
-            var refreshToken = GenerateRefreshToken();
-            user.RefreshToken?.Add(refreshToken);
-            await _userManager.UpdateAsync(user);
+            var isSendEmail = await confirmationMail(user);
+            if(isSendEmail) return new AuthModelDto { Massage = $"Registered successfully, check your Email : {user.Email}." };
 
-            return new AuthModelDto
-            {
-                Email = user.Email,
-                ExpiresOn = jwtSecurityToken.ValidTo,
-                IsAuth = true,
-                Roles = new List<string> { RoleNames.PatientRole },
-                Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
-                UserName = user.UserName,
-                RefreshToken = refreshToken.Token,
-                RefreshTokenExpiration = refreshToken.ExpiresOn,
-
-                Massage = "User register successfully"
-            };
+         return new AuthModelDto { Massage = "Somthing error, try again" };
         }
+
+
+        public async Task<AuthModelDto> GetTokenAsync(TokenRequestModelDto modelDto)
+        {
+            var authModel = new AuthModelDto();
+            var user = await _userManager.FindByEmailAsync(modelDto.Email);
+
+            var isMailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
+            if(!isMailConfirmed)
+            {
+                authModel.Massage = "Email not confirmed yet!";
+                return authModel;
+            }
+            //check if email is exist
+            if (user is null || ! await _userManager.CheckPasswordAsync(user, modelDto.Password))
+            {
+                authModel.Massage = "Email or Password is incorrect";
+                return authModel;
+            }
+
+            var jwtSecurityToken = await CreateJwtToken(user);
+            var roles = await _userManager.GetRolesAsync(user);
+
+            authModel.IsAuth = true;
+            authModel.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+            authModel.Email = user.Email;
+            authModel.UserName = user.UserName;
+            authModel.ExpiresOn = DateTime.Now;
+            authModel.Roles = roles.ToList();
+            authModel.Massage = "Login Successfully";
+
+            return authModel;
+        }
+
 
 
         private async Task<JwtSecurityToken> CreateJwtToken(ApplicationUser user)
@@ -247,54 +289,167 @@ namespace my_clinic_api.Services
             return jwtSecurityToken;
         }
 
-        private RefreshToken GenerateRefreshToken()
+
+        private async Task<bool> UserNameIsExist(string userName)
         {
-            var randomNumber = new byte[32];
+            var user = await _userManager.FindByNameAsync(userName);
+            if(user == null) return false;  
 
-            using var generator = new RNGCryptoServiceProvider();
+            return true;
+        }
 
-            generator.GetBytes(randomNumber);
+        public async Task<bool> EmailIsExist(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null) return false;
 
-            return new RefreshToken
+            return true;
+        }
+
+
+        public async Task<AuthModelDto> ConfirmDoctor(string doctorId)
+        {
+            var doctor = await _doctorService.FindDoctorByIdAsync(doctorId);
+            if(doctor == null) return new AuthModelDto { Massage = "Doctor not found!", IsAuth = false };
+
+
+            doctor.IsConfirmedFromAdmin = true;
+            var result = await _userManager.UpdateAsync(doctor);
+            if (!result.Succeeded) return new AuthModelDto { Massage = "Somthing error, not updated", IsAuth = false };
+
+
+            return new AuthModelDto { Massage = "Doctor confirmed  successfuly" };  
+        }
+
+
+        public async Task<List<IdentityRole>> GetRoles()
+        {
+            var roles = await _roleManager.Roles.ToListAsync();
+
+            return roles;
+        }
+
+
+        public async Task<bool> AddRole(string roleName)
+        {
+            var roleExist = await _roleManager.RoleExistsAsync(roleName);
+            if (roleExist)
+                return false;
+            //if not exist add new role 
+            await _roleManager.CreateAsync(new IdentityRole(roleName));
+            return true;
+        }
+
+
+        private async Task<Doctor> AddSpecialistToDoctor(List<int> SpecialistsIds , Doctor doctor )
+        {
+            return await _specialistService.AddSpecialistToDoctor(SpecialistsIds,doctor);
+        }
+
+
+        private async Task<Doctor> AddInsuranceToDoctor(List<int> InsuranceIds, Doctor doctor)
+        {
+            return await _insuranceService.AddInsuranceToDoctor(InsuranceIds, doctor);
+        }
+
+        private async Task<Doctor> AddHospitalToDoctor(List<int> SpecialistsIds, Doctor doctor)
+        {
+            return await _hospitalService.AddHospitalToDoctor(SpecialistsIds, doctor);
+        }
+
+        private async Task<bool> confirmationMail(ApplicationUser userModel)
+        {
+            var user = await _userManager.FindByEmailAsync(userModel.Email);
+
+            if (user is not null)
             {
-                Token = Convert.ToBase64String(randomNumber),
-                ExpiresOn = DateTime.UtcNow.AddDays(10),
-                CreatedOn = DateTime.UtcNow
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+               // var result = await _userManager.ConfirmEmailAsync(user, token);
+               // if (result.Succeeded)
+               // {
+                    var message = new Messages(new string[] { user.Email}, "Confirmation Email Link", "https://localhost:7041/swagger/index.html" );
+                    _emailSender.SendEmail(message);
+                    return true;
+                //}
+            }
+
+            return false;
+        }
+
+        private bool allowExtenstions(string path)
+        {
+            if (!_allowsImageExtenstions.Contains(path)) return false;
+            return true;
+        }
+        private bool allowImageMaxLength(long imageLength)
+        {
+            if(imageLength > _allowMaxImageLength) return false;
+            return true;
+        }
+
+        public async Task<AuthModelDto> testRegisteration(DoctorRegisterDto dto)
+        {
+            if (await EmailIsExist(dto.Email)) return new AuthModelDto { Massage = "Email is exist!"};
+            if(await UserNameIsExist(dto.UserName)) return new AuthModelDto { Massage = "Username is exist!"};
+            if(!allowExtenstions(Path.GetExtension(dto.Image.FileName).ToLower())) return new AuthModelDto { Massage = "Only .jpeg, .jpg and .png are allowed" };
+            if (!allowImageMaxLength(dto.Image.Length)) return new AuthModelDto { Massage = "Max image allowed size is 0.9 MB" };
+            
+            using var dataStream = new MemoryStream();
+            await dto.Image.CopyToAsync(dataStream);
+
+            var doctor = new Doctor
+            {
+                UserName = dto.UserName,
+                Email = dto.Email,
+                FullName = dto.FullName,
+                DoctorTitle = dto.DoctorTitle,
+                Bio = dto.Bio,
+                Cost = dto.Cost,
+                WaitingTime = dto.WaitingTime,
+                DepartmentId = dto.DepartmentId,
+                Cities = dto.Cities,
+                AreaId = dto.AreaId,
+                Address = dto.Address,
+                PhoneNo = dto.PhoneNo,
+                Gender = dto.Gender,
+                IsActive = true,
+                Image = dataStream.ToArray(),
             };
-        }
 
+            var result = await _userManager.CreateAsync(doctor, dto.Password);
 
-        private async void AddSpecialistToDoctor(List<int> SpecialistsIds, string doctorId)
-        {
-            //add spcialist to doctor
+            var err = ErrorOfIdentityResult(result);
+            if (!err.IsNullOrEmpty()) return new AuthModelDto { Massage = err };
 
-            foreach (int specialistId in SpecialistsIds)
+            await _userManager.AddToRoleAsync(doctor, RoleNames.DoctorRole);
+            try
             {
-                await _specialistService.AddSpecialistToDoctor(doctorId, specialistId);
+                var doc = await AddSpecialistToDoctor(dto.SpecialistsIds, doctor);
+                doc = await AddHospitalToDoctor(dto.HospitalsIds, doc);
+                doc = await AddInsuranceToDoctor(dto.InsuranceIds, doc);
+                _context.doctors.Update(doc);
+                var count = _context.SaveChanges();
             }
-
-        }
-        private async void AddHospitalToDoctor(List<int> HospitalsIds, string doctorId)
-        {
-            //add hospital to doctor
-
-            foreach (int hosptalId in HospitalsIds)
+            catch(Exception ex)
             {
-                await _specialistService.AddSpecialistToDoctor(doctorId, hosptalId);
-            }
+                return new AuthModelDto { Massage = $"Somthing error, try again!, {ex}" };
 
+            }
+    
+            return new AuthModelDto { Massage = $"Follow your email {doctor.Email} until approval to join is sent from the admin." };
         }
 
-        private async void AddInsuranceToDoctor(List<int> InsuranceIds, string doctorId)
+        
+        private string ErrorOfIdentityResult(IdentityResult result)
         {
-            //add InsuranceIds to doctor
+            var errors = string.Empty;
+            if (result.Succeeded)
+                return String.Empty;
 
-            foreach (int insuranceId in InsuranceIds)
-            {
-                await _specialistService.AddSpecialistToDoctor(doctorId, insuranceId);
-            }
+            foreach (var error in result.Errors)
+                errors += $"{error.Description}, ";
 
+            return errors;
         }
-
     }
 }

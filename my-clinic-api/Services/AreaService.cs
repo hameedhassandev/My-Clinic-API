@@ -24,5 +24,13 @@ namespace my_clinic_api.Services
             if (area.Any()) return area;
             return Enumerable.Empty<Area>();
         }
+
+        public async Task<IEnumerable<Area>> getAreaByCityId(int cityId)
+        {
+            Expression<Func<Area, bool>> predicate = a => ((int)a.City).Equals(cityId);
+            var area = await FindAllAsync(predicate);
+            if (area.Any()) return area;
+            return Enumerable.Empty<Area>();
+        }
     }
 }

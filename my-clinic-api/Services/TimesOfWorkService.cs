@@ -8,8 +8,10 @@ namespace my_clinic_api.Services
 {
     public class TimesOfWorkService : BaseRepository<TimesOfWork>, ITimesOfWorkService
     {
-        public TimesOfWorkService(ApplicationDbContext Context) : base(Context)
+        private readonly IDoctorService _doctorService;
+        public TimesOfWorkService(ApplicationDbContext Context, IDoctorService doctorService) : base(Context)
         {
+            _doctorService = doctorService;
         }
 
 
@@ -60,8 +62,9 @@ namespace my_clinic_api.Services
 
         public async Task<string> AddTimetoDoctor(CreateTimesOfWorkDto dto)
         {
+            var doc = await _doctorService.FindDoctorByIdAsync(dto.doctorId);
+            if (doc is null) return "No doctor found with this Id";
             Expression<Func<TimesOfWork, bool>> criteria = t => t.doctorId == dto.doctorId && t.day == dto.day;
-
             var DayIsExist = await FindAsync(criteria);
             if (DayIsExist is not null) return "This day is already exists";
             var time = new TimesOfWork

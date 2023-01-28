@@ -77,6 +77,7 @@ namespace my_clinic_api.Services
         {
 
             var result = await _Context.Set<T>().AsQueryable().AsNoTracking().FirstOrDefaultAsync();
+            if (result== null) return null;
             _Context.Entry(result).State = EntityState.Detached;
             return result;
             

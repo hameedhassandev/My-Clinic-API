@@ -177,12 +177,7 @@ namespace my_clinic_api.Services
             if (await _userManager.FindByNameAsync(userDto.UserName) is not null)
                 return new AuthModelDto { Massage = "UserName is alerdy register!" };
 
-            //chech area is exist
-            var isAreaIdExist = await _areaService.AreaIdIsExist(userDto.AreaId);
-            if (!isAreaIdExist)
-                return new AuthModelDto { Massage = "Area name is not right!" };
 
-            var areaObj = new Area { Id = userDto.AreaId };
             //try to make with automapper latter
             var user = new Patient
             {
@@ -194,8 +189,8 @@ namespace my_clinic_api.Services
                 Address = userDto.Address,
                 PhoneNo = userDto.PhoneNo,
                 Gender = userDto.Gender,
-                IsActive = true
-                //image
+                IsActive = true,
+                //image = userDto.Image;
             };
             //test mapper 
             //var user = _mapper.Map<ApplicationUser>(userDto);
@@ -229,16 +224,17 @@ namespace my_clinic_api.Services
             var authModel = new AuthModelDto();
             var user = await _userManager.FindByEmailAsync(modelDto.Email);
 
-            var isMailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
-            if(!isMailConfirmed)
-            {
-                authModel.Massage = "Email not confirmed yet!";
-                return authModel;
-            }
+         
             //check if email is exist
             if (user is null || ! await _userManager.CheckPasswordAsync(user, modelDto.Password))
             {
                 authModel.Massage = "Email or Password is incorrect";
+                return authModel;
+            }
+            var isMailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
+            if (!isMailConfirmed)
+            {
+                authModel.Massage = "Email not confirmed yet!";
                 return authModel;
             }
 

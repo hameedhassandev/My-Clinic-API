@@ -18,5 +18,8 @@ namespace my_clinic_api.DTOS
         //public DoctorDto? doctor { get; set; }
         [Required]
         public string? doctorId { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+         
     }
 }

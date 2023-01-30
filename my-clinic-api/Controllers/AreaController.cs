@@ -45,7 +45,7 @@ namespace my_clinic_api.Controllers
         }
 
         // GET: api/Area/GetAllAreasByDepartmentId/city/1
-        [HttpGet("GetAllAreasByCityId/cityId")]
+        [HttpGet("GetAllAreasByCityId/{cityId}")]
         public async Task<IActionResult> GetAllAreasByCityId(int cityId)
         {
             var result = await _areaService.getAreaByCityId(cityId);

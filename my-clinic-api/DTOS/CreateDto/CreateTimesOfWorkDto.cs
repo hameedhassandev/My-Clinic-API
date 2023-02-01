@@ -11,10 +11,10 @@ namespace my_clinic_api.DTOS.CreateDto
 
         [Required]
 
-        public DateTime StartWork { get; set; }
+        public TimeSpan StartWork { get; set; }
 
         [Required]
-        public DateTime EndWork { get; set; }
+        public TimeSpan EndWork { get; set; }
 
         [Required]
         public string? doctorId { get; set; }

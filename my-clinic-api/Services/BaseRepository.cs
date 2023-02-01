@@ -76,7 +76,7 @@ namespace my_clinic_api.Services
         public async Task<T> FindAsync(Expression<Func<T, bool>> criteria)
         {
 
-            var result = await _Context.Set<T>().AsQueryable().AsNoTracking().FirstOrDefaultAsync();
+            var result = await _Context.Set<T>().AsQueryable().AsNoTracking().FirstOrDefaultAsync(criteria);
             if (result== null) return null;
             _Context.Entry(result).State = EntityState.Detached;
             return result;

@@ -103,9 +103,9 @@ namespace my_clinic_api.Controllers
             var i = TimeSpan.Zero;
             foreach (var time in times)
             {
-                i = time.StartWork.TimeOfDay;
+                i = time.StartWork;
                 Dictionary<TimeSpan, bool> availables = new Dictionary<TimeSpan, bool>();
-                while (i <= time.EndWork.TimeOfDay)
+                while (i <= time.EndWork)
                 {
                     if (!bookings.Any(t => t.Time.TimeOfDay == i))
                     {
@@ -150,9 +150,9 @@ namespace my_clinic_api.Controllers
             var i = TimeSpan.Zero;
             foreach (var time in times)
             {
-                i = time.StartWork.TimeOfDay;
+                i = time.StartWork;
                 IList<TimeSpan> availables = new List<TimeSpan>();
-                while (i <= time.EndWork.TimeOfDay)
+                while (i <= time.EndWork)
                 {
                     if (!bookings.Any(t=>t.Time.TimeOfDay == i) )
                     {

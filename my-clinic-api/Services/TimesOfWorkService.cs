@@ -38,8 +38,8 @@ namespace my_clinic_api.Services
             if (!times.Any()) return false;
             var check = times.SingleOrDefault(d=>d.day.ToString()==day.ToString());
             if (check is null) return false;
-            var start = TimeSpan.Compare(check.StartWork.TimeOfDay , bookDto.Time.TimeOfDay);
-            var end = TimeSpan.Compare(check.EndWork.TimeOfDay , bookDto.Time.TimeOfDay);
+            var start = TimeSpan.Compare(check.StartWork , bookDto.Time.TimeOfDay);
+            var end = TimeSpan.Compare(check.EndWork , bookDto.Time.TimeOfDay);
             return ((start == -1 || start == 0) && (end == 1));
         }
 

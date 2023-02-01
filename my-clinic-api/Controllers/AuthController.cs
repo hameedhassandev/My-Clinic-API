@@ -42,8 +42,6 @@ namespace my_clinic_api.Controllers
             if (!result.IsAuth)
                 return BadRequest(result.Massage);
 
-           setTokenInCookie(result.Token, (DateTime)result.ExpiresOn);
-
             return Ok(result);
         }
 

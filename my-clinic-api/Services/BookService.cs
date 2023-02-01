@@ -28,7 +28,7 @@ namespace my_clinic_api.Services
             if (timeOfDay == null) return "The doctor is not available at this day!";
             //Get List of doctor times withen waiting time;
             var watingTime = await _doctorService.GetWaitingTimeOfDoctor(bookDto.DoctorId);
-            var listOftimes = _timesOfWorkService.GetDoctorAllTimesSpans(timeOfDay.StartWork.TimeOfDay, timeOfDay.EndWork.TimeOfDay, watingTime);
+            var listOftimes = _timesOfWorkService.GetDoctorAllTimesSpans(timeOfDay.StartWork, timeOfDay.EndWork, watingTime);
             if (!listOftimes.Any(t => t == bookDto.Time.TimeOfDay)) return "This time is invalid for this doctor!";
             //Ensure that the time is in range of doctor's working time
             var checkTimeIsAvailable = await _timesOfWorkService.TimeIsAvailable(bookDto);
@@ -44,9 +44,9 @@ namespace my_clinic_api.Services
                 Time = bookDto.Time,
                 CreatedAt = DateTime.Now,
                 ExpiryDate = new DateTime(bookDto.Time.Year, bookDto.Time.Month,
-                    bookDto.Time.Day, timeOfDay.EndWork.TimeOfDay.Hours,
-                    timeOfDay.EndWork.TimeOfDay.Minutes,
-                    timeOfDay.EndWork.TimeOfDay.Seconds),
+                    bookDto.Time.Day, timeOfDay.EndWork.Hours,
+                    timeOfDay.EndWork.Minutes,
+                    timeOfDay.EndWork.Seconds),
             };
             var result = await AddAsync(book);
             CommitChanges();

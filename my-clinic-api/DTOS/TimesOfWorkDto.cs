@@ -13,10 +13,10 @@ namespace my_clinic_api.DTOS
 
         [Required]
 
-        public DateTime StartWork { get; set; }
+        public TimeSpan StartWork { get; set; }
 
         [Required]
-        public DateTime EndWork { get; set; }
+        public TimeSpan EndWork { get; set; }
 
         //public Doctor Doctor { get; set; }
         [Required]

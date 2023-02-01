@@ -208,14 +208,14 @@ namespace my_clinic_api.Services
                 }
                 return new AuthModelDto { Massage = errors };
 
-            }
+            } 
             // if creation is success assign role to user
             await _userManager.AddToRoleAsync(user, RoleNames.PatientRole);
-
+/*
             var isSendEmail = await confirmationMail(user);
-            if(isSendEmail) return new AuthModelDto { Massage = $"Registered successfully, check your Email : {user.Email}." };
+            if(isSendEmail) return new AuthModelDto { Massage = $"Registered successfully, check your Email : {user.Email}." };*/
 
-         return new AuthModelDto { Massage = "Somthing error, try again" };
+         return new AuthModelDto { Massage = "Register succsessfully, check your email", IsAuth = true };
         }
 
 
@@ -234,7 +234,7 @@ namespace my_clinic_api.Services
             var isMailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
             if (!isMailConfirmed)
             {
-                authModel.Massage = "Email not confirmed yet!";
+                authModel.Massage = "Invalid login attempt!";
                 return authModel;
             }
 
@@ -360,13 +360,13 @@ namespace my_clinic_api.Services
             if (user is not null)
             {
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-               // var result = await _userManager.ConfirmEmailAsync(user, token);
-               // if (result.Succeeded)
-               // {
-                    var message = new Messages(new string[] { user.Email}, "Confirmation Email Link", "https://localhost:7041/swagger/index.html" );
+                var result = await _userManager.ConfirmEmailAsync(user, token);
+               if (result.Succeeded)
+               {
+                    var message = new Messages(new string[] { user.Email}, "Confirmation Email Link", "click to confirm you email http://localhost:4200/login");
                     _emailSender.SendEmail(message);
                     return true;
-                //}
+               }
             }
 
             return false;

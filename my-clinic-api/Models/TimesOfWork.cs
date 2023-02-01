@@ -14,10 +14,10 @@ namespace my_clinic_api.Models
 
         [Required]
 
-        public DateTime StartWork { get; set; }
+        public TimeSpan StartWork { get; set; }
 
         [Required]
-        public DateTime EndWork { get; set; }
+        public TimeSpan EndWork { get; set; }
 
 
         public Doctor? doctor { get; set; }

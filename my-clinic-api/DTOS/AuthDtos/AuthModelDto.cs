@@ -4,6 +4,7 @@ namespace my_clinic_api.Dto.AuthDtos
 {
     public class AuthModelDto
     {
+        public string? Id { get; set; }
         public string? Massage { get; set; }
         public string? Email { get; set; }
         public string? UserName { get; set; }

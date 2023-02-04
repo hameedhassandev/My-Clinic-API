@@ -227,7 +227,7 @@ namespace my_clinic_api.Services
 
             var jwtSecurityToken = await CreateJwtToken(user);
             var roles = await _userManager.GetRolesAsync(user);
-
+            authModel.Id = user.Id;
             authModel.IsAuth = true;
             authModel.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
             authModel.Email = user.Email;

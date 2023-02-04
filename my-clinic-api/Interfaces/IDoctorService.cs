@@ -7,7 +7,8 @@ namespace my_clinic_api.Interfaces
         Task<Doctor> FindDoctorByIdAsync(string doctorId);
         Task<Doctor> FindDoctorByIdWithDataAsync(string doctorId);
         Task<int> GetWaitingTimeOfDoctor(string Id);
-
+        Task<IEnumerable<Doctor>> GetAllConfirmedDoctors();
+        Task<IEnumerable<Doctor>> GetAllNotConfirmedDoctors();
     }
 
 }

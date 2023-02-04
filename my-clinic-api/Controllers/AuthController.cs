@@ -161,6 +161,7 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
+
         [HttpGet("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail()
         {

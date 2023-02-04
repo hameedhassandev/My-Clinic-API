@@ -113,7 +113,19 @@ namespace my_clinic_api.Services
             return await _Context.Set<T>().AsQueryable().Where(criteria).Skip(skip).Take(take).ToListAsync();
         }
 
-        
+        //filter with pagination
+        public async Task<IEnumerable<T>> GetAllPaginationAsyncWithData(Expression<Func<T, bool>> criteria)
+        {
+            var col = GetCollections(typeof(T));
+            var query = _Context.Set<T>().AsQueryable().Where(criteria);
+            foreach (var inc in col)
+            {
+                query = query.Include(inc);
+            }
+            return await query.ToListAsync();
+        }
+
+
 
         public void CommitChanges()
         {

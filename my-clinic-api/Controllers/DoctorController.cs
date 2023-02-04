@@ -8,6 +8,8 @@ using my_clinic_api.Models;
 using System.Linq.Expressions;
 using System.Numerics;
 using System.IO;
+using my_clinic_api.Services;
+
 namespace my_clinic_api.Controllers
 {
     [Route("api/[controller]")]
@@ -55,6 +57,31 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("GetAllDoctorsWithFilter")]
+        public async Task<IActionResult> GetAllDoctorsWithFilter([FromQuery]FilterDto fDto)
+        {
+            Expression<Func<Doctor, bool>> expression;
+            if (fDto.city == null) {
+
+                 expression = h => h.DepartmentId == fDto.department;
+            }
+            else if (fDto.department == null)
+            {
+                 expression = h => (int)h.Cities == fDto.city;
+            }
+            else
+            {
+                expression = h => h.DepartmentId == fDto.department && (int)h.Cities == fDto.city;
+
+            }
+
+            var doctors = await _doctorService.GetAllPaginationAsyncWithData(expression);
+
+            if (doctors == null) return NotFound();
+            var result = _mapper.Map<IEnumerable<DoctorDto>>(doctors);
+            return Ok(result);
+        }
+
         [HttpGet("GetDoctorById")]
         public async Task<IActionResult> GetDoctorById(string doctorId)
         {
@@ -78,7 +105,24 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
-        
+        [HttpGet("GetAllConfirmedDoctors")]
+
+        public async Task<IActionResult> GetAllConfirmedDoctors()
+        {
+            var doctors = await _doctorService.GetAllConfirmedDoctors();
+            if (doctors == null) return NotFound();
+            var result = _mapper.Map<IEnumerable<DoctorDto>>(doctors);
+            return Ok(result);
+        }
+
+        [HttpGet("GetAllNotConfirmedDoctors")]
+        public async Task<IActionResult> GetAllNotConfirmedDoctors()
+        {
+            var doctors = await _doctorService.GetAllNotConfirmedDoctors();
+            if (doctors == null) return NotFound();
+            var result = _mapper.Map<IEnumerable<DoctorDto>>(doctors);
+            return Ok(result);
+        }
 
     }
 }

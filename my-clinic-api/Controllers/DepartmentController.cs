@@ -133,7 +133,7 @@ namespace my_clinic_api.Controllers
 
         //PUT:api/Department/UpadteDepartment
         [HttpPut("UpadteDepartment")]
-        public async Task<IActionResult> UpadteDepartment([FromForm , Required]int id, [FromForm] CreateDepartmentDto dto)
+        public async Task<IActionResult> UpadteDepartment(int id, [FromForm] CreateDepartmentDto dto)
         {
             var department = await _departmentService.FindByIdAsync(id);
             if (department == null)
@@ -153,7 +153,7 @@ namespace my_clinic_api.Controllers
 
         //DELETE:api/Department/DeleteDepartment
         [HttpDelete("DeleteDepartment")]
-        public async Task<IActionResult> DeleteDepartment([FromForm , Required] int id)
+        public async Task<IActionResult> DeleteDepartment(int id)
         {
             var department = await _departmentService.FindByIdAsync(id);
 

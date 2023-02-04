@@ -65,20 +65,7 @@ namespace my_clinic_api.Services
             _context = context;
         }
 
-        async Task<DoctorDropDownDto> getDropDownForDoctor()
-        {
-            var ddlDto = new DoctorDropDownDto
-            {
-                Hospitals = await _context.Hospitals.ToListAsync(),
-                Specialists = await _context.Specialists.ToListAsync(),  
-                Insurances = await _context.Insurances.ToListAsync(),
-                Areas = await _context.Areas.ToListAsync(), 
-            };
-
-            return ddlDto;
-        }
-
-      
+ 
 
         public async Task<AuthModelDto> DoctorRegisterAsync(DoctorRegisterDto doctorDto, bool isConfirmedFromAdmin)
         {
@@ -432,7 +419,7 @@ namespace my_clinic_api.Services
 
             }
     
-            return new AuthModelDto { Massage = $"Follow your email {doctor.Email} until approval to join is sent from the admin." };
+            return new AuthModelDto { Massage = $"Follow your email {doctor.Email} until approval to join is sent from the admin.",IsAuth=true };
         }
 
         
@@ -447,5 +434,11 @@ namespace my_clinic_api.Services
 
             return errors;
         }
+
+
+
     }
+
+
+
 }

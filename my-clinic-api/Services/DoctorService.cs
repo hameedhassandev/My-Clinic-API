@@ -51,5 +51,27 @@ namespace my_clinic_api.Services
             return allDoctors;
         }
 
+        public async Task<IEnumerable<Doctor>> GetAllDoctorsWithFiltercriteria(FilterDto dto)
+        {
+
+            Expression<Func<Doctor, bool>> expression;
+            if (dto.city == null)
+            {
+
+                expression = h => h.DepartmentId == dto.department;
+            }
+            else if (dto.department == null)
+            {
+                expression = h => (int)h.Cities == dto.city;
+            }
+            else
+            {
+                expression = h => h.DepartmentId == dto.department && (int)h.Cities == dto.city;
+
+            }
+            expression = c => c.EmailConfirmed;
+            var doctors = await GetAllPaginationAsyncWithData(expression);
+            return doctors;
+        }
     }
 }

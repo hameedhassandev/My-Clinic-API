@@ -1,4 +1,5 @@
-﻿using my_clinic_api.Models;
+﻿using my_clinic_api.DTOS;
+using my_clinic_api.Models;
 
 namespace my_clinic_api.Interfaces
 {
@@ -9,6 +10,8 @@ namespace my_clinic_api.Interfaces
         Task<int> GetWaitingTimeOfDoctor(string Id);
         Task<IEnumerable<Doctor>> GetAllConfirmedDoctors();
         Task<IEnumerable<Doctor>> GetAllNotConfirmedDoctors();
+        Task<IEnumerable<Doctor>> GetAllDoctorsWithFiltercriteria(FilterDto dto);
+        
     }
 
 }

@@ -60,22 +60,8 @@ namespace my_clinic_api.Controllers
         [HttpGet("GetAllDoctorsWithFilter")]
         public async Task<IActionResult> GetAllDoctorsWithFilter([FromQuery]FilterDto fDto)
         {
-            Expression<Func<Doctor, bool>> expression;
-            if (fDto.city == null) {
-
-                 expression = h => h.DepartmentId == fDto.department;
-            }
-            else if (fDto.department == null)
-            {
-                 expression = h => (int)h.Cities == fDto.city;
-            }
-            else
-            {
-                expression = h => h.DepartmentId == fDto.department && (int)h.Cities == fDto.city;
-
-            }
-
-            var doctors = await _doctorService.GetAllPaginationAsyncWithData(expression);
+            
+            var doctors = await _doctorService.GetAllDoctorsWithFiltercriteria(fDto);
 
             if (doctors == null) return NotFound();
             var result = _mapper.Map<IEnumerable<DoctorDto>>(doctors);

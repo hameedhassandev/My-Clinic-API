@@ -171,7 +171,7 @@ namespace my_clinic_api.Controllers
         }
 
         [HttpPost("AddTimeToDoctor")]
-        public async Task<IActionResult> AddTimeToDoctor([FromForm] CreateTimesOfWorkDto dto)
+        public async Task<IActionResult> AddTimeToDoctor([FromBody] CreateTimesOfWorkDto dto)
         {
             var add = await _timesOfWorkService.AddTimetoDoctor(dto);
             /// Return problem same as AddBook Function 
@@ -203,7 +203,7 @@ namespace my_clinic_api.Controllers
 
         }
         [HttpDelete("DeleteTimeOfDoctor")]
-        public async Task<IActionResult> DeleteTimeOfDoctor([FromForm, Required] int TimeId)
+        public async Task<IActionResult> DeleteTimeOfDoctor(int TimeId)
         {
             var time = await _timesOfWorkService.FindByIdAsync(TimeId);
             if (time == null) return BadRequest("No time was found");

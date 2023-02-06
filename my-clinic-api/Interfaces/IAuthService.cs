@@ -15,7 +15,7 @@ namespace my_clinic_api.Interfaces
         Task<AuthModelDto> testRegisteration(DoctorRegisterDto doctorDto);
 
         Task<List<IdentityRole>> GetRoles();
-        Task<bool> AddRole(string roleName);
+        Task<bool> AddRole(string roleName);      
 
 
     }

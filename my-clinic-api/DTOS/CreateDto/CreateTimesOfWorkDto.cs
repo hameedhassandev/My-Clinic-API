@@ -17,6 +17,6 @@ namespace my_clinic_api.DTOS.CreateDto
         public TimeSpan EndWork { get; set; }
 
         [Required]
-        public string? doctorId { get; set; }
+        public string doctorId { get; set; }
     }
 }

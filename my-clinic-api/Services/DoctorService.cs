@@ -36,5 +36,20 @@ namespace my_clinic_api.Services
             return doctor.WaitingTime;
         }
 
+        public async Task<IEnumerable<Doctor>> GetAllConfirmedDoctors()
+        {
+            var allDoctors = await FindAllWithData(d => d.EmailConfirmed);
+            if (allDoctors == null)
+                return Enumerable.Empty<Doctor>();
+            return allDoctors;
+        }
+        public async Task<IEnumerable<Doctor>> GetAllNotConfirmedDoctors()
+        {
+            var allDoctors = await FindAllWithData(d => !d.EmailConfirmed);
+            if (allDoctors == null)
+                return Enumerable.Empty<Doctor>();
+            return allDoctors;
+        }
+
     }
 }

@@ -13,6 +13,8 @@ namespace my_clinic_api.Interfaces
         Task<AuthModelDto> GetTokenAsync(TokenRequestModelDto modelDto);
         Task<AuthModelDto> ConfirmDoctor(string doctorId);
         Task<AuthModelDto> testRegisteration(DoctorRegisterDto doctorDto);
+        Task<AuthModelDto> updateProfilePic(updateImageDto dto);
+
 
         Task<List<IdentityRole>> GetRoles();
         Task<bool> AddRole(string roleName);      

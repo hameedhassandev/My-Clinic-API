@@ -61,8 +61,8 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("testDoctorRegister")]
-        public async Task<IActionResult> testDoctorRegister([FromForm] DoctorRegisterDto dto)
+        [HttpPost("DoctorRegister")]
+        public async Task<IActionResult> DoctorRegister([FromForm] DoctorRegisterDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -72,21 +72,25 @@ namespace my_clinic_api.Controllers
             if (!result.IsAuth)
                 return BadRequest(result.Massage);
 
-            setTokenInCookie(result.Token, (DateTime)result.ExpiresOn);
 
             return Ok(result);
         }
 
+        [HttpPut("updateProfilePic")]
+        public async Task<IActionResult> updateProfilePic([FromForm] updateImageDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-        /* [HttpPost("RegAsDo")]
-         public async Task<IActionResult> RegAsDo() 
-         {
-             var result = await _authService.getDropDownForDoctor();
-             var docFormData = new doctorFormData
-             {
-                 Hospitals = new SelectList(result.Hospitals, "Id", "Name"),
-             };
-         }*/
+            var result = await _authService.updateProfilePic(dto);
+
+            if (!result.IsAuth)
+                return BadRequest(result.Massage);
+
+
+            return Ok(result);
+        }
+
 
 
         [HttpPost("AddDoctorByAdmin")]

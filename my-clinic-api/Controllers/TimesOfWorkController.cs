@@ -135,10 +135,10 @@ namespace my_clinic_api.Controllers
             var times = await _timesOfWorkService.GetTimesOfDoctor(doctorId);
             if (!times.Any()) return NotFound("Doctor has no times! ");
             // Filter times to get today and the next 2 days only
-            times = times.Where(t => t.day.ToString() == _timesOfWorkService.GetNextDaysFromNow(0) ||
+           /* times = times.Where(t => t.day.ToString() == _timesOfWorkService.GetNextDaysFromNow(0) ||
                 t.day.ToString() == _timesOfWorkService.GetNextDaysFromNow(1) ||
                 t.day.ToString() == _timesOfWorkService.GetNextDaysFromNow(2)
-            );
+            );*/
             var bookings = await _bookService.GetBookingsOfDoctor(doctorId);
             // Filter bookings to remove expierd 
             bookings = bookings.Where(b=> 

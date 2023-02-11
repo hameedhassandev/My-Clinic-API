@@ -24,6 +24,7 @@ using System.Numerics;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace my_clinic_api.Services
 {
@@ -40,7 +41,7 @@ namespace my_clinic_api.Services
         private readonly IDoctorService _doctorService;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IEmailSender _emailSender;
-        private new List<string> _allowsImageExtenstions = new List<string> { ".jpej",".png",".jpg"};
+        private new List<string> _allowsImageExtenstions = new List<string> { ".jpeg", ".png",".jpg"};
         private long _allowMaxImageLength = 943718;//0.9MB
         private readonly ApplicationDbContext _context;
         
@@ -232,7 +233,7 @@ namespace my_clinic_api.Services
             authModel.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
             authModel.Email = user.Email;
             authModel.UserName = user.UserName;
-            authModel.ExpiresOn = DateTime.Now;
+            authModel.ExpiresOn = jwtSecurityToken.ValidTo;
             authModel.Roles = roles.ToList();
             authModel.Massage = "Login Successfully";
 
@@ -374,9 +375,9 @@ namespace my_clinic_api.Services
         {
             if (await EmailIsExist(dto.Email)) return new AuthModelDto { Massage = "Email is exist!"};
             if(await UserNameIsExist(dto.UserName)) return new AuthModelDto { Massage = "Username is exist!"};
-            if(!allowExtenstions(Path.GetExtension(dto.Image.FileName).ToLower())) return new AuthModelDto { Massage = "Only .jpeg, .jpg and .png are allowed" };
+            if (!allowExtenstions(Path.GetExtension(dto.Image.FileName).ToLower())) return new AuthModelDto { Massage = "Only .jpeg, .jpg and .png are allowed" };
             if (!allowImageMaxLength(dto.Image.Length)) return new AuthModelDto { Massage = "Max image allowed size is 0.9 MB" };
-            
+
             using var dataStream = new MemoryStream();
             await dto.Image.CopyToAsync(dataStream);
 
@@ -386,7 +387,7 @@ namespace my_clinic_api.Services
                 Email = dto.Email,
                 FullName = dto.FullName,
                 DoctorTitle = dto.DoctorTitle,
-                Bio = dto.Bio,
+                //Bio = dto.Bio,
                 Cost = dto.Cost,
                 WaitingTime = dto.WaitingTime,
                 DepartmentId = dto.DepartmentId,
@@ -420,6 +421,25 @@ namespace my_clinic_api.Services
             }
     
             return new AuthModelDto { Massage = $"Follow your email {doctor.Email} until approval to join is sent from the admin.",IsAuth=true };
+        }
+
+        public async Task<AuthModelDto> updateProfilePic(updateImageDto dto)
+        {
+            var user = await _userManager.FindByIdAsync(dto.userId);
+            if (user == null) return new AuthModelDto { Massage = $"User Id {dto.userId} not exist!" };
+            if (!allowExtenstions(Path.GetExtension(dto.Image.FileName).ToLower())) return new AuthModelDto { Massage = "Only .jpeg, .jpg and .png are allowed" };
+            if (!allowImageMaxLength(dto.Image.Length)) return new AuthModelDto { Massage = "Max image allowed size is 0.9 MB" };
+
+            using var dataStream = new MemoryStream();
+            await dto.Image.CopyToAsync(dataStream);
+            //convert to array
+            var image = dataStream.ToArray();
+            user.Image = image;
+            var result = await _userManager.UpdateAsync(user);
+            var err = ErrorOfIdentityResult(result);
+            if (!err.IsNullOrEmpty()) return new AuthModelDto { Massage = err };
+
+            return new AuthModelDto { Massage = "Image updated successfully", IsAuth = true };
         }
 
         

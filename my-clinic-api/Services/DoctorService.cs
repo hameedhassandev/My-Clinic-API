@@ -58,18 +58,17 @@ namespace my_clinic_api.Services
             if (dto.city == null)
             {
 
-                expression = h => h.DepartmentId == dto.department;
+                expression = h => h.DepartmentId == dto.department && h.EmailConfirmed;
             }
             else if (dto.department == null)
             {
-                expression = h => (int)h.Cities == dto.city;
+                expression = h => (int)h.Cities == dto.city && h.EmailConfirmed;
             }
             else
             {
-                expression = h => h.DepartmentId == dto.department && (int)h.Cities == dto.city;
+                expression = h => h.DepartmentId == dto.department && (int)h.Cities == dto.city && h.EmailConfirmed;
 
             }
-            expression = c => c.EmailConfirmed;
             var doctors = await GetAllPaginationAsyncWithData(expression);
             return doctors;
         }

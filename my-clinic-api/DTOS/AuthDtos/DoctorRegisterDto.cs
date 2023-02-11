@@ -29,7 +29,7 @@ namespace my_clinic_api.Dto.AuthDtos
         public string DoctorTitle { get; set; }
 
         [MaxLength(250)]
-        public string Bio { get; set; }
+        public string ?Bio { get; set; }
 
         [Required]
         public double Cost { get; set; }

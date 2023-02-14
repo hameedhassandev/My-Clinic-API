@@ -55,6 +55,25 @@ namespace my_clinic_api.Controllers
             var result = _mapper.Map<IEnumerable<BookDto>>(Bookings);
             return Ok(result);
         }
+
+        [HttpGet("GetBookingsOfPatient")]
+        public async Task<IActionResult> GetBookingsOfPatient(string patientId)
+        {
+            var Bookings = await _bookService.GetBookingsOfPatient(patientId);
+            if (Bookings == null) return NotFound();
+            var result = _mapper.Map<IEnumerable<BookDto>>(Bookings);
+            return Ok(result);
+        }
+
+        [HttpPut("ConfirmBook")]
+        public async Task<IActionResult> ConfirmBook([FromForm]int bookId)
+        {
+            var confirm = await _bookService.ConfirmBook(bookId);
+            if (!confirm) return BadRequest("somthing err");
+
+            return Ok();
+        }
+
         [HttpPost("AddBook")]
         public async Task<IActionResult> AddBook([FromForm] CreateBookDto dto)
         {
@@ -63,6 +82,8 @@ namespace my_clinic_api.Controllers
             /// Return issue to display the object 
             return Ok(dto);
         }
+
+
 
     }
 }

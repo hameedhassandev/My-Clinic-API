@@ -150,7 +150,7 @@ namespace my_clinic_api.Controllers
         //PUT:api/Hospita/UpadteHospital
 
         [HttpPut("UpadteHospital")]
-        public async Task<IActionResult> UpadteHospital([FromForm, Required] int id, [FromForm] CreateHospitalDto dto)
+        public async Task<IActionResult> UpadteHospital(int id, [FromForm] CreateHospitalDto dto)
         {
             var hospital = await _hospitalService.FindByIdAsync(id);
 

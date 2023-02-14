@@ -24,6 +24,7 @@ using System.Numerics;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace my_clinic_api.Services
@@ -41,16 +42,16 @@ namespace my_clinic_api.Services
         private readonly IDoctorService _doctorService;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IEmailSender _emailSender;
-        private new List<string> _allowsImageExtenstions = new List<string> { ".jpeg", ".png",".jpg"};
+        private new List<string> _allowsImageExtenstions = new List<string> { ".jpeg", ".png", ".jpg" };
         private long _allowMaxImageLength = 943718;//0.9MB
         private readonly ApplicationDbContext _context;
-        
-       
+
+
 
         public AuthService(UserManager<ApplicationUser> userManager, IMapper mapper, IOptions<JWT> jwt, IAreaService areaService, IHospitalService hospitalService,
             IDepartmentService departmentService, ISpecialistService specialistService,
-            IInsuranceService insuranceService,RoleManager<IdentityRole> roleManager,
-            IEmailSender emailSende, IDoctorService doctorServicer,ApplicationDbContext context)
+            IInsuranceService insuranceService, RoleManager<IdentityRole> roleManager,
+            IEmailSender emailSende, IDoctorService doctorServicer, ApplicationDbContext context)
         {
             _userManager = userManager;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -62,11 +63,11 @@ namespace my_clinic_api.Services
             _insuranceService = insuranceService;
             _roleManager = roleManager;
             _emailSender = emailSende;
-            _doctorService = doctorServicer;  
+            _doctorService = doctorServicer;
             _context = context;
         }
 
- 
+
 
         public async Task<AuthModelDto> DoctorRegisterAsync(DoctorRegisterDto doctorDto, bool isConfirmedFromAdmin)
         {
@@ -80,9 +81,9 @@ namespace my_clinic_api.Services
 
             //chech area is exist
             var isAreaIdExist = await _areaService.AreaIdIsExist(doctorDto.AreaId);
-            if (!isAreaIdExist)return new AuthModelDto { Massage = "Area name is not right!" };
+            if (!isAreaIdExist) return new AuthModelDto { Massage = "Area name is not right!" };
 
-          
+
 
             var areaObj = new Area { Id = doctorDto.AreaId };
             var departmentIsExist = await _departmentService.DepartmentIsExists(doctorDto.DepartmentId);
@@ -92,7 +93,7 @@ namespace my_clinic_api.Services
             if (!specialist) return new AuthModelDto { Massage = "Specialists are not exist" };
 
             var hospitals = await _hospitalService.IsHospitalIdsIsExist(doctorDto.HospitalsIds);
-            if (!hospitals) return new AuthModelDto { Massage = "Hospitals are not exist" }; 
+            if (!hospitals) return new AuthModelDto { Massage = "Hospitals are not exist" };
 
             var insurance = await _insuranceService.IsInsuranceIdsIsExist(doctorDto.InsuranceIds);
             if (!insurance) return new AuthModelDto { Massage = "Insurances are not exist" };
@@ -134,7 +135,7 @@ namespace my_clinic_api.Services
             await _userManager.AddToRoleAsync(doctor, RoleNames.DoctorRole);
             //create token
 
-            
+
             var doctorId = doctor.Id;
             var getDoctor = await _doctorService.FindDoctorByIdWithDataAsync(doctorId);
 
@@ -146,7 +147,7 @@ namespace my_clinic_api.Services
 
             return new AuthModelDto
             {
-    
+
                 Email = doctor.Email,
                 IsAuth = true,
                 Roles = new List<string> { RoleNames.DoctorRole },
@@ -188,7 +189,7 @@ namespace my_clinic_api.Services
             // in case creation is fail
             if (!result.Succeeded)
             {
-                
+
                 var errors = string.Empty;
                 foreach (var error in result.Errors)
                 {
@@ -196,16 +197,28 @@ namespace my_clinic_api.Services
                 }
                 return new AuthModelDto { Massage = errors };
 
-            } 
+            }
             // if creation is success assign role to user
             await _userManager.AddToRoleAsync(user, RoleNames.PatientRole);
-/*
-            var isSendEmail = await confirmationMail(user);
-            if(isSendEmail) return new AuthModelDto { Massage = $"Registered successfully, check your Email : {user.Email}." };*/
 
-         return new AuthModelDto { Massage = "Register succsessfully, check your email", IsAuth = true };
+            //send email
+            string testEmail = "hameedhassan9542@gmail.com";
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var message = new Messages(new string[] { testEmail }, "Authorize your email address", $"click to authorize your email: http://localhost:4200/valid-email/{token}/{userDto.UserName}");
+            _emailSender.SendEmail(message);
+
+            return new AuthModelDto { Massage = "Register succsessfully, check your email", IsAuth = true };
         }
 
+
+        public async Task<bool> ConfirmUserEmail(confirmMailDto dto)
+        {
+            var user = await _userManager.FindByNameAsync(dto.Email);
+            if(user == null) return false;
+            var result = await _userManager.ConfirmEmailAsync(user, dto.Token);
+            if (!result.Succeeded) return false;
+            return true;
+        }
 
         public async Task<AuthModelDto> GetTokenAsync(TokenRequestModelDto modelDto)
         {
@@ -341,17 +354,21 @@ namespace my_clinic_api.Services
             return await _hospitalService.AddHospitalToDoctor(SpecialistsIds, doctor);
         }
 
-        private async Task<bool> confirmationMail(ApplicationUser userModel)
+        public async Task<bool> confirmationMailDoctor(string doctorId)
         {
-            var user = await _userManager.FindByEmailAsync(userModel.Email);
+            var doctor = await _userManager.FindByIdAsync(doctorId);
 
-            if (user is not null)
+            if (doctor is not null)
             {
-                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var result = await _userManager.ConfirmEmailAsync(user, token);
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(doctor);
+                var result = await _userManager.ConfirmEmailAsync(doctor, token);
                if (result.Succeeded)
                {
-                    var message = new Messages(new string[] { user.Email}, "Confirmation Email Link", "click to confirm you email http://localhost:4200/login");
+                   // string testEmail = "hameedhassan9542@gmail.com";
+                    string testEmail = "Hameed_20180216 @fci.helwan.edu.eg";
+
+                    //var message = new Messages(new string[] { doctor.Email}, "Accept To Join My Clinic Email", $"Congrats Doctor: {doctor.FullName} you are accepted to join My clinic visit: http://localhost:4200/login");
+                    var message = new Messages(new string[] { testEmail }, "Accept To Join My Clinic", $"Congrats Doctor: {doctor.FullName} you are accepted to join My clinic visit: http://localhost:4200/login");
                     _emailSender.SendEmail(message);
                     return true;
                }
@@ -422,6 +439,30 @@ namespace my_clinic_api.Services
     
             return new AuthModelDto { Massage = $"Follow your email {doctor.Email} until approval to join is sent from the admin.",IsAuth=true };
         }
+
+        public async Task<AuthModelDto> updatDoctor(updateDoctorDto dto)
+        {
+            var doctor = await _doctorService.FindDoctorByIdWithDataAsync(dto.doctorId);
+            if (doctor == null) return new AuthModelDto { Massage = $"No doctor with Id {dto.doctorId}" };
+
+            doctor.DoctorTitle = dto.DoctorTitle;
+            doctor.PhoneNo = dto.PhoneNo;
+            doctor.Cost = dto.Cost;
+            doctor.WaitingTime = dto.WaitingTime;
+
+            try
+            {
+               var result =  _context.doctors.Update(doctor);
+                _context.SaveChanges();
+            }
+            catch
+            {
+                return new AuthModelDto { Massage = "Somthing error, try again!" };
+            }
+
+            return new AuthModelDto { Massage = "Doctor updated successfully", IsAuth = true };
+        }
+
 
         public async Task<AuthModelDto> updateProfilePic(updateImageDto dto)
         {

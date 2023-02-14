@@ -1,6 +1,8 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using my_clinic_api.Classes;
 using my_clinic_api.DTOS;
 using my_clinic_api.DTOS.CreateDto;
 using my_clinic_api.Interfaces;
@@ -170,6 +172,7 @@ namespace my_clinic_api.Controllers
             return Ok(days);
         }
 
+        [Authorize(Roles = RoleNames.DoctorRole)]
         [HttpPost("AddTimeToDoctor")]
         public async Task<IActionResult> AddTimeToDoctor([FromBody] CreateTimesOfWorkDto dto)
         {

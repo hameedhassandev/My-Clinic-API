@@ -59,10 +59,20 @@ namespace my_clinic_api.Services
         public async Task<IEnumerable<Book>> GetBookingsOfDoctor(string doctorId)
         {
             Expression<Func<Book, bool>> predicate = h => h.DoctorId == doctorId;
-            var bookings = await FindAllAsync(predicate);
+            var bookings = await FindAllWithData(predicate);
             if (bookings.Any()) return bookings;
             return Enumerable.Empty<Book>();
         }
+
+        public async Task<IEnumerable<Book>> GetBookingsOfPatient(string patientId)
+        {
+            Expression<Func<Book, bool>> predicate = h => h.PatientId == patientId;
+            var bookings = await FindAllWithData(predicate);
+            if (bookings.Any()) return bookings;
+            return Enumerable.Empty<Book>();
+        }
+
+
         public async Task<bool> IsBookAvailable(CreateBookDto bookDto )
         {
             var TimeOfBook = GlobalFunctions.GetNextWeekday((DayOfWeek)bookDto.Day);
@@ -74,6 +84,18 @@ namespace my_clinic_api.Services
             {
                 return false;
             }
+            return true;
+        }
+
+        public async Task<bool> ConfirmBook(int confirmId)
+        {
+            var book = await FindByIdAsync(confirmId);
+            if (book == null) return false;
+
+            book.IsConfirmed = true;
+            
+            await Update(book);
+            CommitChanges();
             return true;
         }
     }

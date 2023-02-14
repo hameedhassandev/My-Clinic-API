@@ -91,6 +91,21 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
+        [HttpPut("updateDoctor")]
+        public async Task<IActionResult> updateDoctor([FromForm] updateDoctorDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _authService.updatDoctor(dto);
+
+            if (!result.IsAuth)
+                return BadRequest(result.Massage);
+
+
+            return Ok(result);
+        }
+
 
 
         [HttpPost("AddDoctorByAdmin")]
@@ -143,16 +158,25 @@ namespace my_clinic_api.Controllers
             return Ok($"Role {dto.Name} added successfully");
         }
 
-        [HttpPut("ConfirmDoctorByAdmin")]
-        public async Task<IActionResult> ConfirmDoctorByAdmin(string doctorId)
+        [HttpPost("ConfirmDoctorWithEmail")]
+        public async Task<IActionResult> ConfirmDoctorWithEmail()
         {
-            var result = await _authService.ConfirmDoctor(doctorId);
-            if (!result.IsAuth) return BadRequest(result.Massage);
+            var result = await _authService.confirmationMailDoctor("0576eab3-6c8e-4d69-a574-2a0813f6fbd3");
+            if (!result) return BadRequest("somthing err");
 
 
-            return Ok(result.Massage);
+            return Ok("Done");
         }
 
+
+        [HttpPost("ConfirmUserMail")]
+        public async Task<IActionResult> ConfirmUserMail(confirmMailDto dto)
+        {
+            var result = await _authService.ConfirmUserEmail(dto);
+            if (!result) return BadRequest();
+
+            return Ok("user confirmed");
+        }
 
         [HttpGet("AllRoles")]
         public async Task<IActionResult> AllRoles()

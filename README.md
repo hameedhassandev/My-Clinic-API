@@ -10,6 +10,7 @@
 - JWT
 - Identity
 - EF core
+- Email Sender
 
 # Clone Repo
 ```
@@ -98,9 +99,9 @@ POST /api/Auth/RegisterationAsDoctor
 POST /api/Auth/AddDoctorByAdmin
 POST /api/Auth/Login
 POST /api/Auth/AddRole
-PUT /api/Auth/ConfirmDoctorByAdmin/{doctorId}
+PUT /api/Auth/ConfirmDoctorWithEmail
+PUT /api/Auth/ConfirmUserEmail
 GET /api/Auth/AllRoles
-GET /api/Auth/ConfirmEmail
 ```
 - Book
 ```http

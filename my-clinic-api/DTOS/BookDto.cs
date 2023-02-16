@@ -21,5 +21,8 @@ namespace my_clinic_api.DTOS
         public string? DoctorId { get; set; }
         [Required]
         public string? PatientId { get; set; }
+        public PatientDto? Patient { get; set; }
+
+        public DoctorDto? Doctor { get; set; }  
     }
 }

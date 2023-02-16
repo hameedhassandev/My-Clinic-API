@@ -12,8 +12,8 @@ using my_clinic_api.Models;
 namespace my_clinic_api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221229143949_sead specialists")]
-    partial class seadspecialists
+    [Migration("20230201131602_editeToTimeSpan")]
+    partial class editeToTimeSpan
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -56,13 +56,13 @@ namespace my_clinic_api.Migrations
 
             modelBuilder.Entity("DoctorSpecialist", b =>
                 {
-                    b.Property<string>("DoctoresId")
+                    b.Property<string>("DoctorsId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("SpecialistsId")
                         .HasColumnType("int");
 
-                    b.HasKey("DoctoresId", "SpecialistsId");
+                    b.HasKey("DoctorsId", "SpecialistsId");
 
                     b.HasIndex("SpecialistsId");
 
@@ -542,11 +542,11 @@ namespace my_clinic_api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("EndWork")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("EndWork")
+                        .HasColumnType("time");
 
-                    b.Property<DateTime>("StartWork")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("StartWork")
+                        .HasColumnType("time");
 
                     b.Property<int>("day")
                         .HasColumnType("int");
@@ -648,7 +648,7 @@ namespace my_clinic_api.Migrations
                 {
                     b.HasOne("my_clinic_api.Models.Doctor", null)
                         .WithMany()
-                        .HasForeignKey("DoctoresId")
+                        .HasForeignKey("DoctorsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -718,40 +718,7 @@ namespace my_clinic_api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsMany("my_clinic_api.Models.RefreshTokens.RefreshToken", "RefreshToken", b1 =>
-                        {
-                            b1.Property<string>("ApplicationUserId")
-                                .HasColumnType("nvarchar(450)");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"), 1L, 1);
-
-                            b1.Property<DateTime>("CreatedOn")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<DateTime>("ExpiresOn")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<DateTime>("RevokedOn")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<string>("Token")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("ApplicationUserId", "Id");
-
-                            b1.ToTable("RefreshToken");
-
-                            b1.WithOwner()
-                                .HasForeignKey("ApplicationUserId");
-                        });
-
                     b.Navigation("Area");
-
-                    b.Navigation("RefreshToken");
                 });
 
             modelBuilder.Entity("my_clinic_api.Models.Book", b =>

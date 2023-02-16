@@ -1,4 +1,5 @@
-﻿using my_clinic_api.DTOS;
+﻿using my_clinic_api.Classes;
+using my_clinic_api.DTOS;
 using my_clinic_api.DTOS.CreateDto;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
@@ -8,8 +9,10 @@ namespace my_clinic_api.Services
 {
     public class TimesOfWorkService : BaseRepository<TimesOfWork>, ITimesOfWorkService
     {
-        public TimesOfWorkService(ApplicationDbContext Context) : base(Context)
+        private readonly IDoctorService _doctorService;
+        public TimesOfWorkService(ApplicationDbContext Context, IDoctorService doctorService) : base(Context)
         {
+            _doctorService = doctorService;
         }
 
 
@@ -31,13 +34,15 @@ namespace my_clinic_api.Services
 
         public async Task<bool> TimeIsAvailable(CreateBookDto bookDto)
         {
-            var day = bookDto.Time.DayOfWeek;
+            var TimeOfBook = GlobalFunctions.GetNextWeekday((DayOfWeek)bookDto.Day);
+            TimeOfBook = TimeOfBook.AddHours(bookDto.Time.TotalHours);
+            var day = TimeOfBook.DayOfWeek;
             var times = await GetTimesOfDoctor(bookDto.DoctorId);
             if (!times.Any()) return false;
             var check = times.SingleOrDefault(d=>d.day.ToString()==day.ToString());
             if (check is null) return false;
-            var start = TimeSpan.Compare(check.StartWork.TimeOfDay , bookDto.Time.TimeOfDay);
-            var end = TimeSpan.Compare(check.EndWork.TimeOfDay , bookDto.Time.TimeOfDay);
+            var start = TimeSpan.Compare(check.StartWork , TimeOfBook.TimeOfDay);
+            var end = TimeSpan.Compare(check.EndWork , TimeOfBook.TimeOfDay);
             return ((start == -1 || start == 0) && (end == 1));
         }
 
@@ -60,8 +65,9 @@ namespace my_clinic_api.Services
 
         public async Task<string> AddTimetoDoctor(CreateTimesOfWorkDto dto)
         {
+            var doc = await _doctorService.FindDoctorByIdAsync(dto.doctorId);
+            if (doc is null) return "No doctor found with this Id";
             Expression<Func<TimesOfWork, bool>> criteria = t => t.doctorId == dto.doctorId && t.day == dto.day;
-
             var DayIsExist = await FindAsync(criteria);
             if (DayIsExist is not null) return "This day is already exists";
             var time = new TimesOfWork

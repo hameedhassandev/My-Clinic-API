@@ -1,6 +1,8 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using my_clinic_api.Classes;
 using my_clinic_api.DTOS;
 using my_clinic_api.DTOS.CreateDto;
 using my_clinic_api.Interfaces;
@@ -103,9 +105,9 @@ namespace my_clinic_api.Controllers
             var i = TimeSpan.Zero;
             foreach (var time in times)
             {
-                i = time.StartWork.TimeOfDay;
+                i = time.StartWork;
                 Dictionary<TimeSpan, bool> availables = new Dictionary<TimeSpan, bool>();
-                while (i <= time.EndWork.TimeOfDay)
+                while (i <= time.EndWork)
                 {
                     if (!bookings.Any(t => t.Time.TimeOfDay == i))
                     {
@@ -135,10 +137,10 @@ namespace my_clinic_api.Controllers
             var times = await _timesOfWorkService.GetTimesOfDoctor(doctorId);
             if (!times.Any()) return NotFound("Doctor has no times! ");
             // Filter times to get today and the next 2 days only
-            times = times.Where(t => t.day.ToString() == _timesOfWorkService.GetNextDaysFromNow(0) ||
+           /* times = times.Where(t => t.day.ToString() == _timesOfWorkService.GetNextDaysFromNow(0) ||
                 t.day.ToString() == _timesOfWorkService.GetNextDaysFromNow(1) ||
                 t.day.ToString() == _timesOfWorkService.GetNextDaysFromNow(2)
-            );
+            );*/
             var bookings = await _bookService.GetBookingsOfDoctor(doctorId);
             // Filter bookings to remove expierd 
             bookings = bookings.Where(b=> 
@@ -150,9 +152,9 @@ namespace my_clinic_api.Controllers
             var i = TimeSpan.Zero;
             foreach (var time in times)
             {
-                i = time.StartWork.TimeOfDay;
+                i = time.StartWork;
                 IList<TimeSpan> availables = new List<TimeSpan>();
-                while (i <= time.EndWork.TimeOfDay)
+                while (i <= time.EndWork)
                 {
                     if (!bookings.Any(t=>t.Time.TimeOfDay == i) )
                     {
@@ -170,14 +172,17 @@ namespace my_clinic_api.Controllers
             return Ok(days);
         }
 
+        [Authorize(Roles = RoleNames.DoctorRole)]
         [HttpPost("AddTimeToDoctor")]
-        public async Task<IActionResult> AddTimeToDoctor([FromForm] CreateTimesOfWorkDto dto)
+        public async Task<IActionResult> AddTimeToDoctor([FromBody] CreateTimesOfWorkDto dto)
         {
             var add = await _timesOfWorkService.AddTimetoDoctor(dto);
             /// Return problem same as AddBook Function 
             if(add != "Success") return BadRequest(add);
             return Ok(dto);
         }
+
+        [Authorize(Roles = RoleNames.DoctorRole)]
 
         [HttpPut("UpdateTimeOfDoctor")]
         public async Task<IActionResult> UpdateTimeOfDoctor([FromForm, Required] int TimeId, [FromForm] CreateTimesOfWorkDto dto)
@@ -202,8 +207,11 @@ namespace my_clinic_api.Controllers
             return Ok(output);
 
         }
+
+        [Authorize(Roles = RoleNames.DoctorRole)]
+
         [HttpDelete("DeleteTimeOfDoctor")]
-        public async Task<IActionResult> DeleteTimeOfDoctor([FromForm, Required] int TimeId)
+        public async Task<IActionResult> DeleteTimeOfDoctor(int TimeId)
         {
             var time = await _timesOfWorkService.FindByIdAsync(TimeId);
             if (time == null) return BadRequest("No time was found");

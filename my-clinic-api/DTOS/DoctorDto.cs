@@ -35,7 +35,7 @@ namespace my_clinic_api.DTOS
         public double Cost { get; set; }
 
 
-        public bool IsConfirmedFromAdmin { get; set; }
+        public bool EmailConfirmed { get; set; }
 
         public DaysOfBlock? DaysOfBlock { get; set; }
 

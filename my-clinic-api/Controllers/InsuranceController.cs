@@ -1,12 +1,16 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using my_clinic_api.Classes;
 using my_clinic_api.DTOS;
 using my_clinic_api.DTOS.CreateDto;
+using my_clinic_api.DTOS.UpdateDro;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Linq.Expressions;
 
 namespace my_clinic_api.Controllers
@@ -113,6 +117,8 @@ namespace my_clinic_api.Controllers
 
         }
         // Post: api/Insurance/AddInsurance
+        [Authorize(Roles = RoleNames.AdminRole)]
+
         [HttpPost("AddInsurance")]
         public async Task<IActionResult> AddInsurance([FromForm] CreateInsuranceDto dto)
         {
@@ -134,12 +140,14 @@ namespace my_clinic_api.Controllers
         }
 
         //PUT:api/Insurance/UpadteInsurance
+        [Authorize(Roles = RoleNames.AdminRole)]
+
         [HttpPut("UpadteInsurance")]
-        public async Task<IActionResult> UpadteInsurance([FromForm, Required] int id, [FromForm] CreateInsuranceDto dto)
+        public async Task<IActionResult> UpadteInsurance([FromForm] updateInsuranceDto dto)
         {
-            var insurance = await _insuranceService.FindByIdAsync(id);
+            var insurance = await _insuranceService.FindByIdAsync(dto.Id);
             if (insurance == null)
-                return NotFound($"No insurance was found with ID {id}");
+                return NotFound($"No insurance was found with ID {dto.Id}");
             if (insurance.CompanyName == dto.CompanyName && insurance.Discount == dto.Discount)
                 return BadRequest("No changes were found!");
             var checkName = await _insuranceService.InsuranceNameIsExist(dto.CompanyName);
@@ -154,6 +162,8 @@ namespace my_clinic_api.Controllers
         }
 
         //DELETE:api/Insurance/DeleteInsurance
+        [Authorize(Roles = RoleNames.AdminRole)]
+
         [HttpDelete("DeleteInsurance")]
         public async Task<IActionResult> DeleteInsurance([FromForm, Required] int id)
         {

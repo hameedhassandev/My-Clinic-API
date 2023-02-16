@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using my_clinic_api.Classes;
 using my_clinic_api.DTOS;
+using my_clinic_api.DTOS.UpdateDro;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 
 namespace my_clinic_api.Controllers
 {
@@ -45,7 +49,7 @@ namespace my_clinic_api.Controllers
         }
 
         // GET: api/Area/GetAllAreasByDepartmentId/city/1
-        [HttpGet("GetAllAreasByCityId/cityId")]
+        [HttpGet("GetAllAreasByCityId/{cityId}")]
         public async Task<IActionResult> GetAllAreasByCityId(int cityId)
         {
             var result = await _areaService.getAreaByCityId(cityId);
@@ -55,7 +59,10 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
+
         // POST: api/Area/AddArea/
+        [Authorize(Roles = RoleNames.AdminRole)]
+
         [HttpPost("AddArea")]
         public async Task<IActionResult> AddArea([FromForm] AreaDto dto)
         {
@@ -79,12 +86,14 @@ namespace my_clinic_api.Controllers
 
 
         //PUT:api/Area/UpadteArea/id
+        [Authorize(Roles = RoleNames.AdminRole)]
+
         [HttpPut("UpadteArea")]
-        public async Task<IActionResult> UpadteArea([FromForm, Required] int id, [FromForm] AreaDto dto)
+        public async Task<IActionResult> UpadteArea([FromForm] updateAreaDto dto)
         {
-            var area = await _areaService.FindByIdAsync(id);
+            var area = await _areaService.FindByIdAsync(dto.Id);
             if (area == null)
-                return NotFound($"No area was found with ID {id}");
+                return NotFound($"No area was found with ID {dto.Id}");
             if (area.AreaName == dto.AreaName && area.City == dto.City)
                 return BadRequest("No changes were found!");
             var checkareaName = await _areaService.AreaNameIsExist(dto.AreaName);
@@ -97,6 +106,8 @@ namespace my_clinic_api.Controllers
             _areaService.CommitChanges();
             return Ok(result);
         }
+
+        [Authorize(Roles = RoleNames.AdminRole)]
 
         [HttpDelete("DeleteArea")]
         public async Task<IActionResult> DeleteArea([FromForm, Required] int id)

@@ -42,8 +42,6 @@ namespace my_clinic_api.Controllers
             if (!result.IsAuth)
                 return BadRequest(result.Massage);
 
-           setTokenInCookie(result.Token, (DateTime)result.ExpiresOn);
-
             return Ok(result);
         }
 
@@ -63,8 +61,8 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("testDoctorRegister")]
-        public async Task<IActionResult> testDoctorRegister([FromForm] DoctorRegisterDto dto)
+        [HttpPost("DoctorRegister")]
+        public async Task<IActionResult> DoctorRegister([FromForm] DoctorRegisterDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -74,22 +72,46 @@ namespace my_clinic_api.Controllers
             if (!result.IsAuth)
                 return BadRequest(result.Massage);
 
-            setTokenInCookie(result.Token, (DateTime)result.ExpiresOn);
+
+            return Ok(result);
+        }
+
+        [Authorize(Roles = RoleNames.DoctorRole)]
+
+        [HttpPut("updateProfilePic")]
+        public async Task<IActionResult> updateProfilePic([FromForm] updateImageDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _authService.updateProfilePic(dto);
+
+            if (!result.IsAuth)
+                return BadRequest(result.Massage);
+
+
+            return Ok(result);
+        }
+
+        [Authorize(Roles = RoleNames.DoctorRole)]
+
+        [HttpPut("updateDoctor")]
+        public async Task<IActionResult> updateDoctor([FromForm] updateDoctorDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _authService.updatDoctor(dto);
+
+            if (!result.IsAuth)
+                return BadRequest(result.Massage);
+
 
             return Ok(result);
         }
 
 
-        /* [HttpPost("RegAsDo")]
-         public async Task<IActionResult> RegAsDo() 
-         {
-             var result = await _authService.getDropDownForDoctor();
-             var docFormData = new doctorFormData
-             {
-                 Hospitals = new SelectList(result.Hospitals, "Id", "Name"),
-             };
-         }*/
-
+        [Authorize(Roles = RoleNames.AdminRole)]
 
         [HttpPost("AddDoctorByAdmin")]
         public async Task<IActionResult> AddDoctorByAdmin([FromBody] DoctorRegisterDto model, bool isConfirmed)
@@ -101,8 +123,7 @@ namespace my_clinic_api.Controllers
 
             if (!result.IsAuth)
                 return BadRequest(result.Massage);
-//
-           setTokenInCookie(result.Token, (DateTime)result.ExpiresOn);
+
 
             return Ok(result);
         }
@@ -127,6 +148,7 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = RoleNames.AdminRole)]
 
         [HttpPost("AddNewRole")]
         public async Task<IActionResult> AddNewRole(RoleNameDto dto)
@@ -141,16 +163,29 @@ namespace my_clinic_api.Controllers
             return Ok($"Role {dto.Name} added successfully");
         }
 
-        [HttpPut("ConfirmDoctorByAdmin")]
-        public async Task<IActionResult> ConfirmDoctorByAdmin(string doctorId)
+        [Authorize(Roles = RoleNames.AdminRole)]
+
+        [HttpPost("ConfirmDoctorWithEmail")]
+        public async Task<IActionResult> ConfirmDoctorWithEmail([FromForm]string doctorId)
         {
-            var result = await _authService.ConfirmDoctor(doctorId);
-            if (!result.IsAuth) return BadRequest(result.Massage);
+            var result = await _authService.confirmationMailDoctor(doctorId);
+            if (!result) return BadRequest("somthing err");
 
 
-            return Ok(result.Massage);
+            return Ok();
         }
 
+
+        [HttpPost("ConfirmUserMail")]
+        public async Task<IActionResult> ConfirmUserMail(confirmMailDto dto)
+        {
+            var result = await _authService.ConfirmUserEmail(dto);
+            if (!result) return BadRequest();
+
+            return Ok("user confirmed");
+        }
+
+        [Authorize(Roles = RoleNames.AdminRole)]
 
         [HttpGet("AllRoles")]
         public async Task<IActionResult> AllRoles()
@@ -163,15 +198,10 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("ConfirmEmail")]
-        public async Task<IActionResult> ConfirmEmail()
-        {
 
-            return Ok();
-        }
+ 
 
-
-        [HttpPost("")]
+     -
 
 
         //save token in cookie

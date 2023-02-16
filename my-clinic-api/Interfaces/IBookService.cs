@@ -8,7 +8,11 @@ namespace my_clinic_api.Interfaces
     {
         Task<string> AddBook(CreateBookDto bookDto);
         Task<bool> IsBookAvailable(CreateBookDto bookDto);
+        Task<bool> ConfirmBook(int confirmId);
+
         Task<IEnumerable<Book>> GetBookingsOfDoctor(string doctorId);
+        Task<IEnumerable<Book>> GetBookingsOfPatient(string patientId);
+
 
     }
 }

@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using my_clinic_api.Classes;
 using my_clinic_api.DTOS;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
+using System.Data;
 
 namespace my_clinic_api.Controllers
 {
@@ -21,6 +24,8 @@ namespace my_clinic_api.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Roles = RoleNames.AdminRole)]
+
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
@@ -30,6 +35,8 @@ namespace my_clinic_api.Controllers
             var result =  _mapper.Map<IEnumerable<PatientDto>>(patients);
             return Ok(result);
         }
+
+        [Authorize(Roles = RoleNames.AdminRole)]
 
         [HttpGet("GetAllWithData")]
         public async Task<IActionResult> GetAllWithData()

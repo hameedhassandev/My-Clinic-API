@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using my_clinic_api.Classes;
 using my_clinic_api.DTOS;
 using my_clinic_api.DTOS.CreateDto;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
+using System.Data;
 
 namespace my_clinic_api.Controllers
 {
@@ -26,7 +29,8 @@ namespace my_clinic_api.Controllers
             _doctorService = doctorService;
             _mapper = mapper;
         }
-        
+
+        [Authorize(Roles = RoleNames.AdminRole)]
 
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
@@ -37,6 +41,9 @@ namespace my_clinic_api.Controllers
             var result = _mapper.Map<IEnumerable<BookDto>>(Bookings);
             return Ok(result);
         }
+
+        [Authorize(Roles = RoleNames.AdminRole)]
+
         [HttpGet("GetAllWithData")]
         public async Task<IActionResult> GetAllWithData()
         {
@@ -47,6 +54,10 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = RoleNames.AdminRole)]
+
+        [Authorize(Roles = RoleNames.DoctorRole)]
+
         [HttpGet("GetBookingsOfDoctor")]
         public async Task<IActionResult> GetBookingsOfDoctor(string doctorId)
         {
@@ -55,6 +66,32 @@ namespace my_clinic_api.Controllers
             var result = _mapper.Map<IEnumerable<BookDto>>(Bookings);
             return Ok(result);
         }
+
+        [Authorize(Roles = RoleNames.AdminRole)]
+
+        [Authorize(Roles = RoleNames.DoctorRole)]
+        [HttpGet("GetBookingsOfPatient")]
+        public async Task<IActionResult> GetBookingsOfPatient(string patientId)
+        {
+            var Bookings = await _bookService.GetBookingsOfPatient(patientId);
+            if (Bookings == null) return NotFound();
+            var result = _mapper.Map<IEnumerable<BookDto>>(Bookings);
+            return Ok(result);
+        }
+
+
+        [Authorize(Roles = RoleNames.DoctorRole)]
+        [HttpPut("ConfirmBook")]
+        public async Task<IActionResult> ConfirmBook([FromForm]int bookId)
+        {
+            var confirm = await _bookService.ConfirmBook(bookId);
+            if (!confirm) return BadRequest("somthing err");
+
+            return Ok();
+        }
+
+
+        [Authorize(Roles = RoleNames.PatientRole)]
         [HttpPost("AddBook")]
         public async Task<IActionResult> AddBook([FromForm] CreateBookDto dto)
         {
@@ -63,6 +100,8 @@ namespace my_clinic_api.Controllers
             /// Return issue to display the object 
             return Ok(dto);
         }
+
+
 
     }
 }

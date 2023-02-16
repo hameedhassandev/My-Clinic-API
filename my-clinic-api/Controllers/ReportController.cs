@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using my_clinic_api.Classes;
 using my_clinic_api.DTOS;
 using my_clinic_api.DTOS.CreateDto;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
+using System.Data;
 
 namespace my_clinic_api.Controllers
 {
@@ -22,6 +25,8 @@ namespace my_clinic_api.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Roles = RoleNames.AdminRole)]
+
         [HttpGet]
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
@@ -30,6 +35,8 @@ namespace my_clinic_api.Controllers
             if (reports == null) return NotFound();
             return Ok(reports);
         }
+
+        [Authorize(Roles = RoleNames.AdminRole)]
 
         [HttpGet("GetAllWithData")]
         public async Task<IActionResult> GetAllWithData()
@@ -67,6 +74,8 @@ namespace my_clinic_api.Controllers
             return Ok(output);
 
         }
+
+        [Authorize(Roles = RoleNames.PatientRole)]
 
         [HttpPost]
         public async Task<IActionResult> AddReport([FromForm] CreateReportDto addReportDto)

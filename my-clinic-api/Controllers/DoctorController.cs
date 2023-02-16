@@ -8,6 +8,11 @@ using my_clinic_api.Models;
 using System.Linq.Expressions;
 using System.Numerics;
 using System.IO;
+using my_clinic_api.Services;
+using Microsoft.AspNetCore.Authorization;
+using my_clinic_api.Classes;
+using System.Data;
+
 namespace my_clinic_api.Controllers
 {
     [Route("api/[controller]")]
@@ -34,6 +39,7 @@ namespace my_clinic_api.Controllers
             
         }
 
+
         [HttpGet("GetAllDoctors")]
         public async Task<IActionResult> GetAllDoctors()
         {
@@ -49,6 +55,17 @@ namespace my_clinic_api.Controllers
         public async Task<IActionResult> GetAllDoctorsWithData()
         {
             var doctors = await _doctorService.GetAllWithData();
+
+            if (doctors == null) return NotFound();
+            var result = _mapper.Map<IEnumerable<DoctorDto>>(doctors);
+            return Ok(result);
+        }
+
+        [HttpGet("GetAllDoctorsWithFilter")]
+        public async Task<IActionResult> GetAllDoctorsWithFilter([FromQuery]FilterDto fDto)
+        {
+            
+            var doctors = await _doctorService.GetAllDoctorsWithFiltercriteria(fDto);
 
             if (doctors == null) return NotFound();
             var result = _mapper.Map<IEnumerable<DoctorDto>>(doctors);
@@ -77,8 +94,27 @@ namespace my_clinic_api.Controllers
             var result = _mapper.Map<DoctorDto>(doctor);
             return Ok(result);
         }
+        [Authorize(Roles = RoleNames.AdminRole)]
 
-        
+        [HttpGet("GetAllConfirmedDoctors")]
+
+        public async Task<IActionResult> GetAllConfirmedDoctors()
+        {
+            var doctors = await _doctorService.GetAllConfirmedDoctors();
+            if (doctors == null) return NotFound();
+            var result = _mapper.Map<IEnumerable<DoctorDto>>(doctors);
+            return Ok(result);
+        }
+        [Authorize(Roles = RoleNames.AdminRole)]
+
+        [HttpGet("GetAllNotConfirmedDoctors")]
+        public async Task<IActionResult> GetAllNotConfirmedDoctors()
+        {
+            var doctors = await _doctorService.GetAllNotConfirmedDoctors();
+            if (doctors == null) return NotFound();
+            var result = _mapper.Map<IEnumerable<DoctorDto>>(doctors);
+            return Ok(result);
+        }
 
     }
 }

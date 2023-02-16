@@ -76,7 +76,8 @@ namespace my_clinic_api.Services
         public async Task<T> FindAsync(Expression<Func<T, bool>> criteria)
         {
 
-            var result = await _Context.Set<T>().AsQueryable().AsNoTracking().FirstOrDefaultAsync();
+            var result = await _Context.Set<T>().AsQueryable().AsNoTracking().FirstOrDefaultAsync(criteria);
+            if (result== null) return null;
             _Context.Entry(result).State = EntityState.Detached;
             return result;
             
@@ -112,7 +113,19 @@ namespace my_clinic_api.Services
             return await _Context.Set<T>().AsQueryable().Where(criteria).Skip(skip).Take(take).ToListAsync();
         }
 
-        
+        //filter with pagination
+        public async Task<IEnumerable<T>> GetAllPaginationAsyncWithData(Expression<Func<T, bool>> criteria)
+        {
+            var col = GetCollections(typeof(T));
+            var query = _Context.Set<T>().AsQueryable().Where(criteria);
+            foreach (var inc in col)
+            {
+                query = query.Include(inc);
+            }
+            return await query.ToListAsync();
+        }
+
+
 
         public void CommitChanges()
         {

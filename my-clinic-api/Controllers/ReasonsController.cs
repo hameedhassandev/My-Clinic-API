@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using my_clinic_api.Classes;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 
 namespace my_clinic_api.Controllers
 {
@@ -49,6 +52,8 @@ namespace my_clinic_api.Controllers
         
         }
 
+        [Authorize(Roles = RoleNames.AdminRole)]
+
         [HttpPost("AddReason")]
         public async Task<IActionResult> AddReason([FromForm , Required] string reasonName)
         {
@@ -61,6 +66,8 @@ namespace my_clinic_api.Controllers
             if (result.Id == 0) return BadRequest();
             return Ok(result);
         }
+
+        [Authorize(Roles = RoleNames.AdminRole)]
 
         [HttpDelete("DeleteReason")]
         public async Task<IActionResult> DeleteReason([FromForm, Required] int reasonId)

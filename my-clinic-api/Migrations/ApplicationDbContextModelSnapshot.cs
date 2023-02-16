@@ -540,11 +540,11 @@ namespace my_clinic_api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("EndWork")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("EndWork")
+                        .HasColumnType("time");
 
-                    b.Property<DateTime>("StartWork")
-                        .HasColumnType("datetime2");
+                    b.Property<TimeSpan>("StartWork")
+                        .HasColumnType("time");
 
                     b.Property<int>("day")
                         .HasColumnType("int");

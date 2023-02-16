@@ -182,6 +182,8 @@ namespace my_clinic_api.Controllers
             return Ok(dto);
         }
 
+        [Authorize(Roles = RoleNames.DoctorRole)]
+
         [HttpPut("UpdateTimeOfDoctor")]
         public async Task<IActionResult> UpdateTimeOfDoctor([FromForm, Required] int TimeId, [FromForm] CreateTimesOfWorkDto dto)
         {
@@ -205,6 +207,9 @@ namespace my_clinic_api.Controllers
             return Ok(output);
 
         }
+
+        [Authorize(Roles = RoleNames.DoctorRole)]
+
         [HttpDelete("DeleteTimeOfDoctor")]
         public async Task<IActionResult> DeleteTimeOfDoctor(int TimeId)
         {

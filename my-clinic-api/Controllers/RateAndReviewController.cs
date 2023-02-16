@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using my_clinic_api.Classes;
 using my_clinic_api.DTOS;
 using my_clinic_api.DTOS.CreateDto;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 
 namespace my_clinic_api.Controllers
 {
@@ -21,6 +24,8 @@ namespace my_clinic_api.Controllers
             _rateandreviewService = rateandreviewService;
             _mapper = mapper;
         }
+
+        [Authorize(Roles = RoleNames.AdminRole)]
 
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
@@ -56,6 +61,8 @@ namespace my_clinic_api.Controllers
             return Ok(output);
         }
 
+        [Authorize(Roles = RoleNames.DoctorRole)]
+
         [HttpGet("GetReviewsOfDoctor")]
         public async Task<IActionResult> GetReviewsOfDoctor(string doctorId)
         {
@@ -64,7 +71,9 @@ namespace my_clinic_api.Controllers
             var output = _mapper.Map<IEnumerable<RateAndReviewDto>>(rateAndReviews);
             return Ok(output);
         }
-        
+
+        [Authorize(Roles = RoleNames.PatientRole)]
+
         [HttpGet("GetReviewsOfPatient")]
         public async Task<IActionResult> GetReviewsOfPatient(string patientId)
         {
@@ -73,6 +82,8 @@ namespace my_clinic_api.Controllers
             var output = _mapper.Map<IEnumerable<RateAndReviewDto>>(rateAndReviews);
             return Ok(output);
         }
+
+        [Authorize(Roles = RoleNames.PatientRole)]
 
         [HttpPost("AddRateAndReview")]
         public async Task<IActionResult> AddRateAndReview([FromForm] CreateRateAndReviewDto rateAndReviewDto)
@@ -84,6 +95,8 @@ namespace my_clinic_api.Controllers
             var output = _mapper.Map<RateAndReviewDto>(result);
             return Ok(output);
         }
+
+        [Authorize(Roles = RoleNames.AdminRole)]
 
         [HttpDelete("DeleteRateAndReview")]
         public async Task<IActionResult> DeleteRateAndReview ([FromForm, Required] int reviewId , [FromForm, Required] string patientId)

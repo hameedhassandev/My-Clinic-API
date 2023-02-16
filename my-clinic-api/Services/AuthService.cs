@@ -202,10 +202,10 @@ namespace my_clinic_api.Services
             await _userManager.AddToRoleAsync(user, RoleNames.PatientRole);
 
             //send email
-            string testEmail = "hameedhassan9542@gmail.com";
+/*            string testEmail = "hameedhassan9542@gmail.com";
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var message = new Messages(new string[] { testEmail }, "Authorize your email address", $"click to authorize your email: http://localhost:4200/valid-email/{token}/{userDto.UserName}");
-            _emailSender.SendEmail(message);
+            _emailSender.SendEmail(message);*/
 
             return new AuthModelDto { Massage = "Register succsessfully, check your email", IsAuth = true };
         }
@@ -368,8 +368,8 @@ namespace my_clinic_api.Services
                     string testEmail = "Hameed_20180216 @fci.helwan.edu.eg";
 
                     //var message = new Messages(new string[] { doctor.Email}, "Accept To Join My Clinic Email", $"Congrats Doctor: {doctor.FullName} you are accepted to join My clinic visit: http://localhost:4200/login");
-                    var message = new Messages(new string[] { testEmail }, "Accept To Join My Clinic", $"Congrats Doctor: {doctor.FullName} you are accepted to join My clinic visit: http://localhost:4200/login");
-                    _emailSender.SendEmail(message);
+                  /*  var message = new Messages(new string[] { testEmail }, "Accept To Join My Clinic", $"Congrats Doctor: {doctor.FullName} you are accepted to join My clinic visit: http://localhost:4200/login");
+                    _emailSender.SendEmail(message);*/
                     return true;
                }
             }

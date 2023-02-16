@@ -9,6 +9,9 @@ using System.Linq.Expressions;
 using System.Numerics;
 using System.IO;
 using my_clinic_api.Services;
+using Microsoft.AspNetCore.Authorization;
+using my_clinic_api.Classes;
+using System.Data;
 
 namespace my_clinic_api.Controllers
 {
@@ -35,6 +38,7 @@ namespace my_clinic_api.Controllers
             _specialistService = specialistService;
             
         }
+
 
         [HttpGet("GetAllDoctors")]
         public async Task<IActionResult> GetAllDoctors()
@@ -90,6 +94,7 @@ namespace my_clinic_api.Controllers
             var result = _mapper.Map<DoctorDto>(doctor);
             return Ok(result);
         }
+        [Authorize(Roles = RoleNames.AdminRole)]
 
         [HttpGet("GetAllConfirmedDoctors")]
 
@@ -100,6 +105,7 @@ namespace my_clinic_api.Controllers
             var result = _mapper.Map<IEnumerable<DoctorDto>>(doctors);
             return Ok(result);
         }
+        [Authorize(Roles = RoleNames.AdminRole)]
 
         [HttpGet("GetAllNotConfirmedDoctors")]
         public async Task<IActionResult> GetAllNotConfirmedDoctors()

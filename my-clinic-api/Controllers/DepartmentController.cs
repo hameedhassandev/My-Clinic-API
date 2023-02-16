@@ -1,13 +1,17 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using my_clinic_api.Classes;
 using my_clinic_api.DTOS;
 using my_clinic_api.DTOS.CreateDto;
+using my_clinic_api.DTOS.UpdateDro;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Linq.Expressions;
 
 namespace my_clinic_api.Controllers
@@ -24,6 +28,8 @@ namespace my_clinic_api.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Roles = RoleNames.AdminRole)]
+
         [HttpGet("GetDepartmentById/{id}")]
         public async Task<IActionResult> GetDepartmentById(int id)
         {
@@ -34,7 +40,9 @@ namespace my_clinic_api.Controllers
             var output = _mapper.Map<DepartmentDto>(result);
             return Ok(output);
         }
-        
+
+        [Authorize(Roles = RoleNames.AdminRole)]
+
         [HttpGet("GetDepartmentByIdWithData/{id}")]
         public async Task<IActionResult> GetDepartmentByIdWithData(int id)
         {
@@ -49,6 +57,8 @@ namespace my_clinic_api.Controllers
 
 
         // GET: api/Department/GetAll
+        [Authorize(Roles = RoleNames.AdminRole)]
+
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
@@ -63,6 +73,8 @@ namespace my_clinic_api.Controllers
         }
 
         // GET: api/Department/GetAllWithData
+        [Authorize(Roles = RoleNames.AdminRole)]
+
         [HttpGet("GetAllWithData")]
         public async Task<IActionResult> GetAllWithData()
         {
@@ -74,6 +86,8 @@ namespace my_clinic_api.Controllers
         }
 
         // GET: api/Department/GetAllPagination
+        [Authorize(Roles = RoleNames.AdminRole)]
+
         [HttpGet("GetAllPagination")]
         public async Task<IActionResult> GetAllPagination([FromQuery] int skip, [FromQuery] int take)
         {
@@ -86,6 +100,8 @@ namespace my_clinic_api.Controllers
         }
 
         // GET: api/Department/GetAllWithFilteration
+        [Authorize(Roles = RoleNames.AdminRole)]
+
         [HttpGet("GetAllWithFilteration")]
         public async Task<IActionResult> GetAllWithFilteration([FromQuery] string searchKey)
         {
@@ -99,6 +115,8 @@ namespace my_clinic_api.Controllers
         }
 
         // GET: api/Department/GetAllWithFilterationAndPagination
+        [Authorize(Roles = RoleNames.AdminRole)]
+
         [HttpGet("GetAllWithFilterationAndPagination")]
         public async Task<IActionResult> GetAllWithFilterationAndPagination([FromQuery] string searchKey, [FromQuery] int skip, [FromQuery] int take)
         {
@@ -111,6 +129,8 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
         // Post: api/Department/AddDepartment
+        [Authorize(Roles = RoleNames.AdminRole)]
+
         [HttpPost("AddDepartment")]
         public async Task<IActionResult> AddDepratment([FromForm] CreateDepartmentDto dto)
         {
@@ -132,12 +152,14 @@ namespace my_clinic_api.Controllers
         }
 
         //PUT:api/Department/UpadteDepartment
+        [Authorize(Roles = RoleNames.AdminRole)]
+
         [HttpPut("UpadteDepartment")]
-        public async Task<IActionResult> UpadteDepartment(int id, [FromForm] CreateDepartmentDto dto)
+        public async Task<IActionResult> UpadteDepartment([FromForm] updateDepartmentDto dto)
         {
-            var department = await _departmentService.FindByIdAsync(id);
+            var department = await _departmentService.FindByIdAsync(dto.Id);
             if (department == null)
-                return NotFound($"No department was found with ID {id}");
+                return NotFound($"No department was found with ID {dto.Id}");
             if (department.Name == dto.Name && department.Description == dto.Description)
                 return BadRequest("No changes were found!");
             var checkName = await _departmentService.DepartmentNameIsExist(dto.Name);
@@ -152,6 +174,8 @@ namespace my_clinic_api.Controllers
         }
 
         //DELETE:api/Department/DeleteDepartment
+        [Authorize(Roles = RoleNames.AdminRole)]
+
         [HttpDelete("DeleteDepartment")]
         public async Task<IActionResult> DeleteDepartment(int id)
         {

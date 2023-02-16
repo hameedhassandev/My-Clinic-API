@@ -1,11 +1,15 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using my_clinic_api.Classes;
 using my_clinic_api.DTOS;
 using my_clinic_api.DTOS.CreateDto;
+using my_clinic_api.DTOS.UpdateDro;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Linq.Expressions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -100,13 +104,13 @@ namespace my_clinic_api.Controllers
             return Ok(output);
         }
 
+        [Authorize(Roles = RoleNames.AdminRole)]
+
         [HttpPost("AddSpecialist")]
         public async Task<IActionResult> AddSpecialist([FromForm] CreateSpecialistDto dto)
         {
             if (!ModelState.IsValid) return BadRequest();
-            Expression<Func<Specialist, bool>> criteria = d => d.SpecialistName == dto.SpecialistName;
-            var check = await _specialistService.FindWithData(criteria);
-            if (check is not null) return BadRequest("There ar another specialist in the same name!");
+          
             var specialist = new Specialist
             {
                 SpecialistName = dto.SpecialistName,
@@ -118,14 +122,25 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
-        //[HttpPost("AddSpecialistToDoctor")]
-        //public async Task<IActionResult> AddSpecialistToDoctor([FromForm, Required] string doctorId, [FromForm, Required] int specialistId)
-        //{
-        //    var result = await _specialistService.AddSpecialistToDoctor(doctorId, specialistId);
-        //    if (result)
-        //        return Ok("Specialist Added Successfully");
-        //    return BadRequest();
-        //}
+
+
+        [Authorize(Roles = RoleNames.AdminRole)]
+
+        [HttpPut("UpdateSpecialist")]
+        public async Task<IActionResult> UpdateSpecialis([FromForm] updateSpecialistDto dto)
+        {
+            var specialist = await _specialistService.FindByIdAsync(dto.Id);
+            if (specialist == null) return NotFound($"No specialist found with id {dto.Id}!");
+
+            specialist.SpecialistName = dto.SpecialistName;
+            specialist.departmentId = dto.departmentId;
+            var result = await _specialistService.Update(specialist);
+            _specialistService.CommitChanges();
+            return Ok(result);
+
+        }
+
+        [Authorize(Roles = RoleNames.AdminRole)]
 
         [HttpDelete("DeleteSpecialist")]
         public async Task<IActionResult> DeleteSpecialist([FromForm, Required] int specialisId)

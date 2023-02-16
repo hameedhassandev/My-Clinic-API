@@ -1,14 +1,17 @@
 ﻿
 
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using my_clinic_api.Classes;
 using my_clinic_api.DTOS;
 using my_clinic_api.DTOS.CreateDto;
+using my_clinic_api.DTOS.UpdateDro;
 using my_clinic_api.Interfaces;
 using my_clinic_api.Models;
 using my_clinic_api.Services;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -65,6 +68,7 @@ namespace my_clinic_api.Controllers
             return Ok(output);
         }
         // GET: api/Hospital/GetAllWithData
+
         [HttpGet("GetAllWithData")]
         public async Task<IActionResult> GetAllWithData()
         {
@@ -93,6 +97,8 @@ namespace my_clinic_api.Controllers
 
 
         // GET: api/Hospital/GetAllWithFilteration
+        [Authorize(Roles = RoleNames.AdminRole)]
+
         [HttpGet("GetAllWithFilteration")]
         public async Task<IActionResult> GetAllWithFilteration([FromQuery] string searchKey)
         {
@@ -123,6 +129,8 @@ namespace my_clinic_api.Controllers
         // GET: api/Hospital/GetAllDoctorsInHospital
 
         //POST:api/Hospita/AddHospital
+        [Authorize(Roles = RoleNames.AdminRole)]
+
         [HttpPost("AddHospital")]
         public async Task<IActionResult> AddHospital([FromForm] CreateHospitalDto dto)
         {
@@ -148,14 +156,15 @@ namespace my_clinic_api.Controllers
 
 
         //PUT:api/Hospita/UpadteHospital
+        [Authorize(Roles = RoleNames.AdminRole)]
 
         [HttpPut("UpadteHospital")]
-        public async Task<IActionResult> UpadteHospital(int id, [FromForm] CreateHospitalDto dto)
+        public async Task<IActionResult> UpadteHospital([FromForm] updateHospitalDto dto)
         {
-            var hospital = await _hospitalService.FindByIdAsync(id);
+            var hospital = await _hospitalService.FindByIdAsync(dto.Id);
 
             if (hospital == null)
-                return NotFound($"No hospital was found with ID {id}");
+                return NotFound($"No hospital was found with ID {dto.Id}");
 
 
             if (hospital.Name == dto.Name && hospital.Address == dto.Address)
@@ -177,8 +186,10 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = RoleNames.AdminRole)]
+
         [HttpDelete("DeleteHospital")]
-        public async Task<IActionResult> DeleteHospital([FromForm , Required] int id)
+        public async Task<IActionResult> DeleteHospital(int id)
         {
             var hospital = await _hospitalService.FindByIdAsync(id);
 

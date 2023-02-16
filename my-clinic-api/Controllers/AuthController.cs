@@ -76,6 +76,8 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = RoleNames.DoctorRole)]
+
         [HttpPut("updateProfilePic")]
         public async Task<IActionResult> updateProfilePic([FromForm] updateImageDto dto)
         {
@@ -90,6 +92,8 @@ namespace my_clinic_api.Controllers
 
             return Ok(result);
         }
+
+        [Authorize(Roles = RoleNames.DoctorRole)]
 
         [HttpPut("updateDoctor")]
         public async Task<IActionResult> updateDoctor([FromForm] updateDoctorDto dto)
@@ -107,6 +111,7 @@ namespace my_clinic_api.Controllers
         }
 
 
+        [Authorize(Roles = RoleNames.AdminRole)]
 
         [HttpPost("AddDoctorByAdmin")]
         public async Task<IActionResult> AddDoctorByAdmin([FromBody] DoctorRegisterDto model, bool isConfirmed)
@@ -118,8 +123,7 @@ namespace my_clinic_api.Controllers
 
             if (!result.IsAuth)
                 return BadRequest(result.Massage);
-//
-           setTokenInCookie(result.Token, (DateTime)result.ExpiresOn);
+
 
             return Ok(result);
         }
@@ -144,6 +148,7 @@ namespace my_clinic_api.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = RoleNames.AdminRole)]
 
         [HttpPost("AddNewRole")]
         public async Task<IActionResult> AddNewRole(RoleNameDto dto)
@@ -158,14 +163,16 @@ namespace my_clinic_api.Controllers
             return Ok($"Role {dto.Name} added successfully");
         }
 
+        [Authorize(Roles = RoleNames.AdminRole)]
+
         [HttpPost("ConfirmDoctorWithEmail")]
-        public async Task<IActionResult> ConfirmDoctorWithEmail()
+        public async Task<IActionResult> ConfirmDoctorWithEmail([FromForm]string doctorId)
         {
-            var result = await _authService.confirmationMailDoctor("0576eab3-6c8e-4d69-a574-2a0813f6fbd3");
+            var result = await _authService.confirmationMailDoctor(doctorId);
             if (!result) return BadRequest("somthing err");
 
 
-            return Ok("Done");
+            return Ok();
         }
 
 
@@ -177,6 +184,8 @@ namespace my_clinic_api.Controllers
 
             return Ok("user confirmed");
         }
+
+        [Authorize(Roles = RoleNames.AdminRole)]
 
         [HttpGet("AllRoles")]
         public async Task<IActionResult> AllRoles()
@@ -190,15 +199,9 @@ namespace my_clinic_api.Controllers
         }
 
 
-        [HttpGet("ConfirmEmail")]
-        public async Task<IActionResult> ConfirmEmail()
-        {
+ 
 
-            return Ok();
-        }
-
-
-        [HttpPost("")]
+     -
 
 
         //save token in cookie

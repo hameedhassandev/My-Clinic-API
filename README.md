@@ -17,6 +17,17 @@
 $ git clone https://github.com/hameedhassandev/My-Clinic-API
 ```
 # Currant Endpoints
+- Authorization
+```http
+POST /api/Auth/RegisterationAsPatient
+POST /api/Auth/RegisterationAsDoctor
+POST /api/Auth/AddDoctorByAdmin
+POST /api/Auth/Login
+POST /api/Auth/AddRole
+PUT /api/Auth/ConfirmDoctorWithEmail
+PUT /api/Auth/ConfirmUserEmail
+GET /api/Auth/AllRoles
+```
 - Department
 ```http
 GET /api/Department/GetDepartmentById/{id}
@@ -25,7 +36,6 @@ GET /api/Department/GetAll
 GET /api/Department/GetAllWithData
 GET /api/Department/GetAllPagination
 GET /api/Department/GetAllWithFilteration
-GET /api/Department/GetAllWithFilterationAndPagination
 POST /api/Department/AddDepartment
 PUT /api/Department/UpdateDepartment/{id}
 DELETE /api/Department/DeleteDepartment/{id}
@@ -51,7 +61,6 @@ GET /api/Hospital/GetAll
 GET /api/Hospital/GetAllWithData
 GET /api/Hospital/GetAllPagination
 GET /api/Hospital/GetAllWithFilteration
-GET /api/Hospital/GetAllWithFilterationAnfPagination
 POST /api/Hospital/AddHospital
 PUT /api/Hospital/UpdateHospital/{id}
 DELETE /api/Hospital/DeleteHospital/{id}
@@ -64,7 +73,6 @@ GET /api/Insurance/GetAll
 GET /api/Insurance/GetAllWithData
 GET /api/Insurance/GetAllPagination
 GET /api/Insurance/GetAllWithFilteration
-GET /api/Insurance/GetAllWithFilterationAnfPagination
 POST /api/Insurance/AddInsurance
 PUT /api/Insurance/UpdateInsurance/{id}
 DELETE /api/Insurance/DeleteInsurance/{id}
@@ -92,17 +100,6 @@ DELETE /api/Area/DeleteArea/{id}
 ```
 
 
-- Authorization
-```http
-POST /api/Auth/RegisterationAsPatient
-POST /api/Auth/RegisterationAsDoctor
-POST /api/Auth/AddDoctorByAdmin
-POST /api/Auth/Login
-POST /api/Auth/AddRole
-PUT /api/Auth/ConfirmDoctorWithEmail
-PUT /api/Auth/ConfirmUserEmail
-GET /api/Auth/AllRoles
-```
 - Book
 ```http
 GET /api/Book/GetAll
